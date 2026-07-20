@@ -12,12 +12,29 @@
   "description": "Vue bindings for OriaTheme runtime.",
   "type": "module",
   "sideEffects": false,
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
-  "files": ["dist", "LICENSE"],
-  "publishConfig": { "access": "public" },
-  "dependencies": { "@oriatheme/runtime-dom": "workspace:*" },
-  "peerDependencies": { "vue": "^3.5.0" },
-  "devDependencies": { "@oriatheme/core": "workspace:*", "vue": "^3.5.0" },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@oriatheme/runtime-dom": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@oriatheme/core": "workspace:*",
+    "vue": "^3.5.0"
+  },
   "scripts": {
     "prepack": "node ../../scripts/prepare-package-license.mjs",
     "build": "tsup src/index.ts --format esm --dts --sourcemap --clean --external vue --external @oriatheme/runtime-dom",

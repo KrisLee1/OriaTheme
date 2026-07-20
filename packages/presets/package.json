@@ -18,8 +18,13 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "LICENSE"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@oriatheme/core": "workspace:*"
   },

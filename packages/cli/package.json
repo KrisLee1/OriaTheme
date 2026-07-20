@@ -14,8 +14,14 @@
   "bin": {
     "oria": "./dist/index.js"
   },
-  "files": ["dist", "registry", "LICENSE"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist",
+    "registry",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

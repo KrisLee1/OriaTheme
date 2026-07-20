@@ -18,14 +18,21 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "LICENSE"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@oriatheme/core": "workspace:*",
     "@oriatheme/editor-core": "workspace:*",
     "@oriatheme/runtime-dom": "workspace:*"
   },
-  "peerDependencies": { "vue": "^3.5.0" },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
   "devDependencies": {
     "@oriatheme/core": "workspace:*",
     "@oriatheme/runtime-dom": "workspace:*",
