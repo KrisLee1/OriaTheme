@@ -2,6 +2,7 @@
   "name": "oriatheme",
   "version": "0.0.0-private",
   "private": true,
+  "license": "Apache-2.0",
   "type": "module",
   "packageManager": "pnpm@10.10.0",
   "scripts": {
@@ -9,6 +10,7 @@
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test",
     "typecheck": "pnpm -r --if-present typecheck",
+    "build:registry": "node scripts/build-public-registry.mjs",
     "dev:example:react": "pnpm --filter @oriatheme/example-react dev",
     "dev:example:vue": "pnpm --filter @oriatheme/example-vue dev",
     "dev:example:next": "pnpm --filter @oriatheme/example-next dev --port 5173"

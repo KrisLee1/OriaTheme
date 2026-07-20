@@ -1,5 +1,7 @@
 # OriaTheme
 
+[English](README.en.md)
+
 OriaTheme 是 framework-agnostic 的客户端主题 runtime，提供类型化 Token Contract、light/dark/system 模式、持久化、原子 CSS Variables 应用以及 React/Vue 薄适配层。
 
 > 发布状态：公开包已进入 `0.1.0` 发布准备，但 npm 首发与公开远程 registry 尚未完成。请勿把仓库版本号理解为 registry 已可安装。
