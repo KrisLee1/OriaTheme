@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "license": "Apache-2.0",
   "homepage": "https://theme.oria.org.cn",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KrisLee1/OriaTheme.git",
+    "directory": "packages/colors"
+  },
+  "bugs": "https://github.com/KrisLee1/OriaTheme/issues",
   "description": "Stable Oria color scales with Tailwind-compatible family and utility names.",
   "type": "module",
   "sideEffects": [

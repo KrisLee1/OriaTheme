@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "license": "Apache-2.0",
   "homepage": "https://theme.oria.org.cn",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KrisLee1/OriaTheme.git",
+    "directory": "packages/runtime-dom"
+  },
+  "bugs": "https://github.com/KrisLee1/OriaTheme/issues",
   "description": "Client lifecycle and DOM runtime for OriaTheme.",
   "type": "module",
   "sideEffects": false,
