@@ -1,0 +1,24 @@
+{
+  "name": "@oriatheme/example-editor-vue",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@oriatheme/colors": "workspace:*",
+    "@oriatheme/core": "workspace:*",
+    "@oriatheme/editor-core": "workspace:*",
+    "@oriatheme/presets": "workspace:*",
+    "@oriatheme/runtime-dom": "workspace:*",
+    "@oriatheme/vue": "workspace:*",
+    "@oriatheme/vue-editor": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4"
+  }
+}

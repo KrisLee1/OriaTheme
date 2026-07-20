@@ -1,0 +1,35 @@
+{
+  "name": "@oriatheme/vue-editor",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "homepage": "https://theme.oria.org.cn",
+  "description": "Headless Vue bridge for the OriaTheme editor session.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "LICENSE"],
+  "publishConfig": { "access": "public" },
+  "dependencies": {
+    "@oriatheme/core": "workspace:*",
+    "@oriatheme/editor-core": "workspace:*",
+    "@oriatheme/runtime-dom": "workspace:*"
+  },
+  "peerDependencies": { "vue": "^3.5.0" },
+  "devDependencies": {
+    "@oriatheme/core": "workspace:*",
+    "@oriatheme/runtime-dom": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "scripts": {
+    "prepack": "node ../../scripts/prepare-package-license.mjs",
+    "build": "tsup src/index.ts --format esm --dts --sourcemap --clean --external vue --external @oriatheme/editor-core --external @oriatheme/core --external @oriatheme/runtime-dom",
+    "lint": "eslint src test",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@oriatheme/react",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "homepage": "https://theme.oria.org.cn",
+  "description": "React bindings for OriaTheme runtime.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist", "LICENSE"],
+  "publishConfig": { "access": "public" },
+  "dependencies": { "@oriatheme/runtime-dom": "workspace:*" },
+  "peerDependencies": { "react": "^18.2.0 || ^19.0.0", "react-dom": "^18.2.0 || ^19.0.0" },
+  "devDependencies": { "@oriatheme/core": "workspace:*", "@types/react": "^19.1.0", "@types/react-dom": "^19.1.0", "react": "^19.1.0", "react-dom": "^19.1.0" },
+  "scripts": {
+    "prepack": "node ../../scripts/prepare-package-license.mjs",
+    "build": "tsup src/index.tsx --format esm --dts --sourcemap --clean --external react --external react-dom --external @oriatheme/runtime-dom",
+    "lint": "eslint src test",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  }
+}

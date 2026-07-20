@@ -1,0 +1,28 @@
+{
+  "name": "@oriatheme/editor-core",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "homepage": "https://theme.oria.org.cn",
+  "description": "Framework-independent draft editing and runtime coordination for OriaTheme.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "LICENSE"],
+  "publishConfig": { "access": "public" },
+  "dependencies": {
+    "@oriatheme/core": "workspace:*",
+    "@oriatheme/runtime-dom": "workspace:*"
+  },
+  "scripts": {
+    "prepack": "node ../../scripts/prepare-package-license.mjs",
+    "build": "tsup src/index.ts --format esm --dts --sourcemap --clean --external @oriatheme/core --external @oriatheme/runtime-dom",
+    "lint": "eslint src test",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  }
+}

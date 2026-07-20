@@ -1,0 +1,2 @@
+import type { ReactElement } from "react"; import type { TokenFieldProps } from "../types"; import { FieldFrame, fieldId } from "./field-frame";
+export function FontFamilyField(props: TokenFieldProps): ReactElement { const value = Array.isArray(props.value) ? props.value.join(", ") : ""; return <FieldFrame props={props}><input id={fieldId(props)} value={value} onChange={event => props.session.setToken(props.mode, props.field.path, event.target.value.split(",").map(item => item.trim()).filter(Boolean))} /></FieldFrame>; }

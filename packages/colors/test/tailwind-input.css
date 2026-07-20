@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "../dist/colors.css";
+@import "../dist/tailwind.css";
+@source inline("bg-inherit bg-current bg-transparent bg-black bg-white bg-red-500 bg-red-500/50 hover:bg-orange-600 text-sky-300 border-slate-200 divide-stone-200 ring-indigo-400 outline-zinc-500 decoration-pink-400 placeholder:text-gray-400 caret-cyan-500 accent-lime-500 fill-emerald-600 stroke-purple-600 from-violet-500 bg-mauve-500 text-olive-500 border-mist-500 ring-taupe-500");

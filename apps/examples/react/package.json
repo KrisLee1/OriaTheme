@@ -1,0 +1,26 @@
+{
+  "name": "@oriatheme/example-react",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@oriatheme/core": "workspace:*",
+    "@oriatheme/colors": "workspace:*",
+    "@oriatheme/editor-core": "workspace:*",
+    "@oriatheme/presets": "workspace:*",
+    "@oriatheme/react": "workspace:*",
+    "@oriatheme/react-editor": "workspace:*",
+    "@oriatheme/runtime-dom": "workspace:*",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0"
+  }
+}

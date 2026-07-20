@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OriaTheme Runtime DOM Integration</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@oriatheme/core": "../../../core/dist/index.js",
+          "@oriatheme/runtime-dom": "../../dist/index.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main>
+      <h1>OriaTheme runtime integration</h1>
+      <button id="toggle" type="button">Toggle appearance</button>
+    </main>
+    <script type="module">
+      import { oriaDefaultTheme } from "@oriatheme/core";
+      import { createOriaThemeRuntime } from "@oriatheme/runtime-dom";
+
+      const runtime = createOriaThemeRuntime({
+        presets: [oriaDefaultTheme],
+        defaultThemeId: "oria-default",
+        storage: false
+      });
+      runtime.start();
+      document.querySelector("#toggle").addEventListener("click", () => {
+        runtime.setAppearance(runtime.getSnapshot().resolvedMode === "light" ? "dark" : "light");
+      });
+    </script>
+  </body>
+</html>

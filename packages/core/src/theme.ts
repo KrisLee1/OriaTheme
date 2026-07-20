@@ -1,0 +1,204 @@
+import { issue, OriaThemeError } from "./errors.js";
+import type { OriaThemeErrorCode } from "./errors.js";
+import { isTokenPath } from "./contract.js";
+import { oriaDefaultTheme, oriaStandardContract } from "./standard.js";
+import type { Clock, CloneIdentity, CreateThemeOptions, GradientDefinition, GradientPosition, GradientStop, ImportResult, ImportThemeOptions, ResolveOptions, ResolvedMode, ResolvedTheme, ShadowLayer, ThemeDefinition, ThemeSeed, ThemeTokenInput, TokenContract, TokenDefinition, TokenPath, TokenReference, TokenType, TokenValue, ValidationIssue, ValidationResult } from "./types.js";
+
+const ID = /^[a-z][a-z0-9-]{1,63}$/;
+const UNSAFE = /[;{}<>]/;
+const DIMENSION = /^(?:0|[-+]?(?:\d+|\d*\.\d+)(?:px|rem|em|%|vw|vh|vmin|vmax|ch|ex|cm|mm|in|pt|pc))$/;
+const DURATION = /^(?:0|[-+]?(?:\d+|\d*\.\d+)(?:ms|s))$/;
+const HEX = /^#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i;
+const RGB = /^rgba?\(\s*(?:\d{1,3}%?\s*,\s*){2}\d{1,3}%?(?:\s*[,/]\s*(?:0|1|0?\.\d+|\d{1,3}%))?\s*\)$/i;
+const HSL = /^hsla?\(\s*[-+]?\d+(?:\.\d+)?(?:deg|rad|turn)?\s*(?:,|\s)\s*\d+(?:\.\d+)?%\s*(?:,|\s)\s*\d+(?:\.\d+)?%(?:\s*[,/]\s*(?:0|1|0?\.\d+|\d{1,3}%))?\s*\)$/i;
+const NAMED = new Set(["transparent", "currentcolor", "black", "white", "red", "green", "blue", "gray", "grey", "yellow", "purple", "orange", "pink", "brown"]);
+const GRADIENT_POSITIONS = new Set(["top left", "top", "top right", "left", "center", "right", "bottom left", "bottom", "bottom right"]);
+const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
+const reference = (value: unknown): value is TokenReference => object(value) && Object.keys(value).length === 1 && typeof value.$ref === "string" && isTokenPath(value.$ref);
+const stableClone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+
+/** Validates a complete serialized theme without throwing for user input. */
+export function validateTheme(input: unknown, contract: TokenContract): ValidationResult<ThemeDefinition> {
+  const issues: ValidationIssue[] = [];
+  if (!object(input)) return { ok: false, issues: [issue("INVALID_THEME", "Theme must be an object.")] };
+  if (input.schemaVersion !== 1) issues.push(issue("UNSUPPORTED_SCHEMA_VERSION", "Only theme schema version 1 is supported.", "schemaVersion"));
+  if (!object(input.contract) || input.contract.name !== contract.name || input.contract.version !== contract.version) issues.push(issue("UNSUPPORTED_CONTRACT", "Theme contract does not match the supplied contract.", "contract"));
+  if (typeof input.id !== "string" || !ID.test(input.id)) issues.push(issue("INVALID_THEME", "Theme id must be a valid slug.", "id"));
+  if (typeof input.name !== "string" || input.name.trim().length === 0 || input.name.length > 120) issues.push(issue("INVALID_THEME", "Theme name must be a non-empty string no longer than 120 characters.", "name"));
+  if (input.kind !== "preset" && input.kind !== "custom") issues.push(issue("INVALID_THEME", "Theme kind must be preset or custom.", "kind"));
+  if (!object(input.modes)) { issues.push(issue("INVALID_THEME", "Theme modes must contain light and dark token sets.", "modes")); }
+  else {
+    for (const mode of ["light", "dark"] as const) validateTokenSet(input.modes[mode], mode, contract, issues);
+  }
+  for (const time of ["createdAt", "updatedAt"] as const) if (input[time] !== undefined && (!Number.isSafeInteger(input[time]) || (input[time] as number) < 0)) issues.push(issue("INVALID_THEME", `${time} must be a Unix timestamp.`, time));
+  if (issues.length > 0) return { ok: false, issues };
+  return { ok: true, value: freezeTheme(input as unknown as ThemeDefinition), issues: [] };
+}
+
+/** Canonicalizes object key order and fills contract defaults without changing rendered output. */
+export function normalizeTheme(theme: ThemeDefinition, contract: TokenContract): ThemeDefinition {
+  const checked = validateTheme(theme, contract);
+  if (!checked.ok) throw new OriaThemeError("INVALID_THEME", "Cannot normalize an invalid theme.", { details: { issues: checked.issues } });
+  const normalizeSet = (set: Readonly<Record<TokenPath, ThemeTokenInput>>): Readonly<Record<TokenPath, ThemeTokenInput>> => {
+    const output: Record<string, ThemeTokenInput> = {};
+    for (const path of Object.keys(contract.tokens).sort()) {
+      const definition = contract.tokens[path as TokenPath]!;
+      const value = set[path as TokenPath] ?? definition.default;
+      if (value !== undefined) output[path] = stableClone(value) as ThemeTokenInput;
+    }
+    return Object.freeze(output as Record<TokenPath, ThemeTokenInput>);
+  };
+  return freezeTheme({ ...checked.value, modes: { light: normalizeSet(checked.value.modes.light), dark: normalizeSet(checked.value.modes.dark) } });
+}
+
+/** Resolves references and compiles a mode to safe CSS custom-property values. */
+export function resolveTheme(theme: ThemeDefinition, mode: ResolvedMode, options: ResolveOptions = {}): ResolvedTheme {
+  const contract = options.contract ?? oriaStandardContract;
+  return resolveThemeWithContract(theme, contract, mode, options);
+}
+
+/** Resolves a validated theme using its explicit contract. This is the safe resolver used by all Core helpers. */
+export function resolveThemeWithContract(theme: ThemeDefinition, contract: TokenContract, mode: ResolvedMode, options: ResolveOptions = {}): ResolvedTheme {
+  const checked = validateTheme(theme, contract);
+  if (!checked.ok) {
+    const first = checked.issues[0]!;
+    throw new OriaThemeError(first.code as OriaThemeErrorCode, first.message, { ...(first.path === undefined ? {} : { path: first.path }), ...(first.details === undefined ? {} : { details: first.details }) });
+  }
+  const prefix = options.variablePrefix === undefined ? "oria" : options.variablePrefix;
+  if (!/^[a-zA-Z0-9-]*$/.test(prefix)) throw new OriaThemeError("INVALID_CONTRACT", "Variable prefix may only contain letters, numbers, and hyphens.");
+  const tokens = checked.value.modes[mode];
+  const resolved = new Map<TokenPath, TokenValue>();
+  const visiting: TokenPath[] = [];
+  const get = (path: TokenPath): TokenValue => {
+    const saved = resolved.get(path); if (saved !== undefined) return saved;
+    const definition = contract.tokens[path];
+    const input = tokens[path] ?? definition?.default;
+    if (!definition || input === undefined) throw new OriaThemeError("TOKEN_REFERENCE_NOT_FOUND", `Token ${path} is not available.`, { path });
+    const at = visiting.indexOf(path);
+    if (at !== -1) throw new OriaThemeError("TOKEN_REFERENCE_CYCLE", `Token reference cycle: ${[...visiting.slice(at), path].join(" -> ")}.`, { path, details: { cycle: [...visiting.slice(at), path] } });
+    visiting.push(path);
+    let value: TokenValue;
+    if (reference(input)) {
+      const target = contract.tokens[input.$ref];
+      if (!target) throw new OriaThemeError("TOKEN_REFERENCE_NOT_FOUND", `Referenced token ${input.$ref} does not exist.`, { path, details: { target: input.$ref } });
+      if (target.type !== definition.type) throw new OriaThemeError("TOKEN_REFERENCE_TYPE_MISMATCH", `Reference ${path} -> ${input.$ref} has incompatible types.`, { path, details: { target: input.$ref } });
+      value = get(input.$ref);
+    } else value = input;
+    visiting.pop(); resolved.set(path, value); return value;
+  };
+  const variables: Record<`--${string}`, string> = {};
+  for (const path of Object.keys(contract.tokens).sort() as TokenPath[]) {
+    const definition = contract.tokens[path]!;
+    const hasValue = tokens[path] !== undefined || definition.default !== undefined;
+    if (!hasValue) { if (definition.required) throw new OriaThemeError("INVALID_THEME", `Required token ${path} is missing.`, { path }); continue; }
+    variables[toCssVariable(path, prefix)] = compileValue(get(path), definition.type, get);
+  }
+  return Object.freeze({ themeId: checked.value.id, contract: checked.value.contract, mode, variables: Object.freeze(variables), colorScheme: mode });
+}
+
+/** Creates a custom, timestamped copy while retaining the full visual token set. */
+export function cloneTheme(theme: ThemeDefinition, identity: CloneIdentity, clock: Clock = { now: () => Date.now() }): ThemeDefinition {
+  if (!ID.test(identity.id) || identity.name.trim().length === 0) throw new OriaThemeError("INVALID_THEME", "Clone identity must contain a valid id and non-empty name.");
+  const now = clock.now();
+  return freezeTheme({ ...stableClone(theme), id: identity.id, name: identity.name, kind: "custom", createdAt: now, updatedAt: now });
+}
+
+/** Generates a complete standard-contract custom theme from a validated brand color. */
+export function createThemeFromSeed(seed: ThemeSeed, options: CreateThemeOptions): ThemeDefinition {
+  if (!validColor(seed.color) || !ID.test(options.id) || options.name.trim().length === 0) throw new OriaThemeError("INVALID_THEME", "Seed color, id, or name is invalid.");
+  const cloned = cloneTheme(oriaDefaultTheme, { id: options.id, name: options.name }, options.clock);
+  const primaryForeground = preferredForeground(seed.color);
+  const update = (set: ThemeDefinition["modes"]["light"]): ThemeDefinition["modes"]["light"] => Object.freeze({ ...set, "color.primary": seed.color, "color.primaryHover": shiftHex(seed.color, -0.12), "color.primaryActive": shiftHex(seed.color, -0.22), "color.primaryForeground": primaryForeground, "color.ring": seed.color } as Record<TokenPath, ThemeTokenInput>);
+  return freezeTheme({ ...cloned, modes: { light: update(cloned.modes.light), dark: update(cloned.modes.dark) } });
+}
+
+/** Serializes the public theme format with a stable, inspectable layout. */
+export function exportTheme(theme: ThemeDefinition): string { return `${JSON.stringify({ $schema: "https://oriatheme.dev/schema/theme-v1.json", ...theme }, null, 2)}\n`; }
+
+/** Imports untrusted JSON, forcibly converts it to custom, and handles ID conflict rules. */
+export function importTheme(json: string, options: ImportThemeOptions): ImportResult {
+  const maxBytes = options.maxBytes ?? 128 * 1024;
+  if (new TextEncoder().encode(json).byteLength > maxBytes) return { ok: false, issues: [issue("INVALID_JSON", "Theme file exceeds the maximum size.")] };
+  let raw: unknown; try { raw = JSON.parse(json); } catch { return { ok: false, issues: [issue("INVALID_JSON", "Theme file is not valid JSON.")] }; }
+  let candidate = raw;
+  if (object(raw) && object(raw.contract) && (raw.contract.name !== options.contract.name || raw.contract.version !== options.contract.version)) {
+    if (!options.migrate) return { ok: false, issues: [issue("UNSUPPORTED_CONTRACT", "Theme contract does not match the target contract.", "contract")] };
+    candidate = options.migrate(raw, raw.contract as unknown as { name: string; version: number });
+  }
+  if (object(candidate)) candidate = { ...candidate, kind: "custom" };
+  const checked = validateTheme(candidate, options.contract);
+  if (!checked.ok) return checked;
+  const same = (options.existingThemes ?? []).find(theme => theme.id === checked.value.id);
+  if (!same) return { ok: true, theme: checked.value, replaced: false };
+  if (same.kind === "preset") return { ok: false, issues: [issue("PRESET_IMMUTABLE", "Imported themes cannot replace a preset.", "id")] };
+  if (options.conflict === "replace") return { ok: true, theme: checked.value, replaced: true };
+  const newId = uniqueId(checked.value.id, options.existingThemes ?? []);
+  return { ok: true, theme: freezeTheme({ ...checked.value, id: newId }), replaced: false };
+}
+
+export function toCssVariable(path: TokenPath, prefix = "oria"): `--${string}` { return `--${prefix ? `${prefix}-` : ""}${path.replace(/\./g, "-")}`; }
+
+function validateTokenSet(value: unknown, mode: string, contract: TokenContract, issues: ValidationIssue[]): void {
+  if (!object(value)) { issues.push(issue("INVALID_THEME", "Token set must be an object.", `modes.${mode}`)); return; }
+  for (const [path, input] of Object.entries(value)) {
+    const fullPath = `modes.${mode}.${path}`;
+    if (!isTokenPath(path)) { issues.push(issue("INVALID_TOKEN_PATH", "Invalid token path.", fullPath)); continue; }
+    const definition = contract.tokens[path as TokenPath];
+    if (!definition) { issues.push(issue("INVALID_THEME", "Token is not present in this contract.", fullPath)); continue; }
+    if (reference(input)) { if (!contract.tokens[input.$ref]) issues.push(issue("TOKEN_REFERENCE_NOT_FOUND", `Unknown reference ${input.$ref}.`, fullPath)); continue; }
+    const reason = valueError(input, definition);
+    if (reason) issues.push(issue("INVALID_TOKEN_VALUE", reason, fullPath));
+  }
+  for (const [path, definition] of Object.entries(contract.tokens)) if (definition.required && value[path] === undefined && definition.default === undefined) issues.push(issue("INVALID_THEME", "Required token is missing.", `modes.${mode}.${path}`));
+}
+function valueError(value: unknown, definition: TokenDefinition): string | undefined {
+  if (definition.type === "number") return typeof value !== "number" || !Number.isFinite(value) || (definition.minimum !== undefined && value < definition.minimum) || (definition.maximum !== undefined && value > definition.maximum) ? "Expected a finite number within its configured range." : undefined;
+  if (definition.type === "fontFamily") return !Array.isArray(value) || value.length === 0 || value.some(item => typeof item !== "string" || !safeString(item)) ? "Expected a non-empty safe font family list." : undefined;
+  if (definition.type === "cubicBezier") return !Array.isArray(value) || value.length !== 4 || value.some(item => typeof item !== "number" || !Number.isFinite(item)) ? "Expected a four-number cubic bezier tuple." : undefined;
+  if (definition.type === "shadow") return !Array.isArray(value) || value.some(layer => !validShadow(layer)) ? "Expected structured shadow layers." : undefined;
+  if (definition.type === "gradient") return !validGradient(value) ? "Expected a structured gradient with at least two valid stops." : undefined;
+  if (typeof value !== "string" || !safeString(value)) return "Expected a safe CSS string.";
+  if (definition.type === "color") return validColor(value) ? undefined : "Expected a statically parseable color.";
+  if (definition.type === "dimension") return DIMENSION.test(value) ? undefined : "Expected a dimension with an allowed unit.";
+  if (definition.type === "duration") return DURATION.test(value) ? undefined : "Expected a duration in ms or s.";
+  if (definition.type === "fontWeight") return /^(?:normal|bold|[1-9]00)$/.test(value) ? undefined : "Expected a CSS font weight.";
+  return "Unsupported token type.";
+}
+function safeString(value: string): boolean { return value.length > 0 && value.length < 512 && !UNSAFE.test(value) && !/\b(?:url|var|expression)\s*\(/i.test(value); }
+function validColor(value: string): boolean { return safeString(value) && (HEX.test(value) || RGB.test(value) || HSL.test(value) || NAMED.has(value.toLowerCase())); }
+function validShadow(value: unknown): value is ShadowLayer {
+  return object(value) && typeof value.x === "string" && DIMENSION.test(value.x) && typeof value.y === "string" && DIMENSION.test(value.y) && typeof value.blur === "string" && DIMENSION.test(value.blur) && typeof value.spread === "string" && DIMENSION.test(value.spread) && typeof value.color === "string" && validColor(value.color) && (value.inset === undefined || typeof value.inset === "boolean");
+}
+function validGradient(value: unknown): value is GradientDefinition {
+  if (!object(value) || !Array.isArray(value.stops) || value.stops.length < 2 || value.stops.some(stop => !validStop(stop))) return false;
+  const angle = typeof value.angle === "number" && Number.isFinite(value.angle);
+  const position = value.position === undefined || validGradientPosition(value.position);
+  if (value.type === "linear" || value.type === "repeating-linear") return angle;
+  if (value.type === "radial" || value.type === "repeating-radial") return position;
+  return value.type === "conic" && angle && position;
+}
+function validGradientPosition(value: unknown): value is GradientPosition {
+  if (typeof value === "string") return GRADIENT_POSITIONS.has(value);
+  return object(value) && typeof value.x === "number" && Number.isFinite(value.x) && value.x >= 0 && value.x <= 100 && typeof value.y === "number" && Number.isFinite(value.y) && value.y >= 0 && value.y <= 100;
+}
+function compileGradientPosition(value: GradientPosition | undefined): string { return value === undefined ? "center" : typeof value === "string" ? value : `${value.x}% ${value.y}%`; }
+function validStop(value: unknown): value is GradientStop { return object(value) && (typeof value.color === "string" ? validColor(value.color) : reference(value.color)) && (value.position === undefined || (typeof value.position === "number" && value.position >= 0 && value.position <= 100)); }
+function compileValue(value: TokenValue, type: TokenType, get: (path: TokenPath) => TokenValue): string {
+  if (type === "fontFamily") return (value as readonly string[]).map(family => /[\s,]/.test(family) ? `"${family.replace(/["\\]/g, "\\$&")}"` : family).join(", ");
+  if (type === "cubicBezier") return `cubic-bezier(${(value as readonly number[]).join(", ")})`;
+  if (type === "shadow") return (value as readonly ShadowLayer[]).map(layer => `${layer.inset ? "inset " : ""}${layer.x} ${layer.y} ${layer.blur} ${layer.spread} ${layer.color}`).join(", ");
+  if (type === "gradient") {
+    const gradient = value as GradientDefinition;
+    const stops = gradient.stops.map(stop => `${typeof stop.color === "string" ? stop.color : String(get(stop.color.$ref))}${stop.position === undefined ? "" : ` ${stop.position}%`}`).join(", ");
+    if (gradient.type === "linear") return `linear-gradient(${gradient.angle}deg, ${stops})`;
+    if (gradient.type === "repeating-linear") return `repeating-linear-gradient(${gradient.angle}deg, ${stops})`;
+    if (gradient.type === "radial") return `radial-gradient(circle at ${compileGradientPosition(gradient.position)}, ${stops})`;
+    if (gradient.type === "repeating-radial") return `repeating-radial-gradient(circle at ${compileGradientPosition(gradient.position)}, ${stops})`;
+    return `conic-gradient(from ${gradient.angle}deg at ${compileGradientPosition(gradient.position)}, ${stops})`;
+  }
+  return String(value);
+}
+function uniqueId(seed: string, themes: readonly ThemeDefinition[]): string { const ids = new Set(themes.map(theme => theme.id)); for (let index = 2; ; index += 1) { const suffix = `-${index}`; const id = `${seed.slice(0, 64 - suffix.length)}${suffix}`; if (!ids.has(id)) return id; } }
+function freezeTheme(theme: ThemeDefinition): ThemeDefinition { return Object.freeze({ ...theme, contract: Object.freeze({ ...theme.contract }), modes: Object.freeze({ light: Object.freeze(stableClone(theme.modes.light)), dark: Object.freeze(stableClone(theme.modes.dark)) }), ...(theme.metadata === undefined ? {} : { metadata: Object.freeze({ ...theme.metadata }) }) }); }
+function preferredForeground(color: string): string { const hex = color.slice(1); if (!(hex.length === 3 || hex.length === 6)) return "#ffffff"; const full = hex.length === 3 ? [...hex].map(char => char + char).join("") : hex; const [red, green, blue] = [0, 2, 4].map(index => Number.parseInt(full.slice(index, index + 2), 16)); return (red! * 299 + green! * 587 + blue! * 114) / 1000 > 150 ? "#0f172a" : "#ffffff"; }
+function shiftHex(color: string, amount: number): string { const hex = color.slice(1); if (!(hex.length === 3 || hex.length === 6)) return color; const full = hex.length === 3 ? [...hex].map(char => char + char).join("") : hex; return `#${[0, 2, 4].map(index => Math.max(0, Math.min(255, Math.round(Number.parseInt(full.slice(index, index + 2), 16) * (1 + amount)))).toString(16).padStart(2, "0")).join("")}`; }

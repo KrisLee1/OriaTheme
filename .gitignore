@@ -1,0 +1,50 @@
+# macOS and editor metadata
+.DS_Store
+.idea/
+*.swp
+*.swo
+*~
+
+# Dependency stores and local package links
+node_modules/
+.pnpm-store/
+
+# Generated build output and framework caches
+dist/
+.next/
+out/
+.vite/
+.turbo/
+.cache/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+# Generated from the tracked root registry by packages/cli/scripts/copy-registry.mjs.
+packages/cli/registry/
+packages/*/LICENSE
+
+# Local environment, logs, and release artifacts
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+*.tgz
+
+# Temporary files
+.tmp/
+tmp/
+
+# Internal project operations are maintained locally and are not part of the public repository.
+/AGENTS.md
+/DESIGN.md
+/docs/INDEX.md
+/docs/PROJECT_STATUS.md
+/docs/phases/
+/docs/logs/

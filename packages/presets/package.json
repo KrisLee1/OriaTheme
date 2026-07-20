@@ -1,0 +1,27 @@
+{
+  "name": "@oriatheme/presets",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "homepage": "https://theme.oria.org.cn",
+  "description": "Curated, ready-to-use OriaTheme preset themes.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "LICENSE"],
+  "publishConfig": { "access": "public" },
+  "dependencies": {
+    "@oriatheme/core": "workspace:*"
+  },
+  "scripts": {
+    "prepack": "node ../../scripts/prepare-package-license.mjs",
+    "build": "tsup src/index.ts --format esm --dts --sourcemap --clean --external @oriatheme/core",
+    "lint": "eslint src test",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  }
+}

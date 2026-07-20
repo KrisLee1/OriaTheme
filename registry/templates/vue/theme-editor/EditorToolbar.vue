@@ -1,0 +1,15 @@
+<script setup lang="ts">
+import { ref, watch } from "vue";
+import type { ResolvedMode } from "@oriatheme/core";
+import type { ThemeEditorSaveResult, ThemeEditorSession, ThemeEditorSnapshot } from "@oriatheme/editor-core";
+import type { OriaThemeRuntime } from "@oriatheme/runtime-dom";
+import ResetMenu from "./overlays/ResetMenu.vue"; import ImportDialog from "./overlays/ImportDialog.vue"; import ExportMenu from "./overlays/ExportMenu.vue"; import IssuesPopover from "./overlays/IssuesPopover.vue";
+const props = defineProps<{ session: ThemeEditorSession; snapshot: ThemeEditorSnapshot; mode: ResolvedMode; runtime?: OriaThemeRuntime; status: string; closable: boolean }>();
+const emit = defineEmits<{ save: [result: ThemeEditorSaveResult]; close: [assumeDirty: boolean] }>();
+const name = ref(props.snapshot.draft.name); const message = ref(""); watch(() => props.snapshot.draft.name, value => { name.value = value; });
+const commitName = (): void => { if (name.value !== props.snapshot.draft.name) props.session.setName(name.value); };
+const onNameKey = (event: KeyboardEvent): void => { if (event.key === "Enter") (event.currentTarget as HTMLInputElement).blur(); if (event.key === "Escape") { name.value = props.snapshot.draft.name; (event.currentTarget as HTMLInputElement).blur(); } };
+const save = (): void => { if (!props.runtime) return; const result = props.session.save(props.runtime); emit("save",result); message.value = result.ok ? "Theme saved." : result.reason === "conflict" ? "External changes detected." : "Fix validation errors before saving."; };
+const close = (): void => { const buffered = name.value !== props.snapshot.draft.name; if (buffered) props.session.setName(name.value); emit("close",props.snapshot.dirty || buffered); };
+</script>
+<template><header data-oria-editor-toolbar><div data-oria-editor-toolbar-top><div data-oria-editor-identity><label><span class="oria-editor-visually-hidden">Theme name</span><input v-model="name" @blur="commitName" @keydown="onNameKey" /></label><span data-oria-editor-status>{{ status }}</span></div><button v-if="closable" data-oria-editor-close type="button" aria-label="Close editor" title="Close editor" @click="close"><svg data-oria-editor-action-icon viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg></button></div><div data-oria-editor-actions><div data-oria-editor-utility-actions role="group" aria-label="Draft tools"><ResetMenu :session="session" :mode="mode" /><ImportDialog :session="session" /><ExportMenu :session="session" :disabled="snapshot.issues.length > 0" /></div><div data-oria-editor-commit-actions><IssuesPopover :issues="snapshot.issues" :warnings="snapshot.diagnostics.warnings" /><button data-oria-editor-primary data-oria-editor-save type="button" :disabled="!runtime || !snapshot.dirty || snapshot.issues.length > 0" @click="save"><svg data-oria-editor-action-icon viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5zM8 4v6h8V4M8 20v-6h8v6" /></svg><span>Save</span></button></div></div><span class="oria-editor-visually-hidden" aria-live="polite">{{ message }}</span></header></template>

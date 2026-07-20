@@ -1,0 +1,67 @@
+import type { ActiveThemeSnapshotV1, BootstrapOptions } from "./types.js";
+
+type StorageLike = { getItem(key: string): string | null };
+type StyleNode = { textContent: string | null; setAttribute(name: string, value: string): void };
+type HeadLike = { appendChild(node: StyleNode): unknown; querySelector?(selector: string): StyleNode | null };
+type DocumentLike = { documentElement: HTMLElement; head?: HeadLike; createElement(name: string): StyleNode };
+const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
+const safeValue = (value: unknown): value is string => typeof value === "string" && value.length < 4096 && !/[;{}<>]/.test(value) && !/\b(?:url|var|expression)\s*\(/i.test(value);
+const safePrefix = (value: string): boolean => /^[a-zA-Z0-9-]*$/.test(value);
+
+/** Applies a validated persisted active snapshot once, without loading any preset or animation runtime. */
+export function bootstrapTheme(options: BootstrapOptions = {}): void {
+  try {
+    const storageKey = options.storageKey ?? "oria-theme";
+    const snapshot = options.snapshot ?? readSnapshot(storageKey);
+    const checked = validateActiveSnapshot(snapshot, options);
+    if (!checked) return;
+    const target = options.target ?? (globalThis as { document?: Document }).document;
+    if (!target) return;
+    const documentTarget = "documentElement" in (target as object);
+    const documentLike = documentTarget ? target as unknown as DocumentLike : (target as ShadowRoot).ownerDocument as unknown as DocumentLike;
+    const root = documentTarget ? documentLike.documentElement : (target as ShadowRoot).host as HTMLElement;
+    const container = documentTarget ? documentLike.head : target as unknown as HeadLike;
+    if (!container) return;
+    const media = (globalThis as { matchMedia?: (query: string) => { matches: boolean } }).matchMedia?.("(prefers-color-scheme: dark)");
+    const mode = checked.appearance === "system" ? media?.matches ? "dark" : "light" : checked.appearance;
+    const variables = mode === "dark" ? checked.darkVariables : checked.lightVariables;
+    const selector = documentTarget ? ":root" : ":host";
+    const css = `${selector}{${Object.entries(variables).map(([name, value]) => `${name}:${value}`).join(";")};color-scheme:${mode}}`;
+    let style = container.querySelector?.("style[data-oria-theme-bootstrap]");
+    if (!style) { style = documentLike.createElement("style"); style.setAttribute("data-oria-theme-bootstrap", ""); container.appendChild(style); }
+    style.textContent = css;
+    root.setAttribute("data-oria-theme", checked.themeId); root.setAttribute("data-oria-mode", mode); root.style.colorScheme = mode;
+  } catch { /* Bootstrap must silently retain the consumer's static fallback. */ }
+}
+
+/** Generates a self-contained early script for a supplied snapshot; no preset collection is embedded. */
+export function createBootstrapScript(options: BootstrapOptions): string {
+  const snapshot = validateActiveSnapshot(options.snapshot, options);
+  if (!snapshot) return "";
+  const payload = JSON.stringify(snapshot).replace(/</g, "\\u003c");
+  return `(()=>{const s=${payload},d=document,r=d.documentElement,m=s.appearance==='system'&&(globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches)?'dark':s.appearance,v=m==='dark'?s.darkVariables:s.lightVariables,e=d.createElement('style');e.dataset.oriaThemeBootstrap='';e.textContent=':root{'+Object.entries(v).map(([k,x])=>k+':'+x).join(';')+';color-scheme:'+m+'}';d.head.append(e);r.dataset.oriaTheme=s.themeId;r.dataset.oriaMode=m;r.style.colorScheme=m})()`;
+}
+
+/** Generates a head-safe script that restores a validated active snapshot from browser LocalStorage. */
+export function createBootstrapStorageScript(options: Pick<BootstrapOptions, "storageKey" | "contract" | "variablePrefix"> = {}): string {
+  const settings = JSON.stringify({
+    storageKey: options.storageKey ?? "oria-theme",
+    contract: options.contract ?? null,
+    variablePrefix: options.variablePrefix ?? null
+  }).replace(/</g, "\\u003c");
+  return `(()=>{try{const o=${settings},d=document,r=d.documentElement,x=localStorage.getItem(o.storageKey+':active:v1'),s=x?JSON.parse(x):null,q=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),z=v=>typeof v==='string'&&v.length<4096&&!/[;{}<>]/.test(v)&&!/\\b(?:url|var|expression)\\s*\\(/i.test(v),a=s&&q(s)&&s.schemaVersion===1&&q(s.contract)&&typeof s.contract.name==='string'&&Number.isInteger(s.contract.version)&&typeof s.themeId==='string'&&/^[a-z][a-z0-9-]{1,63}$/.test(s.themeId)&&(s.appearance==='light'||s.appearance==='dark'||s.appearance==='system')&&typeof s.variablePrefix==='string'&&/^[a-zA-Z0-9-]*$/.test(s.variablePrefix)&&q(s.lightVariables)&&q(s.darkVariables)&&(!o.contract||(s.contract.name===o.contract.name&&s.contract.version===o.contract.version))&&(!o.variablePrefix||s.variablePrefix===o.variablePrefix),p=s?.variablePrefix,v=t=>q(t)&&Object.keys(t).length>0&&Object.entries(t).every(([k,n])=>k.startsWith('--'+(p?p+'-':''))&&/^--[a-zA-Z0-9-]+$/.test(k)&&z(n));if(!a||!v(s.lightVariables)||!v(s.darkVariables)||!d.head)return;const m=s.appearance==='system'&&(globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches)?'dark':s.appearance,w=m==='dark'?s.darkVariables:s.lightVariables,e=d.head.querySelector('style[data-oria-theme-bootstrap]')||d.createElement('style');e.dataset.oriaThemeBootstrap='';e.textContent=':root{'+Object.entries(w).map(([k,n])=>k+':'+n).join(';')+';color-scheme:'+m+'}';if(!e.parentNode)d.head.append(e);r.dataset.oriaTheme=s.themeId;r.dataset.oriaMode=m;r.style.colorScheme=m}catch{}})()`;
+}
+
+function readSnapshot(storageKey: string): unknown {
+  const storage = (globalThis as { localStorage?: StorageLike }).localStorage;
+  const raw = storage?.getItem(`${storageKey}:active:v1`); return raw ? JSON.parse(raw) as unknown : undefined;
+}
+function validateActiveSnapshot(input: unknown, options: BootstrapOptions): ActiveThemeSnapshotV1 | undefined {
+  if (!object(input) || input.schemaVersion !== 1 || !object(input.contract) || typeof input.contract.name !== "string" || !Number.isInteger(input.contract.version) || typeof input.themeId !== "string" || !/^[a-z][a-z0-9-]{1,63}$/.test(input.themeId) || (input.appearance !== "light" && input.appearance !== "dark" && input.appearance !== "system") || typeof input.variablePrefix !== "string" || !safePrefix(input.variablePrefix) || !object(input.lightVariables) || !object(input.darkVariables)) return undefined;
+  if (options.contract && (input.contract.name !== options.contract.name || input.contract.version !== options.contract.version)) return undefined;
+  const prefix = options.variablePrefix ?? input.variablePrefix;
+  if (prefix !== input.variablePrefix) return undefined;
+  const validVariables = (variables: Record<string, unknown>): variables is Record<string, string> => Object.entries(variables).length > 0 && Object.entries(variables).every(([name, value]) => name.startsWith(`--${prefix ? `${prefix}-` : ""}`) && /^--[a-zA-Z0-9-]+$/.test(name) && safeValue(value));
+  if (!validVariables(input.lightVariables) || !validVariables(input.darkVariables)) return undefined;
+  return input as unknown as ActiveThemeSnapshotV1;
+}

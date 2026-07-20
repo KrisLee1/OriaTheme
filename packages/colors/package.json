@@ -1,0 +1,36 @@
+{
+  "name": "@oriatheme/colors",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "homepage": "https://theme.oria.org.cn",
+  "description": "Stable Oria color scales with Tailwind-compatible family and utility names.",
+  "type": "module",
+  "sideEffects": [
+    "./dist/colors.css",
+    "./dist/tailwind.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/colors.css",
+    "./tailwind.css": "./dist/tailwind.css"
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "prepack": "node ../../scripts/prepare-package-license.mjs",
+    "build": "tsup src/index.ts --format esm --dts --sourcemap --clean && node scripts/build-css.mjs",
+    "lint": "eslint src test",
+    "test": "pnpm build && vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  }
+}

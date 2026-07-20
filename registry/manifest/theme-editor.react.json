@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "name": "theme-editor",
+  "framework": "react",
+  "version": "0.1.0",
+  "compatiblePackages": {
+    "@oriatheme/colors": "^0.1.0",
+    "@oriatheme/core": "^0.1.0",
+    "@oriatheme/editor-core": "^0.1.0",
+    "@oriatheme/react-editor": "^0.1.0",
+    "@oriatheme/runtime-dom": "^0.1.0"
+  },
+  "dependencies": [
+    "@oriatheme/colors@^0.1.0",
+    "@oriatheme/core@^0.1.0",
+    "@oriatheme/editor-core@^0.1.0",
+    "@oriatheme/react-editor@^0.1.0",
+    "@oriatheme/runtime-dom@^0.1.0",
+    "react@^18.2.0 || ^19.0.0",
+    "react-dom@^18.2.0 || ^19.0.0"
+  ],
+  "files": [
+    {
+      "sha256": "73bd3d00a7046fc8fd22df7fb69982d654dbf7a2c2bea0ba3dbcda9bd7d59fad",
+      "source": "templates/react/theme-editor/editor-layout.ts",
+      "target": "editor-layout.ts"
+    },
+    {
+      "sha256": "ae1decfec4a3ed5f4c9d601e7c235386e3a74e41173ae432330bca6965c93420",
+      "source": "templates/react/theme-editor/theme-editor.css",
+      "target": "theme-editor.css"
+    },
+    {
+      "sha256": "9d60a4d3cc843b643e2d1a7a29452dfa5202bd511accdcafbf14328f130074a5",
+      "source": "templates/react/theme-editor/editor-tabs.tsx",
+      "target": "editor-tabs.tsx"
+    },
+    {
+      "sha256": "15f8fb28a84b13f660d9b1d21ffe7d1eeb12cd755ead43a32c9d832824621f96",
+      "source": "templates/react/theme-editor/token-field.tsx",
+      "target": "token-field.tsx"
+    },
+    {
+      "sha256": "8cbc326999b41297794007bbc5970d998d3ebacebfaa5fec6a42643abe5c3fbe",
+      "source": "templates/react/theme-editor/shadows/shadow-preview.tsx",
+      "target": "shadows/shadow-preview.tsx"
+    },
+    {
+      "sha256": "ee466fa51f5648ed2fec50eb29a4576004c7616a5afff0d602645381be310ab5",
+      "source": "templates/react/theme-editor/shadows/shadow-layer-editor.tsx",
+      "target": "shadows/shadow-layer-editor.tsx"
+    },
+    {
+      "sha256": "e9262531952c48d6e7399b28057e85c607eb32d94d7b9a0dc1b08689b0aa7790",
+      "source": "templates/react/theme-editor/overlays/reset-menu.tsx",
+      "target": "overlays/reset-menu.tsx"
+    },
+    {
+      "sha256": "fde8d84909cf5c184993363a1af29364a62148f44e101124fbee6df223953a4e",
+      "source": "templates/react/theme-editor/overlays/confirmation-dialog.tsx",
+      "target": "overlays/confirmation-dialog.tsx"
+    },
+    {
+      "sha256": "d3e28dc4001c9c9c1e1e0d14120bd9d2908eefff883516e9f0e1a5c8940e8c8a",
+      "source": "templates/react/theme-editor/overlays/import-dialog.tsx",
+      "target": "overlays/import-dialog.tsx"
+    },
+    {
+      "sha256": "318f597844672c5d20fa905804329c628ab09ca0c0c5e5b7a55eac10d5fc7065",
+      "source": "templates/react/theme-editor/overlays/issues-popover.tsx",
+      "target": "overlays/issues-popover.tsx"
+    },
+    {
+      "sha256": "f3f4e20392a5475171ee0549c2e558ba0c4dbe0c7057bf0ef0df1e1286740d58",
+      "source": "templates/react/theme-editor/overlays/export-menu.tsx",
+      "target": "overlays/export-menu.tsx"
+    },
+    {
+      "sha256": "6ba941339aff0f541c9d1074b1721eff7a60e26fc6aea47c16543d766f61a0ca",
+      "source": "templates/react/theme-editor/editor-search.tsx",
+      "target": "editor-search.tsx"
+    },
+    {
+      "sha256": "f981329493b1903ff4d9744497d609f93a997391482a3b37995c44d8998644ee",
+      "source": "templates/react/theme-editor/editor-workspace.tsx",
+      "target": "editor-workspace.tsx"
+    },
+    {
+      "sha256": "119bfefa4faec97c5bc08dc97f8c57c2594c9c53187ff0950c295b90650165f6",
+      "source": "templates/react/theme-editor/theme-editor.tsx",
+      "target": "theme-editor.tsx"
+    },
+    {
+      "sha256": "ea0256d06e4c9e6928c5db9f0ccdcfb384958c40b665029a3a03ec6d5f0e7a9a",
+      "source": "templates/react/theme-editor/editor-shell.tsx",
+      "target": "editor-shell.tsx"
+    },
+    {
+      "sha256": "8bfb9c039c2ce40a6ca7c509c1cb39235257040f42206cb7160dc0240c35a0f8",
+      "source": "templates/react/theme-editor/themes-workspace.tsx",
+      "target": "themes-workspace.tsx"
+    },
+    {
+      "sha256": "b34f84dd2c3278bcea94b6c2085e7f3372799afd1bcecdce5f57c3fa328d0b5e",
+      "source": "templates/react/theme-editor/theme-accordion.tsx",
+      "target": "theme-accordion.tsx"
+    },
+    {
+      "sha256": "ee5320e9bf371f34f9c9d151dfa0ff8d532e9a8b442b71423f7068986f79b40f",
+      "source": "templates/react/theme-editor/theme-list-item.tsx",
+      "target": "theme-list-item.tsx"
+    },
+    {
+      "sha256": "4262dc3380b5183fe35cdee7c01693794ef370fca82be4a7ef8eeeebc6f3f67c",
+      "source": "templates/react/theme-editor/token-accordion.tsx",
+      "target": "token-accordion.tsx"
+    },
+    {
+      "sha256": "e6e15569b7c59285814905441544f0f4fc43aaf39b4536fb83707b6df2114cf9",
+      "source": "templates/react/theme-editor/types.ts",
+      "target": "types.ts"
+    },
+    {
+      "sha256": "4a77be5efd14c99ed8ab2af192b6fc6b915c50aacf516f07ec96f4341bc1479f",
+      "source": "templates/react/theme-editor/hooks/use-editor-layout.ts",
+      "target": "hooks/use-editor-layout.ts"
+    },
+    {
+      "sha256": "1b2dc4e73bcd5b15909931eff1b2cae5daa570046aa0f3f4c0286dab76b38b46",
+      "source": "templates/react/theme-editor/hooks/use-token-search.ts",
+      "target": "hooks/use-token-search.ts"
+    },
+    {
+      "sha256": "0f01c5992acf554ca9befde977e22a9651ab742f2670b21b97e36d6916717260",
+      "source": "templates/react/theme-editor/hooks/use-field-buffer.ts",
+      "target": "hooks/use-field-buffer.ts"
+    },
+    {
+      "sha256": "554c7ae48319b669e8da0ecdaaa47b7b30a8e7caeee5de1d45353c6df68a642d",
+      "source": "templates/react/theme-editor/hooks/use-details-dismiss.ts",
+      "target": "hooks/use-details-dismiss.ts"
+    },
+    {
+      "sha256": "6f546ee32c7a704b2b29e839957335bfa8276baeee43258f7f7d8a1aaf85d330",
+      "source": "templates/react/theme-editor/editor-preview.tsx",
+      "target": "editor-preview.tsx"
+    },
+    {
+      "sha256": "38827fa9ab2cbb4300aa40914d700a95f20442c9a017807c8252066b81b1dee5",
+      "source": "templates/react/theme-editor/fields/shadow-field.tsx",
+      "target": "fields/shadow-field.tsx"
+    },
+    {
+      "sha256": "8fe7b7321cbb88e3125e9fc1de09ec0dd07c8169c78a348171e37283f936c577",
+      "source": "templates/react/theme-editor/fields/gradient-field.tsx",
+      "target": "fields/gradient-field.tsx"
+    },
+    {
+      "sha256": "c432e5d0f4f76e06b5fcc67ba2094dc07e52daf8afcffe1e2e3f76e3b0486c9d",
+      "source": "templates/react/theme-editor/fields/duration-field.tsx",
+      "target": "fields/duration-field.tsx"
+    },
+    {
+      "sha256": "b181afb5e2d453dc2741bf4df8785934d88f11ba64e6461331f6941133e92f55",
+      "source": "templates/react/theme-editor/fields/easing-field.tsx",
+      "target": "fields/easing-field.tsx"
+    },
+    {
+      "sha256": "d7b33fa9f817b5661e044bb17c2cc977cb6d01dd1640b19e372c962668a8423b",
+      "source": "templates/react/theme-editor/fields/field-frame.tsx",
+      "target": "fields/field-frame.tsx"
+    },
+    {
+      "sha256": "2262867ed92adc508a6d2bf2dd943f7c033440e25d7298fc5371cca73fe622bd",
+      "source": "templates/react/theme-editor/fields/number-field.tsx",
+      "target": "fields/number-field.tsx"
+    },
+    {
+      "sha256": "ebfc5bdd66eeb2b387bd218cb1a651f9300d5478b406178b2b934f82b24a6ef1",
+      "source": "templates/react/theme-editor/fields/font-family-field.tsx",
+      "target": "fields/font-family-field.tsx"
+    },
+    {
+      "sha256": "bb8c7ce6fe2feb6511c366a125038c4146e9c14d44382a3ba093a31fcd45b971",
+      "source": "templates/react/theme-editor/fields/font-weight-field.tsx",
+      "target": "fields/font-weight-field.tsx"
+    },
+    {
+      "sha256": "5d8222d4aa96357394a34c336d87e4354441e726134c2055aea99f25f9cf1d99",
+      "source": "templates/react/theme-editor/fields/dimension-field.tsx",
+      "target": "fields/dimension-field.tsx"
+    },
+    {
+      "sha256": "b67801db78f0ff85c51ef9f24aff187b5eea3e690e31a1e637029e7ae41e1391",
+      "source": "templates/react/theme-editor/fields/linear-slider.tsx",
+      "target": "fields/linear-slider.tsx"
+    },
+    {
+      "sha256": "3df15c266ea1a93003f6f5a1042cfb97cf8418297a9b61df5adf716d8c314de9",
+      "source": "templates/react/theme-editor/fields/slider-ranges.ts",
+      "target": "fields/slider-ranges.ts"
+    },
+    {
+      "sha256": "7e066a47b70db6b4aed6a7b66ab9e040cb60f8393b9a0c7a00eb43e1cc96cc45",
+      "source": "templates/react/theme-editor/fields/base-color-palette.tsx",
+      "target": "fields/base-color-palette.tsx"
+    },
+    {
+      "sha256": "07440636f7fd3b2a52cd1a7904150790cdbc51fd8898d3b0732eebf0b77a1995",
+      "source": "templates/react/theme-editor/fields/color-field.tsx",
+      "target": "fields/color-field.tsx"
+    },
+    {
+      "sha256": "a62d8eb10182ff64b8c6ba7650d5875d161b439d33ff1b6d924f4497f072d9aa",
+      "source": "templates/react/theme-editor/fields/color-utils.ts",
+      "target": "fields/color-utils.ts"
+    },
+    {
+      "sha256": "1eaed7bff1859cf0d4172355b61e3dd67df37763bcaa0a49a164a2cb5c930307",
+      "source": "templates/react/theme-editor/editor-toolbar.tsx",
+      "target": "editor-toolbar.tsx"
+    },
+    {
+      "sha256": "af3836222c9bf585e9e3a7d96a283a3efc303b4afb981980a34bb8df8a93a247",
+      "source": "templates/react/theme-editor/index.ts",
+      "target": "index.ts"
+    },
+    {
+      "sha256": "1aac9da5e0298f48b491d88c459adec73a228a4e5eb768f221ad5459355b9991",
+      "source": "templates/LICENSE",
+      "target": "LICENSE"
+    },
+    {
+      "sha256": "d6d8cd4c056ae1c3b23cb57cd723b1aaea5f4f8cb09e492a29e6360cc6e16f47",
+      "source": "templates/react/theme-editor/editor-mode-switch.tsx",
+      "target": "editor-mode-switch.tsx"
+    }
+  ]
+}

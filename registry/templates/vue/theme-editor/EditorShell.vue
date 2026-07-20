@@ -1,0 +1,21 @@
+<script setup lang="ts">
+import { computed, onBeforeUnmount, ref, watch } from "vue";
+import type { ResolvedMode } from "@oriatheme/core";
+import { describeTokenContract } from "@oriatheme/editor-core";
+import type { ThemeEditorSaveResult } from "@oriatheme/editor-core";
+import type { OriaThemeRuntime } from "@oriatheme/runtime-dom";
+import { useThemeEditor, useThemeEditorAutoPreview } from "@oriatheme/vue-editor";
+import { editorTabs, resolveEditorLayout } from "./editor-layout"; import type { EditorTabId } from "./editor-layout"; import type { ThemeEditorDiscardRequest } from "./types";
+import EditorToolbar from "./EditorToolbar.vue"; import EditorTabs from "./EditorTabs.vue"; import EditorSearch from "./EditorSearch.vue"; import EditorModeSwitch from "./EditorModeSwitch.vue"; import EditorWorkspace from "./EditorWorkspace.vue"; import ThemesWorkspace from "./ThemesWorkspace.vue"; import ConfirmationDialog from "./overlays/ConfirmationDialog.vue";
+const props = withDefaults(defineProps<{ runtime?: OriaThemeRuntime; mode?: ResolvedMode; previewFollowsAppearance?: boolean; closable?: boolean; discardRequest?: ThemeEditorDiscardRequest }>(), { previewFollowsAppearance: false, closable: false });
+const emit = defineEmits<{ modeChange: [mode: ResolvedMode, origin: HTMLElement]; save: [result: ThemeEditorSaveResult]; close: []; dirtyChange: [dirty: boolean] }>();
+const { session, snapshot } = useThemeEditor(); const localMode = ref<ResolvedMode>("light"); const currentMode = computed(() => props.mode ?? localMode.value); const tab = ref<EditorTabId>("themes"); const query = ref(""); const confirmClose = ref(false); const layout = resolveEditorLayout(describeTokenContract());
+const preview = useThemeEditorAutoPreview(() => props.runtime, () => props.previewFollowsAppearance ? undefined : currentMode.value);
+const status = computed(() => preview.value.status === "paused" ? `Preview paused · ${preview.value.issueCount} issues` : preview.value.status === "unavailable" ? "Preview unavailable" : snapshot.value.dirty ? "Previewing · Unsaved" : "Previewing · Saved");
+const guard = (event: BeforeUnloadEvent): void => { event.preventDefault(); event.returnValue = ""; };
+watch(() => snapshot.value.dirty, dirty => { emit("dirtyChange",dirty); if (dirty) globalThis.addEventListener("beforeunload",guard); else globalThis.removeEventListener("beforeunload",guard); }, { immediate: true });
+onBeforeUnmount(() => globalThis.removeEventListener("beforeunload",guard));
+const setMode = (mode: ResolvedMode, origin: HTMLElement): void => { if (props.mode === undefined) localMode.value = mode; emit("modeChange",mode,origin); };
+const requestClose = (assumeDirty = false): void => { if (snapshot.value.dirty || assumeDirty) confirmClose.value = true; else emit("close"); };
+</script>
+<template><section data-oria-editor-root :data-mode="currentMode" :data-tab="tab" aria-label="Theme editor"><EditorToolbar :session="session" :snapshot="snapshot" :mode="currentMode" :runtime="runtime" :status="status" :closable="closable" @save="result => emit('save',result)" @close="requestClose" /><EditorTabs :tabs="editorTabs" v-model="tab" :issues="snapshot.issues" /><div v-if="tab !== 'themes'" data-oria-editor-controls><EditorSearch v-model="query" /><div data-oria-editor-control-end><EditorModeSwitch :model-value="currentMode" @change="setMode" /></div></div><div data-oria-editor-split><ThemesWorkspace v-if="tab === 'themes'" :runtime="runtime" :mode="currentMode" :snapshot="snapshot" :session="session" @edit="tab = 'colors'" /><EditorWorkspace v-else :tab="tab" :query="query" :mode="currentMode" :layout="layout" :snapshot="snapshot" :session="session" /></div><ConfirmationDialog :open="confirmClose" title="Close editor and discard changes?" description="Your unsaved theme edits will be lost. The last saved theme will remain available." confirm-label="Discard and close" @confirm="confirmClose = false; emit('close')" @cancel="confirmClose = false" /><ConfirmationDialog :open="discardRequest !== undefined" :title="discardRequest?.title ?? 'Discard unsaved changes?'" :description="discardRequest?.description ?? 'Your unsaved theme edits will be lost.'" :confirm-label="discardRequest?.confirmLabel ?? 'Discard changes'" @confirm="discardRequest?.onConfirm()" @cancel="discardRequest?.onCancel()" /></section></template>

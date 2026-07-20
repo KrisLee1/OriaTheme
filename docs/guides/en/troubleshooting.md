@@ -1,0 +1,99 @@
+# Troubleshooting
+
+[中文](../troubleshooting.md) · [Guide index](README.md)
+
+First confirm that the application uses package-root exports only and that `defaultThemeId` exists in the `presets` passed to the runtime. OriaTheme completely rejects invalid themes and falls back atomically; it never partially applies them.
+
+## The registry cannot find `@oriatheme/*`
+
+The first npm publication is not complete. A `0.1.0` manifest in the repository proves version preparation, not public registry availability. Before publication, use workspace examples or tarball smoke tests in this repository. A local workspace link is not evidence of a real release.
+
+## The page has no `--oria-*` variables
+
+Check that:
+
+1. `presets` contains `defaultThemeId`.
+2. A framework-free runtime has called `runtime.start()`, or the React Provider/Vue plugin is actually mounted.
+3. `target` is the current page's `Document` or the intended `ShadowRoot`.
+4. `onError` / `snapshot.error` does not report `DOM_APPLY_FAILED` or `INVALID_THEME`.
+5. CSS uses registered variable names instead of guessed paths.
+
+After startup, the target root should have `data-oria-theme`, `data-oria-mode`, and `color-scheme`.
+
+## The wrong theme flashes after refresh
+
+- Vite SPA: call `bootstrapTheme()` before `createRoot()` / `createApp()`.
+- SSR/SSG/Next: first output complete static variables resolved from a trusted default theme, then run `createBootstrapStorageScript()` in `<head>`.
+- Keep `storageKey`, `variablePrefix`, contract, and target consistent across static fallback, Bootstrap, and runtime.
+- `storage: false` and custom `ThemeStorage` do not automatically create the default LocalStorage active snapshot.
+
+See [Bootstrap](bootstrap.md) and [performance integration](performance.md).
+
+## Next.js reports a hydration mismatch
+
+Bootstrap modifies theme attributes on `<html>` before hydration. Put `suppressHydrationWarning` on that `<html>` element only. Do not expand it to `<body>` or page content. Treat any remaining content mismatch as a normal hydration bug instead of adding more suppression.
+
+## The theme changes, but component styles do not
+
+- Confirm that components reference `var(--oria-...)` rather than copied static values.
+- Tailwind semantic utilities must be mapped to OriaTheme variables through `@theme inline`.
+- `@oriatheme/colors/styles.css` provides static base colors and intentionally does not change with the theme.
+- Do not construct Tailwind class names from runtime theme values; the build scanner cannot reliably discover them.
+
+See [component styling](component-styling.md).
+
+## `setTheme()` has no effect or enters an error state
+
+`setTheme(id)` accepts only a preset or saved custom-theme ID. A missing ID reports `THEME_NOT_FOUND`. Preview an in-progress draft through `previewTheme()` or editor-core, then create or update the custom theme only after validation succeeds.
+
+When presenting an error, prefer `OriaThemeError.code` and validation issues over matching the English error message.
+
+## `system` appears to be persisted as light/dark
+
+The persisted value should be `appearance: "system"`. `resolvedMode` is only the current result of the operating-system preference and must not be persisted as the user preference. If a custom Storage implementation records `resolvedMode`, update it to the Runtime `PersistedThemeStateV1` shape.
+
+## The CLI prints a plan but writes nothing
+
+This is the default safety behavior. `add` without `--yes` exits with code 2 and prints:
+
+```text
+No changes written. Re-run with --yes to confirm this plan.
+```
+
+Inspect the plan with `--dry-run`, then confirm explicitly:
+
+The example uses pnpm; see [package-manager compatibility](package-managers.md) for npm, Yarn, and Bun runners.
+
+```bash
+pnpm dlx @oriatheme/cli@latest add theme-editor --framework react --dry-run
+pnpm dlx @oriatheme/cli@latest add theme-editor --framework react --yes
+```
+
+These temporary-runner commands become available only after the npm release. For the pre-release local CLI path, see the [developer guide](development.md#cli-and-registry-development).
+
+## The CLI refuses to overwrite files
+
+Existing target files are conflicts by default. Inspect differences first:
+
+```bash
+pnpm dlx @oriatheme/cli@latest diff theme-editor --framework react
+```
+
+Manual merging is preferred. Add `--overwrite --yes` to `add` only when deliberately discarding local changes. The CLI also rejects absolute paths, `..`, backslash paths, project-root escapes, symbolic-link targets, HTTP registries, hash mismatches, and manifests containing scripts. Do not bypass those checks.
+
+## `diff` cannot find an installation record
+
+`diff` relies on `.oria/components.json`, which is created by the first successful installation. Confirm that:
+
+- the command runs inside the consumer project containing `package.json`;
+- `--framework react|vue` matches the original installation;
+- `.oria/components.json` still exists, is committed when appropriate, and contains valid JSON;
+- custom `--path` / `--registry` values match the installation source.
+
+## View Transition does not animate
+
+The runtime configuration must enable `transition`, and an explicit user action must pass `animate: true`. Unsupported `document.startViewTransition`, reduced-motion preference, Bootstrap, Storage restoration, system changes, and cross-tab sync all switch atomically without animation. See [circular theme reveal](circular-theme-transition.md).
+
+## If the issue remains
+
+In a minimal reproduction, record package versions, framework version, sanitized runtime config, `snapshot.status`, `snapshot.error.code`, the reproduction command, and browser/Node output. The repository currently has no public support SLA or security contact, so release material must not promise response times.

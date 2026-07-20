@@ -1,0 +1,2 @@
+import { ref, watch } from "vue"; import type { Ref } from "vue";
+export function useFieldBuffer<T>(value: Ref<T>, format: (value: T) => string, parse: (text: string) => T | undefined, commit: (value: T) => void) { const text = ref(format(value.value)); watch(value, next => { text.value = format(next); }); const update = (next: string) => { text.value = next; const parsed = parse(next); if (parsed !== undefined) commit(parsed); }; return { text, update }; }

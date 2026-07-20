@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "name": "theme-editor",
+  "framework": "vue",
+  "version": "0.1.0",
+  "compatiblePackages": {
+    "@oriatheme/core": "^0.1.0",
+    "@oriatheme/colors": "^0.1.0",
+    "@oriatheme/editor-core": "^0.1.0",
+    "@oriatheme/vue-editor": "^0.1.0",
+    "@oriatheme/runtime-dom": "^0.1.0"
+  },
+  "dependencies": [
+    "@oriatheme/core@^0.1.0",
+    "@oriatheme/colors@^0.1.0",
+    "@oriatheme/editor-core@^0.1.0",
+    "@oriatheme/vue-editor@^0.1.0",
+    "@oriatheme/runtime-dom@^0.1.0",
+    "vue@^3.5.0"
+  ],
+  "files": [
+    {
+      "sha256": "73bd3d00a7046fc8fd22df7fb69982d654dbf7a2c2bea0ba3dbcda9bd7d59fad",
+      "source": "templates/shared/theme-editor/editor-layout.ts",
+      "target": "editor-layout.ts"
+    },
+    {
+      "sha256": "ae1decfec4a3ed5f4c9d601e7c235386e3a74e41173ae432330bca6965c93420",
+      "source": "templates/vue/theme-editor/theme-editor.css",
+      "target": "theme-editor.css"
+    },
+    {
+      "sha256": "97f5958dabb7823ae4d3ed077ce2e62d6612f801b564a6241c7c5a268010b3a4",
+      "source": "templates/vue/theme-editor/ThemeEditor.vue",
+      "target": "ThemeEditor.vue"
+    },
+    {
+      "sha256": "9eebc50ad0671300e03d19656d6da8034210f9c3e304136e9065d32760395619",
+      "source": "templates/vue/theme-editor/composables/useFieldBuffer.ts",
+      "target": "composables/useFieldBuffer.ts"
+    },
+    {
+      "sha256": "a8bbc222d4db52daa1b8a362f7997da15a456dc39ed8e1b36873250426ff4e3b",
+      "source": "templates/vue/theme-editor/composables/useEditorLayout.ts",
+      "target": "composables/useEditorLayout.ts"
+    },
+    {
+      "sha256": "97a1918fd99b7a4875f0f86922e743238ba9166479ee0f7cbfafdfdccbc74637",
+      "source": "templates/vue/theme-editor/composables/useTokenSearch.ts",
+      "target": "composables/useTokenSearch.ts"
+    },
+    {
+      "sha256": "a7024563309b44eb9c71b6462a2180f4c4c04d69adbfdde69cf70a35134634b7",
+      "source": "templates/vue/theme-editor/EditorPreview.vue",
+      "target": "EditorPreview.vue"
+    },
+    {
+      "sha256": "737ca9b0a7eb60963b3084712efed1e4938713fdf9b2fd8d5e84737d2ffd3503",
+      "source": "templates/vue/theme-editor/shadows/ShadowLayerEditor.vue",
+      "target": "shadows/ShadowLayerEditor.vue"
+    },
+    {
+      "sha256": "e673656121070e0eccf9479d1862c229322635087d9c7da2ca001d94edd30394",
+      "source": "templates/vue/theme-editor/shadows/ShadowPreview.vue",
+      "target": "shadows/ShadowPreview.vue"
+    },
+    {
+      "sha256": "152b2fbac598c6b20dfcb91e227797919a15190ad48c68d6670723a1085cd192",
+      "source": "templates/vue/theme-editor/EditorModeSwitch.vue",
+      "target": "EditorModeSwitch.vue"
+    },
+    {
+      "sha256": "0c00eae811b516f8cd83efe2f8711a0590f0b7c949881f0ec1730b5b901836ec",
+      "source": "templates/vue/theme-editor/overlays/ResetMenu.vue",
+      "target": "overlays/ResetMenu.vue"
+    },
+    {
+      "sha256": "ac828a82985f29e6edbbfcb2e892bd70edc75ca2ba218686bdf56728cb2e43ab",
+      "source": "templates/vue/theme-editor/overlays/IssuesPopover.vue",
+      "target": "overlays/IssuesPopover.vue"
+    },
+    {
+      "sha256": "6589edfbfd5fb5c6ad10c3a25f7adc9a048098b23c3726639456cb1abac4608b",
+      "source": "templates/vue/theme-editor/overlays/ImportDialog.vue",
+      "target": "overlays/ImportDialog.vue"
+    },
+    {
+      "sha256": "43d8e7351197a0a8756d3b9cf1a8f5d9501e7f60bd3fa0703ba72868b52f8499",
+      "source": "templates/vue/theme-editor/overlays/ExportMenu.vue",
+      "target": "overlays/ExportMenu.vue"
+    },
+    {
+      "sha256": "77db42eb3d0b1e409771358bdd6cbdb3ee5fb801e6a5a63b20f4b887be22de33",
+      "source": "templates/vue/theme-editor/EditorToolbar.vue",
+      "target": "EditorToolbar.vue"
+    },
+    {
+      "sha256": "7be6ca70e21de8ca52e3381ad5ed25b251236f7f0843f2df106b6af0992ed0f0",
+      "source": "templates/vue/theme-editor/TokenField.vue",
+      "target": "TokenField.vue"
+    },
+    {
+      "sha256": "d2562955e3df6d633823b069162c7a42873ea156e3b8cfbaefa49360a8a590fe",
+      "source": "templates/vue/theme-editor/EditorWorkspace.vue",
+      "target": "EditorWorkspace.vue"
+    },
+    {
+      "sha256": "917ac873de9113cd5e21f6ed20ef1d9bd0cb8d1f74cfc94a09a886f1cee94347",
+      "source": "templates/vue/theme-editor/fields/GradientField.vue",
+      "target": "fields/GradientField.vue"
+    },
+    {
+      "sha256": "d5b8aac5d070b75401ce321c7ac47fae810c338521e07a9a98a97daa51628033",
+      "source": "templates/vue/theme-editor/fields/FontFamilyField.vue",
+      "target": "fields/FontFamilyField.vue"
+    },
+    {
+      "sha256": "75a7cda6bcffa809bbabf237c483ceecaee91b96171fd2777d37d9e4e2fd2684",
+      "source": "templates/vue/theme-editor/fields/FontWeightField.vue",
+      "target": "fields/FontWeightField.vue"
+    },
+    {
+      "sha256": "0a2edc68da90ab0733f36067f6224eefedcca11a55d1d4762628e84b75e0ef65",
+      "source": "templates/vue/theme-editor/fields/ColorField.vue",
+      "target": "fields/ColorField.vue"
+    },
+    {
+      "sha256": "584898e13d2d83540edbbe99e9d894861d262c5c79e53dc6a4ca61b0ea5d1c7d",
+      "source": "templates/vue/theme-editor/fields/ShadowField.vue",
+      "target": "fields/ShadowField.vue"
+    },
+    {
+      "sha256": "6847bc0aa763429a173e5b348396e5428a7bdf2e0fec8e60ee4b6d641d53d2aa",
+      "source": "templates/vue/theme-editor/fields/DurationField.vue",
+      "target": "fields/DurationField.vue"
+    },
+    {
+      "sha256": "6c2f1c95554d7d8f3e907fa74a56e35ef28acb310019250d0ced421515439e63",
+      "source": "templates/vue/theme-editor/fields/DimensionField.vue",
+      "target": "fields/DimensionField.vue"
+    },
+    {
+      "sha256": "955ea6369f7d8d598adce07b2d92757f218d2398ef256cc10438ae99d2340e55",
+      "source": "templates/vue/theme-editor/fields/NumberField.vue",
+      "target": "fields/NumberField.vue"
+    },
+    {
+      "sha256": "a1e46bee862b9ce1ef2bf1ce9d0ae0493b6e771cf15691c5e6381009cd6a4f8b",
+      "source": "templates/vue/theme-editor/fields/FieldFrame.vue",
+      "target": "fields/FieldFrame.vue"
+    },
+    {
+      "sha256": "d50a7a6be197cf9fa188177b1f0c2b9eae5d444cff83140f2d32496583a66a0a",
+      "source": "templates/vue/theme-editor/fields/EasingField.vue",
+      "target": "fields/EasingField.vue"
+    },
+    {
+      "sha256": "50b5b083d12594efa705ad9380f36bd919d182a657e19c587e22c7901ec8a88a",
+      "source": "templates/vue/theme-editor/EditorShell.vue",
+      "target": "EditorShell.vue"
+    },
+    {
+      "sha256": "24ea041b4b2c86aad8e196b35d6725b5e4bf693235825781e9a0a00ebb140e5d",
+      "source": "templates/vue/theme-editor/index.ts",
+      "target": "index.ts"
+    },
+    {
+      "sha256": "c3f28c25430d619efd81139ac5d0b7cd2b221213db972dadbc31fb92dc79ec36",
+      "source": "templates/vue/theme-editor/EditorTabs.vue",
+      "target": "EditorTabs.vue"
+    },
+    {
+      "sha256": "6b1fcda13da21fcaa14b570347da769cd57c082754ce18e097fabb1d1a2db2ae",
+      "source": "templates/vue/theme-editor/EditorSearch.vue",
+      "target": "EditorSearch.vue"
+    },
+    {
+      "sha256": "f440186a14a38c681b4efcab4fa393f8daf52de5af1308feacc0ee619fdd4b36",
+      "source": "templates/vue/theme-editor/TokenAccordion.vue",
+      "target": "TokenAccordion.vue"
+    },
+    {
+      "sha256": "0de944580899c371f2d28cff34a5a37481a403e51cf17e7e075668582c7a29a0",
+      "source": "templates/vue/theme-editor/types.ts",
+      "target": "types.ts"
+    },
+    {
+      "sha256": "9380f397655ec8d5a8075b316207f627a173dcd68470ab1a95f48f80b3a397b5",
+      "source": "templates/vue/theme-editor/composables/useDetailsDismiss.ts",
+      "target": "composables/useDetailsDismiss.ts"
+    },
+    {
+      "sha256": "a62d8eb10182ff64b8c6ba7650d5875d161b439d33ff1b6d924f4497f072d9aa",
+      "source": "templates/vue/theme-editor/fields/color-utils.ts",
+      "target": "fields/color-utils.ts"
+    },
+    {
+      "sha256": "2fa9fc5bb147e3bd6ad897b4ed095603c9bcf0050e8db10febe033d2e54d2718",
+      "source": "templates/vue/theme-editor/fields/slider-ranges.ts",
+      "target": "fields/slider-ranges.ts"
+    },
+    {
+      "sha256": "c937d7f5f3d27c03c3c2f73527b9099e623e8e0cc713409308fafbbc038be036",
+      "source": "templates/vue/theme-editor/fields/LinearSlider.vue",
+      "target": "fields/LinearSlider.vue"
+    },
+    {
+      "sha256": "976532d7ff6de4388081947d6603e57000a96830209cba49cced1e375e1b7f01",
+      "source": "templates/vue/theme-editor/fields/BaseColorPalette.vue",
+      "target": "fields/BaseColorPalette.vue"
+    },
+    {
+      "sha256": "02306325e6ba50e6fe93ba13e739bf8de7e8478da686b670663ac3bb2fd98999",
+      "source": "templates/vue/theme-editor/overlays/ConfirmationDialog.vue",
+      "target": "overlays/ConfirmationDialog.vue"
+    },
+    {
+      "sha256": "f61fa98498d82397e89adbcfa02bf9f460103430417a9b9eada38c3fd22493e4",
+      "source": "templates/vue/theme-editor/ThemeAccordion.vue",
+      "target": "ThemeAccordion.vue"
+    },
+    {
+      "sha256": "b51d19bfe5be8aeb79fb03e99bcbf1013ceb5fbe0d89cafab33ff7af4ed005ec",
+      "source": "templates/vue/theme-editor/ThemeListItem.vue",
+      "target": "ThemeListItem.vue"
+    },
+    {
+      "sha256": "1aac9da5e0298f48b491d88c459adec73a228a4e5eb768f221ad5459355b9991",
+      "source": "templates/LICENSE",
+      "target": "LICENSE"
+    },
+    {
+      "sha256": "f536a8ed9a95e286810db0ab2fb8d801638cdef430876233c576da2c143795b2",
+      "source": "templates/vue/theme-editor/ThemesWorkspace.vue",
+      "target": "ThemesWorkspace.vue"
+    }
+  ]
+}
