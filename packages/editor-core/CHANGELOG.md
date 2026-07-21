@@ -1,5 +1,11 @@
 # @oriatheme/editor-core
 
+## 0.1.2
+
+### Patch Changes
+
+- 869996e: Improve theme editor input smoothness: pattern layer unit and number fields now buffer in-progress text and only commit Core-safe values, token fields no longer re-render the whole field tree on every revision, and editor-core reuses a single per-draft validation for snapshot diagnostics, preview, and save.
+
 ## 0.1.1
 
 ### Patch Changes
