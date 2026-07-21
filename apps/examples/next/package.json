@@ -3,7 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": { "dev": "next dev", "build": "next build", "test": "vitest run", "typecheck": "tsc --noEmit" },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@oriatheme/core": "workspace:*",
     "@oriatheme/colors": "workspace:*",
@@ -16,5 +21,8 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
-  "devDependencies": { "@types/react": "^19.1.0", "@types/react-dom": "^19.1.0" }
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0"
+  }
 }
