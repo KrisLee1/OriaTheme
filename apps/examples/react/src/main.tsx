@@ -8,4 +8,4 @@ import "../../styles.css";
 
 bootstrapTheme();
 
-createRoot(document.querySelector("#root")!).render(<OriaThemeProvider config={{ presets: oriaPresetThemes, defaultThemeId: "oria-default", transition: {type: "view-transition", duration: 400}  }}><DemoPage framework="React" /></OriaThemeProvider>);
+createRoot(document.querySelector("#root")!).render(<OriaThemeProvider config={{ presets: oriaPresetThemes, defaultThemeId: "oria-default", transition: {type: "view-transition", duration: 360}  }}><DemoPage framework="React" /></OriaThemeProvider>);

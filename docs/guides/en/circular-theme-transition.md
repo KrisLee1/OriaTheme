@@ -17,7 +17,7 @@ function originFor(element: HTMLElement) {
 }
 ```
 
-`duration` is measured in milliseconds and defaults to 420:
+`duration` is measured in milliseconds and defaults to 360. The runtime calculates the final radius to the farthest viewport corner plus a 2 CSS pixel safety margin, so the last frame stays covered without a center-origin reveal filling the viewport too early. In Chromium, it explicitly sizes the root snapshot to the viewport so the clip center remains aligned with the triggering control, then replaces the browser-default root animation with a same-duration no-op animation to keep the circle alive through the full reveal:
 
 ```ts
 transition: { type: "view-transition", duration: 500 }

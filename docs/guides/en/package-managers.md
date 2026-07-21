@@ -4,7 +4,7 @@
 
 OriaTheme public packages and `@oriatheme/cli` target pnpm, npm, Yarn, and Bun consumer projects. Packages use standard ESM, `exports`, `peerDependencies`, and normal semver. The CLI edits standard `package.json` data and copies source; it does not invoke a package manager or create/update a lockfile.
 
-> The first npm publication is not complete. The commands below are the supported post-release forms. Before publication, only workspace, local-tarball, or local-registry verification is possible; none is evidence of a successful public-registry install.
+> All ten public `@oriatheme/*` packages are published at `0.1.0`. The commands below are the supported consumer-project forms; workspace, local-tarball, and local-registry paths are only for repository development or future-release verification.
 
 ## Install public packages
 
@@ -75,7 +75,7 @@ Supporting four consumer tools does not mean maintaining four lockfiles in the O
 
 ## Release verification requirements
 
-Before publication, isolated clean projects must verify that:
+Before every public release, isolated clean projects must verify that:
 
 1. pnpm, npm, Yarn, and Bun can install package-root exports from tarballs; repeat from the registry after publication.
 2. Every tool can run `oria add --dry-run`, `oria add --yes`, and `oria diff`.
@@ -83,4 +83,4 @@ Before publication, isolated clean projects must verify that:
 4. React, Vue, and Next production builds cover all four tools; Yarn covers both its default node-modules linker and Plug'n'Play.
 5. Any tool that was not actually executed is reported as unverified rather than inferred from command syntax.
 
-The current environment ran the pnpm CLI regression and used npm 11.16.0 to install Core/Runtime/Presets from local tarballs, import package roots, and execute a CLI dry-run through `npm exec`. Real Yarn/Bun consumer smoke tests remain release gates.
+The `0.1.0` first release completed public-registry and clean-consumer verification. Repeat this matrix for every future public version, and never mark a tool as passed merely from command syntax.

@@ -4,7 +4,7 @@
 
 OriaTheme is a framework-agnostic client-side theming runtime with a typed Token Contract, light/dark/system modes, persistence, atomic CSS-variable application, and thin React/Vue adapters.
 
-> Release status: public packages are preparing for `0.1.0`, but the first npm publication and public remote registry are not complete. A repository version does not mean it can be installed from a registry.
+> Release status: all ten public `@oriatheme/*` packages are published at `0.1.0`, and the public registry is available for CLI source-component installation.
 
 ## Packages
 
@@ -33,7 +33,7 @@ pnpm dev:example:next
 
 ## Use official preset themes
 
-The following are the intended commands after the first npm release. Before publication, use the repository workspace examples instead.
+The following are the supported `0.1.0` installation commands. Repository workspace examples remain for repository development and verification only.
 
 ```bash
 # Choose the package manager used by your project.

@@ -9,7 +9,7 @@ OriaTheme 需要官网首页、用户文档和在线主题编辑器，但官网�
 
 ## 决定
 
-在 `apps/website` 建设私有 React/Next.js 应用，并在 Phase 8 迁入现有 `apps/docs` 内容。官网通过公开 package exports 使用预设、runtime、React adapter 和 React editor，作为真实消费与 SSR 边界的持续集成样本。
+在 `apps/website` 建设私有 React/Next.js 应用，并在 Phase 9 迁入现有 `apps/docs` 内容。官网通过公开 package exports 使用预设、runtime、React adapter 和 React editor，作为真实消费与 SSR 边界的持续集成样本。
 
 官网 `package.json` 必须为 private，不进入 Changesets、npm pack 或 publish。首页和文档优先 SSR/静态输出，在线编辑器保持 client-only。首版主题数据只在浏览器本地处理。
 

@@ -4,7 +4,7 @@
 
 OriaTheme is an ESM-only multi-package project. Its source repository uses pnpm workspaces, while published packages target pnpm, npm, Yarn, and Bun consumers. Applications should import only the package roots and explicit CSS subpaths listed below. `src/`, `dist/`, and workspace-internal paths are not public APIs. See [package-manager compatibility](package-managers.md) for commands.
 
-> Public packages in this repository are currently versioned `0.1.0`, but the first npm publication is not complete. A version in a manifest does not mean the package is available from a registry; use workspace or local-tarball verification until publication completes.
+> All ten public packages are published at `0.1.0` and can be installed from npm. Use workspace or local-tarball paths only for repository development and future-release verification.
 
 | Package | Install it when | Public capability |
 | --- | --- | --- |

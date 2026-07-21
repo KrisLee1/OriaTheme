@@ -18,7 +18,7 @@ function originFor(element: HTMLElement) {
 }
 ```
 
-`duration` 单位为毫秒，缺省为 420。下面的 500 可按产品节奏调整：
+`duration` 单位为毫秒，缺省为 360。runtime 将最终半径精确算至最远 viewport 角，再额外保留 2 CSS px 安全余量；这样既不会在结束帧留缝，也不会在中心触发时过早扩满视口。对 Chromium，root 快照会显式固定为 viewport 尺寸，使圆心始终对应触发控件的位置；同一时长的无视觉变化动画会替代浏览器默认根动画，确保扩散完整结束。下面的 500 可按产品节奏调整：
 
 ```ts
 transition: { type: "view-transition", duration: 500 }

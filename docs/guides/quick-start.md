@@ -4,7 +4,7 @@
 
 本指南让一个现有 React、Vue 或原生 Web 应用完成 OriaTheme 初始化、首屏恢复、主题切换和 CSS Variables 使用。只使用公开 package root exports。
 
-> 当前尚未完成 npm 首发。下面的安装命令是发布后的正式用法；在本仓库开发请先阅读[开发者指南](development.md)。
+> `@oriatheme/*@0.1.0` 已发布。下面的安装命令适用于使用方项目；在本仓库开发请先阅读[开发者指南](development.md)。
 
 ## 1. 选择并安装
 
@@ -196,4 +196,4 @@ Runtime 在目标根节点原子写入 `--oria-*` variables，并维护 `data-or
 | `apps/examples/vue` | Vue 3 + Vite；用于 Vue 3 应用 | `pnpm dev:example:vue` |
 | `apps/examples/next` | Next.js；用于 SSR/SSG、静态默认主题和 Bootstrap 集成 | `pnpm dev:example:next` |
 
-可以在对应示例目录中修改页面、组件和本地 `components/oria-theme-editor/` 后继续开发；这些示例使用 workspace 依赖，不能直接复制到仓库外作为独立项目。若要在自己的项目中接入，请按本指南的安装步骤使用发布包；npm 首发前则使用本地 tarball 验证。示例功能与生产构建命令见 [apps/examples README](../../apps/examples/README.md) 和[开发者指南](development.md#运行示例)。
+可以在对应示例目录中修改页面、组件和本地 `components/oria-theme-editor/` 后继续开发；这些示例使用 workspace 依赖，不能直接复制到仓库外作为独立项目。若要在自己的项目中接入，请按本指南的安装步骤使用已发布包。示例功能与生产构建命令见 [apps/examples README](../../apps/examples/README.md) 和[开发者指南](development.md#运行示例)。

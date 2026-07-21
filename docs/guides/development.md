@@ -120,9 +120,9 @@ node packages/cli/dist/index.js add theme-editor --framework react --dry-run
 
 文档修改后必须检查 Markdown 本地链接、标题锚点和残留模板标记。当前仓库尚未提供自己的文档校验 script；维护者使用的外部校验工具不能写成使用方项目依赖。
 
-## 发布准备
+## 后续版本发布
 
-当前 Changesets 已覆盖首发包，但正式发布仍需满足[构建与发布规范](../engineering/packaging.md)：
+`0.1.0` 首发已完成。后续版本仍须满足[构建与发布规范](../engineering/packaging.md)：
 
 ```bash
 pnpm exec changeset status
@@ -132,4 +132,6 @@ pnpm test
 pnpm build
 ```
 
-`changeset status` 需要 Git `main` 基线。`changeset version`、`pnpm pack`、独立使用、registry 安装和 `npm publish` 属于维护者发布流程；不得仅为验证文档执行 publish。源码模板采用 Apache-2.0；公开 registry 目标为 `https://theme.oria.org.cn/registry/v1`，但尚未部署验证，实际 npm 发布仍是门禁。
+`changeset status` 需要 Git `main` 基线。`changeset version`、`pnpm pack`、独立使用、registry 安装和 `npm publish` 属于维护者发布流程；不得仅为验证文档执行 publish。源码模板采用 Apache-2.0；公开 registry 位于 `https://theme.oria.org.cn/registry/v1`，`0.1.0` 已完成远程验证；后续 registry 变更或发布仍须重新验证。
+
+推送到 `main` 后，`.github/workflows/publish.yml` 会通过 Changesets 创建版本 PR；合并该 PR 后才会进入 GitHub Environment `npm-publish` 并以 npm Trusted Publishing 发布。该 job 不使用 `NPM_TOKEN`，其 npm Trusted Publisher 配置必须匹配 `KrisLee1/OriaTheme`、`publish.yml` 与 `npm-publish`。

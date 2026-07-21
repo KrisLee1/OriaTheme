@@ -120,9 +120,9 @@ Public-repository changes must update the affected specifications or user guides
 
 After documentation changes, check local Markdown links, heading anchors, and unresolved template markers. The repository does not yet provide its own documentation-validator script; external maintainer tooling is not a consumer dependency.
 
-## Release preparation
+## Subsequent releases
 
-Changesets currently cover the first-release packages, but a release must still satisfy the [packaging specification](../../engineering/packaging.md):
+The `0.1.0` first release is complete. Every subsequent release must still satisfy the [packaging specification](../../engineering/packaging.md):
 
 ```bash
 pnpm exec changeset status
@@ -132,4 +132,6 @@ pnpm test
 pnpm build
 ```
 
-`changeset status` requires a Git `main` baseline. `changeset version`, `pnpm pack`, independent consumption, registry installation, and `npm publish` are maintainer release steps; never publish merely to validate documentation. Source templates are licensed under Apache-2.0; the public registry target is `https://theme.oria.org.cn/registry/v1` but has not yet been deployed or verified, and real npm publication remains a release gate.
+`changeset status` requires a Git `main` baseline. `changeset version`, `pnpm pack`, independent consumption, registry installation, and `npm publish` are maintainer release steps; never publish merely to validate documentation. Source templates are licensed under Apache-2.0; the public registry is `https://theme.oria.org.cn/registry/v1`, and `0.1.0` completed remote verification. Verify it again for every registry change or release.
+
+After a push to `main`, `.github/workflows/publish.yml` uses Changesets to create a version PR. Only after that PR merges does the `npm-publish` GitHub Environment approve an npm Trusted Publishing release. The job never uses `NPM_TOKEN`; npm Trusted Publisher settings must match `KrisLee1/OriaTheme`, `publish.yml`, and `npm-publish`.

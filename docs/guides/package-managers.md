@@ -4,7 +4,7 @@
 
 OriaTheme 的公开包和 `@oriatheme/cli` 面向 pnpm、npm、Yarn 与 Bun 使用方项目。公开包使用标准 ESM、`exports`、`peerDependencies` 和普通 semver；CLI 只修改标准 `package.json` 并复制源码，不调用包管理器，也不创建或改写 lockfile。
 
-> 当前 npm 首发尚未完成。下面是发布后的正式命令。发布前只能验证 workspace、本地 tarball 或本地 registry；不能把这些结果写成实际 registry 安装成功。
+> 十个公开 `@oriatheme/*` 包已发布 `0.1.0`，下面是使用方项目的正式命令。workspace、本地 tarball 和本地 registry 路径只用于仓库开发或后续版本发布验证。
 
 ## 安装公开包
 
@@ -75,7 +75,7 @@ pnpm install
 
 ## 发布验证要求
 
-正式发布前必须在互相隔离的干净项目验证：
+每个公开版本发布前必须在互相隔离的干净项目验证：
 
 1. pnpm、npm、Yarn 与 Bun 都能从 tarball 安装 package-root exports；实际发布后再分别从 registry 复验。
 2. 每种工具都能运行 `oria add --dry-run`、`oria add --yes` 和 `oria diff`。
@@ -83,4 +83,4 @@ pnpm install
 4. React、Vue 与 Next 的 production build 至少覆盖四种工具；Yarn 同时覆盖默认 node-modules linker 与 Plug'n'Play。
 5. 任一工具未实际执行时必须标记“未验证”，不能仅凭命令语法宣称通过。
 
-当前环境已执行 pnpm CLI 回归，并用 npm 11.16.0 从本地 tarball 安装 Core/Runtime/Presets、导入 package roots 及通过 `npm exec` 运行 CLI dry-run。Yarn/Bun 的真实使用 smoke test 仍属于发布门禁。
+`0.1.0` 首发已完成公开 registry 与干净使用方验证。后续每个公开版本仍须重新执行本节矩阵；未实际执行的工具不得仅凭命令语法标记为通过。

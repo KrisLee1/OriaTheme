@@ -4,7 +4,7 @@
 
 这里是面向 OriaTheme 使用者和贡献者的公开发布文档入口。中文是主要维护语言；每篇发布指南都提供对应英文版本。
 
-> 发布状态：仓库已具备可构建的 `0.1.0` 包和本地 registry，但 npm 首发与公开远程 registry 尚未完成。文档中的 pnpm/npm/Yarn/Bun 安装与临时执行命令是发布后的正式用法；发布前请使用仓库 workspace 或本地 tarball 验证路径。
+> 发布状态：十个公开 `@oriatheme/*` 包已发布 `0.1.0`，公开 HTTPS registry 已完成验证。文档中的 pnpm/npm/Yarn/Bun 安装与临时执行命令可用于使用方项目。
 
 ## 从这里开始
 
@@ -33,4 +33,4 @@
 - 用户 API 以各 package root export 和 TypeScript 声明为准，禁止依赖 `dist/` 或源码深层路径。
 - Token、Runtime、框架适配器和编辑器规范分别见[主题模型](../specifications/theme-model.md)、[Core API](../specifications/core-api.md)、[DOM Runtime](../specifications/runtime-dom.md)和[编辑器组件注册表](../specifications/editor-component-registry.md)。
 - 构建、测试与发布门禁见[开发者指南](development.md)和[构建与发布规范](../engineering/packaging.md)。
-- 当前 npm 首发尚未完成；在 registry 实际可用前，请使用 workspace 或本地 tarball 验证。
+- 使用方请从 npm 安装 `0.1.0` 公开包；workspace 和本地 tarball 仅用于仓库开发或后续版本发布验证。

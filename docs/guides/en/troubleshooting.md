@@ -6,7 +6,7 @@ First confirm that the application uses package-root exports only and that `defa
 
 ## The registry cannot find `@oriatheme/*`
 
-The first npm publication is not complete. A `0.1.0` manifest in the repository proves version preparation, not public registry availability. Before publication, use workspace examples or tarball smoke tests in this repository. A local workspace link is not evidence of a real release.
+Confirm the package name and published `@oriatheme/*@0.1.0` version, then check the consumer project's npm registry configuration, network, and lockfile. Public package-root exports must come from npm; a local workspace link is not evidence of real registry consumption.
 
 ## The page has no `--oria-*` variables
 
@@ -69,7 +69,7 @@ pnpm dlx @oriatheme/cli@latest add theme-editor --framework react --dry-run
 pnpm dlx @oriatheme/cli@latest add theme-editor --framework react --yes
 ```
 
-These temporary-runner commands become available only after the npm release. For the pre-release local CLI path, see the [developer guide](development.md#cli-and-registry-development).
+These temporary-runner commands are available for the published `@oriatheme/cli@0.1.0`. For a repository-local CLI debugging path, see the [developer guide](development.md#cli-and-registry-development).
 
 ## The CLI refuses to overwrite files
 

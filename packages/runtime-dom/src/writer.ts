@@ -5,10 +5,13 @@ interface RootLike { appendChild(node: StyleNode): unknown; adoptedStyleSheets?:
 interface DocumentLike { documentElement: HTMLElement; head?: RootLike; createElement(name: string): StyleNode }
 type Target = Document | ShadowRoot;
 type Sheet = { replaceSync(value: string): void };
+type TransitionCircle = { readonly x: number; readonly y: number; readonly radius: number; readonly duration: number };
 
 export interface DomWriter {
   apply(theme: ResolvedTheme): boolean;
   getRoot(): HTMLElement;
+  setTransitionCircle(circle: TransitionCircle): void;
+  clearTransitionCircle(): void;
   destroy(): void;
 }
 
@@ -24,10 +27,14 @@ export function createDomWriter(target: Target): DomWriter {
   let transitionStyle: StyleNode | undefined;
   let previous = "";
 
-  const transitionCss = ':root[data-oria-transition="circle"]::view-transition-group(root){width:100vw;height:100dvh}:root[data-oria-transition="circle"]::view-transition-old(root){animation:none;z-index:1;mix-blend-mode:normal}:root[data-oria-transition="circle"]::view-transition-new(root){width:100vw;height:100dvh;animation:oria-theme-circle-reveal var(--oria-transition-duration) ease-out both;z-index:2;mix-blend-mode:normal}@keyframes oria-theme-circle-reveal{from{clip-path:circle(0 at var(--oria-transition-x) var(--oria-transition-y))}to{clip-path:circle(var(--oria-transition-radius) at var(--oria-transition-x) var(--oria-transition-y))}}';
+  const transitionCss = (circle: TransitionCircle = { x: 0, y: 0, radius: 1, duration: 1 }): string => {
+    const value = (number: number): string => Number.isFinite(number) ? `${number}` : "0";
+    const x = value(circle.x); const y = value(circle.y); const radius = value(circle.radius); const duration = value(circle.duration);
+    return `:root[data-oria-transition="circle"]::view-transition-group(root){width:100vw;height:100dvh;animation:oria-theme-circle-hold ${duration}ms linear both}:root[data-oria-transition="circle"]::view-transition-old(root){animation:none;z-index:1;mix-blend-mode:normal}:root[data-oria-transition="circle"]::view-transition-new(root){width:100vw;height:100dvh;animation:oria-theme-circle-reveal ${duration}ms ease-out both;clip-path:circle(1px at ${x}px ${y}px);will-change:clip-path;z-index:2;mix-blend-mode:normal}@keyframes oria-theme-circle-hold{from{opacity:1}to{opacity:1}}@keyframes oria-theme-circle-reveal{from{clip-path:circle(1px at ${x}px ${y}px)}to{clip-path:circle(${radius}px at ${x}px ${y}px)}}`;
+  };
   const ensureTransitionStyles = (): void => {
     if (transitionStyle) return;
-    transitionStyle = documentLike.createElement("style"); transitionStyle.setAttribute("data-oria-theme-transition", ""); transitionStyle.textContent = transitionCss;
+    transitionStyle = documentLike.createElement("style"); transitionStyle.setAttribute("data-oria-theme-transition", ""); transitionStyle.textContent = transitionCss();
     (documentLike.head ?? documentLike.documentElement as unknown as RootLike).appendChild(transitionStyle);
   };
   const css = (theme: ResolvedTheme): string => {
@@ -56,6 +63,13 @@ export function createDomWriter(target: Target): DomWriter {
   return {
     apply,
     getRoot: (): HTMLElement => root,
+    setTransitionCircle(circle: TransitionCircle): void {
+      ensureTransitionStyles();
+      if (transitionStyle) transitionStyle.textContent = transitionCss(circle);
+    },
+    clearTransitionCircle(): void {
+      if (transitionStyle) transitionStyle.textContent = transitionCss();
+    },
     destroy(): void {
       if (style) style.remove();
       if (transitionStyle) transitionStyle.remove();

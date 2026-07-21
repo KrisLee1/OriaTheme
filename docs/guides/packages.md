@@ -4,7 +4,7 @@
 
 OriaTheme 是 ESM-only 的多包项目；源码仓库使用 pnpm workspace，但发布包可由 pnpm、npm、Yarn 或 Bun 安装。使用方应用只应从下表的 package root 或明确的 CSS subpath 导入；`src/`、`dist/` 和 workspace 内部路径都不是公开 API。四种工具的命令见[包管理器兼容性](package-managers.md)。
 
-> 仓库中的公开包当前版本为 `0.1.0`，但 npm 首发尚未完成。版本号不等于已经可从 registry 安装；在发布完成前请使用 workspace 或本地 tarball 验证。
+> 十个公开包已发布 `0.1.0`，可从 npm 安装。workspace 或本地 tarball 只用于本仓库开发与后续版本发布验证。
 
 | 包 | 何时安装 | 公开能力 |
 | --- | --- | --- |

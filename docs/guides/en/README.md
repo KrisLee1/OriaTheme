@@ -4,7 +4,7 @@
 
 This is the public release-documentation entry point for OriaTheme users and contributors. Chinese is the primary maintenance language, and every release guide has a corresponding English document.
 
-> Release status: the repository contains buildable `0.1.0` packages and a bundled local registry, but the first npm release and public remote registry are not complete. Documented pnpm/npm/Yarn/Bun installation and temporary-runner commands are the intended post-release workflow. Before release, use workspace or local-tarball verification.
+> Release status: all ten public `@oriatheme/*` packages are published at `0.1.0`, and the public HTTPS registry is verified. The documented pnpm/npm/Yarn/Bun installation and temporary-runner commands are available to consumer projects.
 
 ## Start here
 
@@ -33,4 +33,4 @@ This is the public release-documentation entry point for OriaTheme users and con
 - User APIs are defined by package-root exports and TypeScript declarations. Do not import `dist/` or deep source paths.
 - Token, runtime, adapter, and editor specifications are covered by the [theme model](../../specifications/theme-model.md), [Core API](../../specifications/core-api.md), [DOM runtime](../../specifications/runtime-dom.md), and [editor component registry](../../specifications/editor-component-registry.md).
 - Build, test, and release gates are covered by the [developer guide](development.md) and [packaging specification](../../engineering/packaging.md).
-- The first npm release remains incomplete; use workspace or local-tarball verification until the registry is actually available.
+- Consumers should install the published `0.1.0` packages from npm; workspace and local-tarball paths are for repository development or future-release verification only.

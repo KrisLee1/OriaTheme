@@ -22,9 +22,9 @@ export interface ThemeChangeOptions {
 - `prefers-reduced-motion: reduce` 时直接提交。
 - 不支持 View Transition 时直接提交。
 - origin 缺省时使用触发元素中心（由 UI 计算传入）或 viewport 中心。
-- runtime 将 origin 规范化为 viewport 内坐标，并计算覆盖最远 viewport 角的圆形半径；`duration` 使用毫秒，缺省为 420ms。
-- 动画 CSS 使用 runtime 自有 `data-oria-transition` attribute 和 `--oria-transition-*` variables：旧快照保持静止，新快照以 `clip-path: circle()` 从 origin 扩散。不要求框架组件管理状态或注入 stylesheet。
-- transition 完成、取消、销毁或被下一次动画取代后，runtime 必须清除上述 attribute 与 variables。
+- runtime 将 origin 规范化为 viewport 内坐标，并计算到最远 viewport 角的距离加 2 CSS px 安全余量作为圆形半径；这既覆盖像素取整/动态边缘，也避免中心触发在动画中途便扩满视口。`duration` 使用毫秒，缺省为 360ms。
+- 动画 CSS 使用 runtime 自有 `data-oria-transition` attribute：根分组和新快照显式固定为 `100vw × 100dvh`，让 Chromium 的裁切参考框与客户端圆心坐标一致；每次动画只把 runtime 已规范化的有限圆心、半径和时长写入自有 stylesheet 的字面值，不在 View Transition 伪元素内解析 custom properties。根分组不播放浏览器默认动画，而以同一时长的无视觉变化动画保持 View Transition 伪元素树存活；旧快照保持静止，新快照以 1px 的非空起点独立 `clip-path: circle()` 从 origin 扩散，并提示 Chromium 将该裁切保持在合成层。这样 Chromium 不会在圆形结束前移除根快照。不要求框架组件管理状态或注入 stylesheet。
+- transition 完成、取消、销毁或被下一次动画取代后，runtime 必须清除上述 attribute，并将动画 stylesheet 恢复为不含该次圆心、半径和时长的中性规则。
 
 ## 快速切换
 

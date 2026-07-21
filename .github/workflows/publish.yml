@@ -1,0 +1,93 @@
+name: Publish packages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      has_changesets: ${{ steps.detect.outputs.has_changesets }}
+      has_version_changes: ${{ steps.detect.outputs.has_version_changes }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+
+      - id: detect
+        name: Detect a release PR or a versioned release commit
+        shell: bash
+        run: |
+          if find .changeset -maxdepth 1 -type f -name '*.md' -print -quit | grep -q .; then
+            echo 'has_changesets=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'has_changesets=false' >> "$GITHUB_OUTPUT"
+          fi
+
+          if git rev-parse HEAD^ >/dev/null 2>&1 && git diff --name-only HEAD^ HEAD -- 'packages/*/package.json' | grep -q .; then
+            echo 'has_version_changes=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'has_version_changes=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create or update the Changesets version PR
+        if: steps.detect.outputs.has_changesets == 'true'
+        uses: changesets/action@v1
+        with:
+          version: pnpm exec changeset version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish:
+    needs: prepare-release
+    if: needs.prepare-release.outputs.has_version_changes == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: npm-publish
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - run: corepack enable
+      - run: npm install --global npm@^11.5.1
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm exec changeset publish

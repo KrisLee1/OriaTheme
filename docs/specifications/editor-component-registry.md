@@ -220,7 +220,7 @@ export function EditorRoute({ runtime }: { runtime: OriaThemeRuntime }) {
 
 ## 兼容性与未决项
 
-- `TBD-REG-01`：官方 registry 基地址已确定为 `https://theme.oria.org.cn/registry/v1`。该地址必须以 HTTPS 静态提供 `manifest/theme-editor.{react,vue}.json` 与 manifest 引用的所有模板文件；DNS、TLS、托管平台和真实远程安装验证尚未完成，仍阻塞公开 CLI/registry、首发与官网启动，但不阻塞本地 `--registry <path>` 实现和消费测试。
+- 官方 registry 基地址为 `https://theme.oria.org.cn/registry/v1`。它以 HTTPS 静态提供 `manifest/theme-editor.{react,vue}.json` 与 manifest 引用的模板文件，并已完成真实远程安装验证；后续部署仍须保持该路径和验证方式。
 - 官方静态部署只允许使用 `pnpm build:registry` 生成的 `dist/` 输出。该构建在写入产物前校验 manifest SHA-256，且仅复制 manifest 与其引用的文件；不得直接部署整个仓库或 `registry/` 目录。
 - 源码组件模板许可证已确定为 Apache-2.0。CLI 在每次安装中将完整 `LICENSE` 写入组件目录；该决定不再阻塞公开 registry 或首发。
 - 官方首版同时交付 React 和 Vue item；任一 item 不能把另一框架加入消费项目。

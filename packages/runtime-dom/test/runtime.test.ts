@@ -100,14 +100,27 @@ describe("runtime DOM lifecycle", () => {
     runtime.setAppearance("dark", { animate: true, origin: { x: 120, y: 80 } });
     const root = domDocument.documentElement;
     expect(root.dataset.oriaTransition).toBe("circle");
-    expect(root.style.getPropertyValue("--oria-transition-x")).toBe("120px");
-    expect(root.style.getPropertyValue("--oria-transition-y")).toBe("80px");
-    expect(root.style.getPropertyValue("--oria-transition-duration")).toBe("500ms");
-    expect(Number.parseFloat(root.style.getPropertyValue("--oria-transition-radius"))).toBeGreaterThan(120);
-    expect(domDocument.head.querySelector("style[data-oria-theme-transition]")?.textContent).toContain("oria-theme-circle-reveal");
+    const width = domDocument.defaultView?.innerWidth ?? 0;
+    const height = domDocument.defaultView?.innerHeight ?? 0;
+    const farthestCorner = Math.max(Math.hypot(120, 80), Math.hypot(width - 120, 80), Math.hypot(120, height - 80), Math.hypot(width - 120, height - 80));
+    const transitionCss = domDocument.head.querySelector("style[data-oria-theme-transition]")?.textContent;
+    expect(transitionCss).toContain("::view-transition-group(root){width:100vw;height:100dvh;animation:oria-theme-circle-hold 500ms linear both}");
+    expect(transitionCss).toContain("::view-transition-new(root){width:100vw;height:100dvh;animation:oria-theme-circle-reveal 500ms ease-out both;clip-path:circle(1px at 120px 80px)");
+    expect(transitionCss).toContain("@keyframes oria-theme-circle-hold{from{opacity:1}to{opacity:1}}");
+    expect(transitionCss).toContain(`to{clip-path:circle(${farthestCorner + 2}px at 120px 80px)}`);
     finish(); await Promise.resolve(); await Promise.resolve();
     expect(root.hasAttribute("data-oria-transition")).toBe(false);
-    expect(root.style.getPropertyValue("--oria-transition-radius")).toBe("");
+    expect(domDocument.head.querySelector("style[data-oria-theme-transition]")?.textContent).not.toContain("120px 80px");
+  });
+
+  it("uses a 360ms circular transition when duration is omitted", async () => {
+    let finish!: () => void;
+    const result = { finished: new Promise<void>(resolve => { finish = resolve; }) };
+    const transition = vi.fn((apply: () => void) => { apply(); return result; });
+    Object.defineProperty(domDocument, "startViewTransition", { configurable: true, value: transition });
+    const runtime = createOriaThemeRuntime({ ...baseConfig(), transition: { type: "view-transition" } }); runtime.start(); runtime.setAppearance("dark", { animate: true });
+    expect(domDocument.head.querySelector("style[data-oria-theme-transition]")?.textContent).toContain("animation:oria-theme-circle-hold 360ms linear both");
+    finish(); await Promise.resolve(); await Promise.resolve();
   });
 
   it("falls back directly for reduced motion or missing View Transition support", () => {

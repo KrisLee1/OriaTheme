@@ -104,7 +104,7 @@ interface ThemeChangeOptions {
 }
 ```
 
-仅 `animate: true` 的用户主动 `setTheme`、`setAppearance` 或当前自定义主题编辑可请求动画；系统模式、rehydrate、跨标签页同步和 bootstrap 永远不动画。动画将新主题快照以圆形 `clip-path` 从 `origin` 扩散，并在完成或取消时清理 runtime 自有的临时 DOM 状态。
+仅 `animate: true` 的用户主动 `setTheme`、`setAppearance` 或当前自定义主题编辑可请求动画；系统模式、rehydrate、跨标签页同步和 bootstrap 永远不动画。动画将新主题快照以圆形 `clip-path` 从 `origin` 扩散，半径取到最远 viewport 角的距离并额外留出 2 CSS px，避免取整残留且不会让中心触发过早扩满视口；根分组与新快照固定为 viewport 尺寸，使 Chromium 的裁切参考框与调用方 client 坐标一致。为规避 Chromium 对 View Transition 伪元素内 custom property 解析的回归，runtime 只将已规范化的有限数字写成该次动画专属的字面 CSS 值；根分组不保留浏览器默认动画，但以同一时长的无视觉变化动画保持伪元素树存活，避免 Chromium 在圆形结束前清理快照，并在完成或取消时清理 runtime 自有的临时 DOM 状态。
 
 ## Preview
 

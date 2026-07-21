@@ -6,7 +6,7 @@
 
 ## registry 找不到 `@oriatheme/*`
 
-当前 npm 首发尚未完成。仓库中的 `0.1.0` manifest 只证明版本准备状态，不代表包已经可从公共 registry 安装。发布前请在本仓库运行 workspace 示例或 tarball smoke test；不要把本地 workspace link 当成实际发布证据。
+确认包名和版本为已发布的 `@oriatheme/*@0.1.0`，并检查使用方项目配置的 npm registry、网络和 lockfile。公开 package root exports 必须从 npm 安装；本地 workspace link 不能代表实际 registry 消费。
 
 ## 页面没有 `--oria-*` variables
 
@@ -69,7 +69,7 @@ pnpm dlx @oriatheme/cli@latest add theme-editor --framework react --dry-run
 pnpm dlx @oriatheme/cli@latest add theme-editor --framework react --yes
 ```
 
-这些临时 runner 命令要等 npm 首发后才可用。发布前的本地 CLI 路径见[开发者指南](development.md#cli-与-registry-开发)。
+这些临时 runner 命令可用于已发布的 `@oriatheme/cli@0.1.0`。仓库内调试 CLI 的本地路径见[开发者指南](development.md#cli-与-registry-开发)。
 
 ## CLI 拒绝覆盖文件
 

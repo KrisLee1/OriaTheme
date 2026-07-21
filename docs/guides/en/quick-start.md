@@ -4,7 +4,7 @@
 
 This guide initializes OriaTheme in an existing React, Vue, or framework-free web app, restores the first paint, switches themes, and consumes CSS Variables. It uses package-root exports only.
 
-> The first npm release is not complete. The installation commands below describe the supported post-release workflow. For work inside this repository, start with the [developer guide](development.md).
+> `@oriatheme/*@0.1.0` is published. The installation commands below are for consumer projects; for work inside this repository, start with the [developer guide](development.md).
 
 ## 1. Install the relevant packages
 
@@ -196,4 +196,4 @@ The repository provides three private, runnable single-page examples. All use pu
 | `apps/examples/vue` | Vue 3 + Vite; a Vue 3 application | `pnpm dev:example:vue` |
 | `apps/examples/next` | Next.js; SSR/SSG, static default-theme, and Bootstrap integration | `pnpm dev:example:next` |
 
-Continue development by changing the page, components, and local `components/oria-theme-editor/` in the selected example. These examples use workspace dependencies and cannot be copied outside the repository as standalone projects. To integrate into your own project, follow this guide's package-installation steps; before the first npm release, use local-tarball verification. See the [apps/examples README](../../../apps/examples/README.md) and the [developer guide](development.md#run-examples) for the full feature list and production-build commands.
+Continue development by changing the page, components, and local `components/oria-theme-editor/` in the selected example. These examples use workspace dependencies and cannot be copied outside the repository as standalone projects. To integrate into your own project, follow this guide's published-package installation steps. See the [apps/examples README](../../../apps/examples/README.md) and the [developer guide](development.md#run-examples) for the full feature list and production-build commands.

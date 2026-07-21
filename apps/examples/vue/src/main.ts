@@ -8,4 +8,4 @@ import "../../styles.css";
 
 bootstrapTheme();
 
-createApp(App).use(createOriaTheme({ presets: oriaPresetThemes, defaultThemeId: "oria-default", transition: {type: "view-transition", duration: 420}  })).mount("#app");
+createApp(App).use(createOriaTheme({ presets: oriaPresetThemes, defaultThemeId: "oria-default", transition: {type: "view-transition", duration: 360}  })).mount("#app");

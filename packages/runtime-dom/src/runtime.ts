@@ -79,6 +79,7 @@ export function createOriaThemeRuntime(config: OriaThemeConfig): OriaThemeRuntim
   function clearTransition(transition?: ViewTransition): void {
     if (transition && activeTransition !== transition) return;
     const root = transitionRoot();
+    writer?.clearTransitionCircle();
     root?.removeAttribute("data-oria-transition");
     root?.style.removeProperty("--oria-transition-x");
     root?.style.removeProperty("--oria-transition-y");
@@ -88,7 +89,7 @@ export function createOriaThemeRuntime(config: OriaThemeConfig): OriaThemeRuntim
   }
   function normalizedDuration(): number {
     const duration = config.transition && config.transition.type === "view-transition" ? config.transition.duration : undefined;
-    return typeof duration === "number" && Number.isFinite(duration) ? Math.min(Math.max(duration, 1), 2_000) : 420;
+    return typeof duration === "number" && Number.isFinite(duration) ? Math.min(Math.max(duration, 1), 2_000) : 360;
   }
   function configureCircle(origin: ThemeChangeOptions["origin"]): void {
     const root = transitionRoot();
@@ -99,11 +100,12 @@ export function createOriaThemeRuntime(config: OriaThemeConfig): OriaThemeRuntim
     const coordinate = (value: number | undefined, size: number): number => typeof value === "number" && Number.isFinite(value) ? Math.min(Math.max(value, 0), size) : size / 2;
     const x = coordinate(origin?.x, width);
     const y = coordinate(origin?.y, height);
-    const radius = Math.max(Math.hypot(x, y), Math.hypot(width - x, y), Math.hypot(x, height - y), Math.hypot(width - x, height - y));
-    root.style.setProperty("--oria-transition-x", `${x}px`);
-    root.style.setProperty("--oria-transition-y", `${y}px`);
-    root.style.setProperty("--oria-transition-radius", `${radius}px`);
-    root.style.setProperty("--oria-transition-duration", `${normalizedDuration()}ms`);
+    // Keep the reveal moving for the whole transition, even when it starts near
+    // the viewport center. A full viewport diagonal reaches every edge too early
+    // and leaves Chrome with an apparently stalled snapshot. The small buffer
+    // absorbs sub-pixel rounding at the final frame without changing the path.
+    const radius = Math.max(Math.hypot(x, y), Math.hypot(width - x, y), Math.hypot(x, height - y), Math.hypot(width - x, height - y)) + 2;
+    writer?.setTransitionCircle({ x, y, radius, duration: normalizedDuration() });
     root.setAttribute("data-oria-transition", "circle");
   }
   function commit(persist: boolean, force = false, priorError: OriaThemeError | null = null, options?: ThemeChangeOptions): boolean {

@@ -4,7 +4,7 @@
 
 OriaTheme 是 framework-agnostic 的客户端主题 runtime，提供类型化 Token Contract、light/dark/system 模式、持久化、原子 CSS Variables 应用以及 React/Vue 薄适配层。
 
-> 发布状态：公开包已进入 `0.1.0` 发布准备，但 npm 首发与公开远程 registry 尚未完成。请勿把仓库版本号理解为 registry 已可安装。
+> 发布状态：十个公开 `@oriatheme/*` 包已发布 `0.1.0`；公开 registry 已可用于安装 CLI 源码组件。
 
 ## Packages
 
@@ -27,7 +27,7 @@ React、Vue 和 Next.js 的单页组件展示位于 [`apps/examples`](apps/examp
 
 ## 使用官方预设主题
 
-以下命令是 npm 首发后的正式安装方式；发布前请使用仓库 workspace 示例验证。
+以下是 `0.1.0` 的正式安装方式；仓库 workspace 示例仍仅用于本仓库开发与验证。
 
 ```bash
 # 选择项目正在使用的一种工具
