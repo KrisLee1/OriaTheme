@@ -28,6 +28,20 @@ OriaTheme runtime 负责校验、解析和写入动态 `--oria-*` 语义 CSS var
   color: var(--oria-color-primaryForeground);
   background: var(--oria-color-primary);
 }
+
+.textured-page {
+  /* Background pattern 位于可选背景渐变和基础背景色上方。 */
+  background:
+    var(--oria-pattern-background, none),
+    var(--oria-gradient-background, var(--oria-color-background));
+}
+
+.patterned-card {
+  /* 可选 pattern 缺失时保持普通表面。 */
+  background:
+    var(--oria-pattern-surface, none),
+    var(--oria-color-surfaceRaised);
+}
 ```
 
 主题切换后无需重建 CSS 或重新渲染：变量的新值会立即被所有已匹配的规则使用。

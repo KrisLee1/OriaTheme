@@ -9,7 +9,7 @@ OriaTheme is an ESM-only multi-package project. Its source repository uses pnpm 
 | Package | Install it when | Public capability |
 | --- | --- | --- |
 | `@oriatheme/core` | Defining, validating, resolving, importing, or exporting themes; generating trusted default CSS on a server | Pure TypeScript contract, theme model, diagnostics, and `oriaDefaultTheme`; no DOM, Storage, React, or Vue access |
-| `@oriatheme/presets` | Using the 36 official themes | `oriaPresetThemes`, `oriaPresetCatalog`, and named theme exports; depends on Core |
+| `@oriatheme/presets` | Using the 41 official themes | `oriaPresetThemes`, `oriaPresetCatalog`, and named theme exports; depends on Core |
 | `@oriatheme/runtime-dom` | Applying, persisting, and switching themes in a browser | `createOriaThemeRuntime()`, Bootstrap, external store, and View Transition; browser APIs are accessed only after `start()` |
 | `@oriatheme/react` | Integrating React 18.2 or 19 | `OriaThemeProvider`, `useOriaTheme()`, and `useThemeSnapshot()`; React and React DOM are peers |
 | `@oriatheme/vue` | Integrating Vue 3.5 | `createOriaTheme()`, `provideOriaTheme()`, and `useOriaTheme()`; Vue is a peer |
@@ -21,7 +21,7 @@ OriaTheme is an ESM-only multi-package project. Its source repository uses pnpm 
 
 ## Common combinations
 
-Oria Default only:
+Default only:
 
 ```ts
 import { oriaDefaultTheme } from "@oriatheme/core";

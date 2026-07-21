@@ -71,6 +71,7 @@ bootstrapTheme(options?: BootstrapOptions): void;
 - 在框架挂载前读取 active snapshot。
 - 按 appearance + matchMedia 选择变量。
 - 校验 schema、contract、prefix、变量 key/value 后单次写入 style。
+- 变量 value 拒绝 `;{}<>`、任意 `var(` / `expression(` / `url(`；唯一例外是 Core pattern 编译器生成的 `url("data:image/svg+xml,...")` 内联 SVG data URI（必须带引号且前缀完全匹配），其余 `url(` 形式一律拒绝。
 - 失败时静默使用消费应用的静态默认 CSS，不抛出阻塞启动的错误。
 - 不加载 preset 全集，不运行动画。
 - Bootstrap 与 runtime 使用相同变量命名和安全规则；可通过共享的精简模块避免规则漂移。

@@ -37,7 +37,7 @@ yarn add @oriatheme/presets @oriatheme/runtime-dom
 bun add @oriatheme/presets @oriatheme/runtime-dom
 ```
 
-`@oriatheme/presets` contains 36 complete themes. The default `oriaDefaultTheme` can also be imported directly from `@oriatheme/core`. See [packages and public entry points](packages.md) for the complete package map.
+`@oriatheme/presets` contains 41 complete themes. The default `oriaDefaultTheme` can also be imported directly from `@oriatheme/core`. See [packages and public entry points](packages.md) for the complete package map.
 
 ## 2. Restore the theme before framework mount
 
@@ -180,7 +180,7 @@ After the initialization above, continue with the guide that matches the result 
 
 | Do this next | Guide |
 | --- | --- |
-| Use one of the 36 official preset themes, or confirm the required package | [Packages and public entry points: common combinations](packages.md#common-combinations) |
+| Use one of the 41 official preset themes, or confirm the required package | [Packages and public entry points: common combinations](packages.md#common-combinations) |
 | Apply themed color, radius, shadow, and other variables to existing components | [Component styling](component-styling.md) |
 | Install the visible React/Vue theme-editor UI into project source | [Theme editors](theme-editors.md) |
 | Create, preview, save, import, or export a custom theme | [Custom themes](custom-themes.md) |

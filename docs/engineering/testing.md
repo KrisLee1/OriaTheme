@@ -4,6 +4,7 @@
 
 - Contract：非法 path、重复 token、类型覆盖、默认值和扩展合并。
 - 每种 token type 的有效/无效值与 CSS 编译。
+- 结构化 pattern：只接受已注册的类型、静态/引用颜色和正 dimension；编译为完整可叠加背景 layer，未设置时不输出变量。
 - 引用：直接、链式、缺失、类型不匹配、直接/间接循环。
 - Theme schema、normalize、clone、import/export、contract mismatch。
 - Seed 生成确定性和对比度诊断。
@@ -16,6 +17,7 @@
 - `styles.css` 与 `tailwind.css` exports、变量数量和映射完整。
 - 使用官方 Tailwind v4 CLI 真实编译 `bg-red-500`、`text-sky-300`、border、gradient、fill 等标准颜色类名。
 - Core、Runtime 和 ThemeDefinition 不包含或注入静态基础色库。
+- 结构化 Pattern 覆盖 1–8 个有序 dot、stripe、grid、noise 图层、0–360° angle、安全颜色/引用、正尺寸、受控 Paper/Film/Frosted variant、0–1 intensity 及 browser-valid CSS layer；Paper 回归应断言确定性纤维、杂点和低强度底纹标记，Film/Frosted 继续断言各自 `feTurbulence` profile；非法值不得产生部分 stylesheet。
 
 ## Runtime DOM
 

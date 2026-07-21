@@ -9,7 +9,7 @@ OriaTheme is a framework-agnostic client-side theming runtime with a typed Token
 ## Packages
 
 - `@oriatheme/core`: environment-independent contracts, validation, resolution, import/export, and diagnostics.
-- `@oriatheme/presets`: an optional set of 36 complete official themes with discoverable catalog metadata.
+- `@oriatheme/presets`: an optional set of 41 complete official themes with discoverable catalog metadata.
 - `@oriatheme/runtime-dom`: client-only runtime, storage, bootstrap, and optional View Transitions.
 - `@oriatheme/react`: React Provider, snapshot hooks, and selectors.
 - `@oriatheme/vue`: Vue plugin, provide API, and composables.

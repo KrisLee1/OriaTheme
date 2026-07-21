@@ -32,6 +32,8 @@ export type ThemeTokenSet = Readonly<Record<TokenPath, ThemeTokenInput>>;
 
 ThemeDefinition v1 为了让每个模式可独立完整校验，仍在 `modes.light` 与 `modes.dark` 中物化全部 required token。编辑器层可以把稳定的设计属性声明为跨模式共享，并在写入时原子同步两套 token；这不新增顶层 `shared` 字段，也不改变 schemaVersion 1 的导入、导出或持久化格式。标准编辑器作用域见 [ADR-0006](../decisions/ADR-0006-shared-editor-token-scope.md)。
 
+标准 contract 可以新增可选 token 而不改变 schemaVersion；缺失的可选 token 不输出 CSS 变量。`pattern.background` 与 `pattern.surface` 因而可按主题、按 mode 独立提供，其有序图层数组可表达多种叠加纹理。
+
 ## 身份规则
 
 - `id` 匹配 `/^[a-z][a-z0-9-]{1,63}$/`。
@@ -44,7 +46,7 @@ ThemeDefinition v1 为了让每个模式可独立完整校验，仍在 `modes.li
 
 - `@oriatheme/core` 保留 `oriaDefaultTheme`，保证基础使用场景与已有 API 的兼容性。
 - `@oriatheme/presets` 是可选安装包，重新导出默认主题，并提供 `oriaPresetThemes` 与其余具名官方 preset。
-- 使用多款官方主题时，将 `oriaPresetThemes`（或由具名导出组成的子集）传给 runtime 的 `presets`；主题 ID 是稳定选择标识。
+- 使用多款官方主题时，将 `oriaPresetThemes`（或由具名导出组成的子集）传给 runtime 的 `presets`；主题 ID 是稳定选择标识。官方显示名称可以在发布版本间更正；此类更正不得改变主题 ID、具名导出或 token 数据。
 - 所有官方 preset 必须使用标准 contract、`kind: "preset"`，且在 light/dark 下完整校验、解析并无关键对比度警告。
 - 官方名称、分类、描述、灵感和计划状态以 [官方预设主题目录](preset-catalog.md) 为准；发布包中的目录项只保留主题引用与分类，不把文档和流程元数据写入 `ThemeDefinition` v1 或额外复制到运行时 bundle。
 

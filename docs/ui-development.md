@@ -37,7 +37,7 @@
 | Host 页面 | `apps/examples/*` | 只组合 runtime、主题工作台和本地 `ThemeEditor`，不实现 token 字段 |
 | 示例 Token gallery | `apps/examples/react/src/token-showcase.tsx`、`apps/examples/next/app/token-showcase.tsx`、`apps/examples/vue/src/token-showcase.ts`、`apps/examples/styles.css` | 框架私有展示组件；三端保持同一信息架构，所有随主题变化的视觉值只消费 `--oria-*`，静态基础色库只展示 `@oriatheme/colors` 的稳定值 |
 
-示例页与编辑器中，颜色、字体、字重、字号、行高、字距、控件尺寸、圆角、阴影、模糊、渐变与动效均必须消费主题变量；仅布局结构尺寸和静态 `@oriatheme/colors` 色值展示可以保持非主题常量。页面选区必须通过 `::selection` 消费 `color.selection` / `color.selectionForeground`，可见状态样例不得只写 token 名而不实际应用变量。
+示例页与编辑器中，颜色、字体、字重、字号、行高、字距、控件尺寸、圆角、阴影、模糊、渐变、图案与动效均必须消费主题变量；`pattern.background` 用于页面画布，`pattern.surface` 用于组件表面。仅布局结构尺寸和静态 `@oriatheme/colors` 色值展示可以保持非主题常量。页面选区必须通过 `::selection` 消费 `color.selection` / `color.selectionForeground`，可见状态样例不得只写 token 名而不实际应用变量。
 
 ## 文档路由
 

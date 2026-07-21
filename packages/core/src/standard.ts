@@ -25,6 +25,8 @@ for (const path of ["xs", "sm", "md", "lg", "xl", "2xl", "3xl"]) required("dimen
 for (const path of ["xs", "sm", "md", "lg", "xl", "2xl", "3xl"]) required("dimension", `effect.backdropBlur.${path}|Backdrop blur radius.`);
 required("number", "effect.backdropSaturation|Backdrop saturation.", { minimum: 0, maximum: 3 });
 for (const path of ["background", "surface", "accent"]) optional("gradient", `gradient.${path}`, "Optional structured gradient.");
+optional("pattern", "pattern.background", "Optional ordered, structured background-pattern layers.");
+optional("pattern", "pattern.surface", "Optional ordered, structured surface-pattern layers.");
 for (const path of ["instant", "fast", "normal", "slow"]) required("duration", `motion.duration.${path}|Motion duration.`);
 for (const path of ["standard", "entrance", "exit", "emphasized"]) required("cubicBezier", `motion.easing.${path}|Motion easing.`);
 
@@ -63,4 +65,4 @@ const colors = (dark: boolean): Record<string, ThemeTokenInput> => ({
 });
 const tokensFor = (dark: boolean): Readonly<Record<TokenPath, ThemeTokenInput>> => Object.freeze({ ...shared, ...colors(dark) } as Record<TokenPath, ThemeTokenInput>);
 /** Complete built-in preset with AA body text combinations in both modes. */
-export const oriaDefaultTheme: ThemeDefinition = Object.freeze({ schemaVersion: 1, contract: { name: "oria-standard", version: 1 }, id: "oria-default", name: "Oria Default", kind: "preset", modes: Object.freeze({ light: tokensFor(false), dark: tokensFor(true) }) });
+export const oriaDefaultTheme: ThemeDefinition = Object.freeze({ schemaVersion: 1, contract: { name: "oria-standard", version: 1 }, id: "oria-default", name: "Default", kind: "preset", modes: Object.freeze({ light: tokensFor(false), dark: tokensFor(true) }) });

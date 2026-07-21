@@ -17,3 +17,5 @@
 - [ADR-0011：补齐 Tailwind 4.3.3 尺度与颜色命名拓扑](ADR-0011-tailwind-scale-and-color-topology.md)
 - [ADR-0012：先发布公开库，再以发布版本建设官网](ADR-0012-release-before-website.md)
 - [ADR-0013：将官网建设拆分至 Phase 9](ADR-0013-website-in-phase-09.md)
+- [ADR-0014：结构化表面图案](ADR-0014-structured-surface-patterns.md)
+- [ADR-0015：背景图案 Token](ADR-0015-background-pattern-token.md)

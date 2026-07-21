@@ -25,7 +25,8 @@ export type TokenType =
   | "duration"
   | "cubicBezier"
   | "shadow"
-  | "gradient";
+  | "gradient"
+  | "pattern";
 
 export type TokenPath = string & { readonly __tokenPath: unique symbol };
 
@@ -68,7 +69,8 @@ export type TokenValue =
   | readonly string[]
   | readonly [number, number, number, number]
   | readonly ShadowLayer[]
-  | GradientDefinition;
+  | GradientDefinition
+  | PatternLayers;
 
 export interface ShadowLayer {
   x: string;
@@ -115,6 +117,43 @@ export type GradientDefinition =
       position?: GradientPosition;
       stops: readonly GradientStop[];
     };
+
+export interface DotPatternDefinition {
+  type: "dot";
+  color: string | TokenReference;
+  radius: string;
+  spacing: string;
+  angle?: number;
+}
+
+export interface StripePatternDefinition {
+  type: "stripe";
+  color: string | TokenReference;
+  stripeWidth: string;
+  spacing: string;
+  angle: number;
+}
+
+export interface GridPatternDefinition {
+  type: "grid";
+  color: string | TokenReference;
+  lineWidth: string;
+  spacing: string;
+  angle: number;
+}
+
+export type NoisePatternVariant = "paper" | "film" | "frosted";
+
+export interface NoisePatternDefinition {
+  type: "noise";
+  color: string | TokenReference;
+  variant: NoisePatternVariant;
+  tileSize: string;
+  intensity: number;
+}
+
+export type PatternLayer = DotPatternDefinition | StripePatternDefinition | GridPatternDefinition | NoisePatternDefinition;
+export type PatternLayers = readonly PatternLayer[];
 ```
 
 值由对应 TokenDefinition.type 决定，不能只依赖 TypeScript union。运行时必须按 contract 校验。
@@ -135,7 +174,7 @@ export type GradientDefinition =
 
 ## 标准 Contract 分层
 
-下表是 `oria-standard@1` 的标准分层索引。花括号内的每个后缀都是一个**独立注册的 token**。除 gradient 外，表中 token 均为必需项。稳定基础颜色不属于主题 contract，由独立的 `@oriatheme/colors` 提供。
+下表是 `oria-standard@1` 的标准分层索引。花括号内的每个后缀都是一个**独立注册的 token**。除 gradient 和 pattern 外，表中 token 均为必需项。稳定基础颜色不属于主题 contract，由独立的 `@oriatheme/colors` 提供。
 
 | 层 | Token | CSS 变量名 | 值的类型 / 示例 | 作用 |
 |---|---|---|---|---|
@@ -197,10 +236,11 @@ export type GradientDefinition =
 | Effects | `effect.backdropBlur.{xs,sm,md,lg,xl,2xl,3xl}` | `--oria-effect-backdropBlur-*` | `dimension`；`20px` | 轻薄提示至强材质 backdrop blur 阶梯。 |
 | Effects | `effect.backdropSaturation` | `--oria-effect-backdropSaturation` | `number`（`0…3`）；`1.18` | 玻璃材质 backdrop 的饱和度。 |
 | Effects | `gradient.{background,surface,accent}` | `--oria-gradient-{background,surface,accent}` | 可选 `gradient`；`{ type: "linear", angle: 135, stops: [...] }` | 背景、表面和强调区域的结构化渐变。 |
+| Effects | `pattern.{background,surface}` | `--oria-pattern-{background,surface}` | 可选 `pattern`；`[{ type: "noise", variant: "paper", color: "#2a25201f", tileSize: "48px", intensity: 0.12 }]` | 有序的可叠加背景或表面图层；支持几何纹理与受控纸张、胶片、磨砂颗粒；第一个图层绘制在最上方，最多 8 层。 |
 | Motion | `motion.duration.{instant,fast,normal,slow}` | `--oria-motion-duration-{instant,fast,normal,slow}` | `duration`；`220ms` | 立即、快速、默认和慢速动画时长。 |
 | Motion | `motion.easing.{standard,entrance,exit,emphasized}` | `--oria-motion-easing-{standard,entrance,exit,emphasized}` | `cubicBezier`；`[0.2, 0, 0, 1]` | 通用、进入、退出和强调动画缓动。 |
 
-表中的 CSS 变量按默认 `variablePrefix: "oria"` 展示；编译时仅将 path 中的 `.` 替换为 `-`，字段段的 camelCase 保持原样。消费者可配置其他前缀或空前缀，但该转换规则保持不变。`gradient.*` 是唯一可选标准 token；所有其他表项必须在完整解析后存在。
+表中的 CSS 变量按默认 `variablePrefix: "oria"` 展示；编译时仅将 path 中的 `.` 替换为 `-`，字段段的 camelCase 保持原样。消费者可配置其他前缀或空前缀，但该转换规则保持不变。`gradient.*` 与 `pattern.*` 是可选标准 token；所有其他表项必须在完整解析后存在。
 
 ### 静态基础色库（Contract 外）
 
@@ -329,9 +369,11 @@ effect.backdropSaturation
 gradient.background
 gradient.surface
 gradient.accent
+pattern.background
+pattern.surface
 ```
 
-透明度为 `0...1` number；前景 blur 与 backdrop blur 都是七级 dimension 阶梯；saturation 为受限 number。默认前景 blur 为 2px / 4px / 8px / 16px / 24px / 40px / 64px，默认 backdrop blur 为 4px / 8px / 14px / 20px / 28px / 40px / 64px，组件按表面层级选择而不是写死像素值。三个 gradient token 为可选结构化 gradient。Glass 风格依赖 backdrop tokens，但组件必须实际引用它们。
+透明度为 `0...1` number；前景 blur 与 backdrop blur 都是七级 dimension 阶梯；saturation 为受限 number。默认前景 blur 为 2px / 4px / 8px / 16px / 24px / 40px / 64px，默认 backdrop blur 为 4px / 8px / 14px / 20px / 28px / 40px / 64px，组件按表面层级选择而不是写死像素值。三个 gradient token 与 `pattern.background`、`pattern.surface` 都是可选结构化材质 token。Pattern 是 1–8 个按绘制顺序排列的图层：第一个图层在最上方。每层只接受安全静态颜色或同模式 `color.*` 引用；`dot` 使用 radius、spacing 和可选 0–360° angle，`stripe` 使用 stripeWidth、spacing 和 angle，`grid` 使用 lineWidth、spacing 和 angle。`noise` 使用受限的 `paper` / `film` / `frosted` variant、正 tileSize 与 0–1 intensity。Paper 由低强度的固定 `feTurbulence` 底纹与确定性稀疏短纤维、细小杂点组成；Film 与 Frosted 保持各自固定的 `feTurbulence` profile。Core 只生成这些受控 SVG data URI，而不接受噪点图片或自由 CSS。消费者分别以 `background: var(--oria-pattern-background, none), <background layers>` 与 `background: var(--oria-pattern-surface, none), var(--oria-color-surfaceRaised)` 叠加背景或表面颜色。Glass 风格依赖 backdrop tokens，但组件必须实际引用它们。
 
 ### 7. Motion
 
@@ -356,6 +398,7 @@ duration 和 cubicBezier 采用结构化类型。`prefers-reduced-motion` 的处
 | `effect.opacity.*`、`effect.backdropSaturation` | `number` |
 | `effect.blur.*`、`effect.backdropBlur.*` | `dimension` |
 | `gradient.*` | `gradient` |
+| `pattern.background` / `pattern.surface` | `pattern` |
 | `motion.duration.*` | `duration` |
 | `motion.easing.*` | `cubicBezier` |
 
@@ -403,6 +446,7 @@ elevation.shadow.md     → --oria-elevation-shadow-md
 - cubicBezier tuple → `cubic-bezier(a,b,c,d)`。
 - ShadowLayer[] → 合法的多层 box-shadow。
 - GradientDefinition → 只支持 schema 中声明的 gradient 类型和 stops：`linear` / `repeating-linear` 分别编译为 `linear-gradient` / `repeating-linear-gradient` 并使用 angle；`radial` / `repeating-radial` 分别编译为 `radial-gradient` / `repeating-radial-gradient`，固定使用 `circle at <position>`；`conic` 编译为 `conic-gradient(from <angle>deg at <position>, <stops>)`。position 接受九宫格关键字或 `{ x, y }` 百分比坐标；x/y 必须为 0–100 的有限数值并编译为 `x% y%`，缺省使用 `center`。
+- PatternLayers → 每个 PatternLayer 按数组顺序编译并以逗号连接到 CSS background；第一个图层在最上方。点阵在未设置/设置 `0deg` 时编译为 `radial-gradient(circle at center, <color> 0 <radius>, transparent <radius>) 0 0 / <spacing> <spacing> repeat`；非零角度点阵以受控 SVG data URI 旋转。条纹编译为 `repeating-linear-gradient(<angle>deg, <color> 0 <stripeWidth>, transparent <stripeWidth> <spacing>)`；网格为该 layer 与角度加 90° 的第二 layer。Paper noise 编译为低对比底纹加固定位置的短纤维与细小杂点；Film 与 Frosted 继续按各自固定的 `feTurbulence` profile 编译。三种 noise 都以 color、tileSize 和 intensity 生成透明 SVG data URI 图层。
 - number → 不隐式附加单位。
 
 ## 安全与验证
@@ -411,7 +455,7 @@ elevation.shadow.md     → --oria-elevation-shadow-md
 - color 应通过静态解析器；浏览器 runtime 可以再用 `CSS.supports` 校验。
 - dimension 只接受允许的单位和零值，禁止 `url()`、`var()` 与任意函数；token 引用使用 `$ref` 表达。
 - font family 必须逐项转义。
-- gradient、shadow 不接受原始 CSS 字符串。
+- gradient、pattern、shadow 不接受原始 CSS 字符串；pattern 的颜色引用必须解析为同一模式内的 color token。
 - 先解析完整 token graph，再生成 CSS；任何错误都不得产生部分 stylesheet。
 
 ## 自定义主题与编辑器元数据

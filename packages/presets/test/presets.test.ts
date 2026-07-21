@@ -4,9 +4,14 @@ import {
   oriaAuroraTheme,
   oriaForestTheme,
   oriaGlassTheme,
+  oriaGoldenBazaarTheme,
   oriaLineArtTheme,
+  oriaSketchbookTheme,
+  oriaSoftClayTheme,
+  oriaTheoremTheme,
   oriaMinimalismTheme,
   oriaOceanTheme,
+  oriaPunchcardTheme,
   oriaPresetCatalog,
   oriaPresetThemes,
   oriaWarmReadingTheme
@@ -16,12 +21,12 @@ const expectedThemeIds = [
   "oria-default", "oria-ocean", "oria-forest", "oria-aurora",
   "oria-warm-reading", "oria-monochrome-deploy", "oria-precision-flow", "oria-document-canvas", "oria-elevated-surface",
   "oria-bento-ui", "oria-dashboard", "oria-editorial", "oria-ai-native", "oria-command-center", "oria-spatial-ui",
-  "oria-mono", "oria-minimalism", "oria-line-art", "oria-glass", "oria-neo-brutalism", "oria-neumorphism", "oria-memphis", "oria-soft-ui", "oria-cyberpunk", "oria-y2k", "oria-retro-terminal", "oria-paper",
+  "oria-mono", "oria-minimalism", "oria-line-art", "oria-glass", "oria-neo-brutalism", "oria-punchcard", "oria-sketchbook", "oria-soft-clay", "oria-golden-bazaar", "oria-theorem", "oria-neumorphism", "oria-memphis", "oria-soft-ui", "oria-cyberpunk", "oria-y2k", "oria-retro-terminal", "oria-paper",
   "oria-calm", "oria-playful", "oria-premium", "oria-organic", "oria-cottagecore", "oria-nature", "oria-retro", "oria-kawaii", "oria-sunset"
 ];
 
 describe("Oria preset collection", () => {
-  it("exports all 36 stable, unique preset identities", () => {
+  it("exports all 41 stable, unique preset identities", () => {
     expect(oriaPresetThemes.map(theme => theme.id)).toEqual(expectedThemeIds);
     expect(new Set(oriaPresetThemes.map(theme => theme.id)).size).toBe(oriaPresetThemes.length);
     expect(oriaPresetThemes.every(theme => theme.kind === "preset")).toBe(true);
@@ -38,6 +43,7 @@ describe("Oria preset collection", () => {
 
   it("keeps Aurora's stable identity and provides distinct representative palettes", () => {
     expect(oriaAuroraTheme.id).toBe("oria-aurora");
+    expect([oriaOceanTheme, oriaForestTheme, oriaAuroraTheme].map(theme => theme.name)).toEqual(["Ocean", "Forest", "Aurora"]);
     const primary = [oriaOceanTheme, oriaForestTheme, oriaAuroraTheme, oriaWarmReadingTheme].map(theme => resolveTheme(theme, "light").variables["--oria-color-primary"]);
     expect(new Set(primary).size).toBe(primary.length);
   });
@@ -154,8 +160,63 @@ describe("Oria preset collection", () => {
     expect(variables("oria-glass")["--oria-elevation-shadow-highlight"]!.split(",")).toHaveLength(6);
     expect(variables("oria-glass")["--oria-elevation-shadow-md"]!.split(",")).toHaveLength(7);
     expect(variables("oria-glass", "dark")["--oria-color-primary"]).toBe("#4ac5ff");
+    expect(variables("oria-document-canvas")["--oria-color-background"]).toBe("#eeeeef");
+    expect(variables("oria-document-canvas")["--oria-color-primary"]).toBe("#292a31");
+    expect(variables("oria-document-canvas")["--oria-typography-font-display"]).toContain("SFMono-Regular");
+    expect(variables("oria-document-canvas")["--oria-shape-radius-md"]).toBe("0");
+    expect(variables("oria-document-canvas")["--oria-color-border"]).toBe("#ffffffcc");
+    expect(variables("oria-document-canvas")["--oria-elevation-shadow-highlight"]).toContain("inset");
+    expect(variables("oria-document-canvas")["--oria-pattern-surface"]).toContain("data:image/svg+xml");
+    expect(variables("oria-document-canvas", "dark")["--oria-color-background"]).toBe("#1b1c21");
+    expect(variables("oria-document-canvas", "dark")["--oria-color-border"]).toBe("#ffffff1f");
     expect(variables("oria-neo-brutalism")["--oria-shape-borderWidth-strong"]).toBe("3px");
     expect(variables("oria-neo-brutalism")["--oria-elevation-shadow-md"]).toContain("7px 7px 0 0");
+    expect(oriaPunchcardTheme.id).toBe("oria-punchcard");
+    expect(variables("oria-punchcard")["--oria-color-background"]).toBe("#fff2da");
+    expect(variables("oria-punchcard")["--oria-color-secondary"]).toBe("#f4a4bd");
+    expect(variables("oria-punchcard")["--oria-color-accent"]).toBe("#9ed4f2");
+    expect(variables("oria-punchcard")["--oria-shape-borderWidth-strong"]).toBe("2px");
+    expect(variables("oria-punchcard")["--oria-elevation-shadow-lg"]).toContain("8px 8px 0 0");
+    expect(variables("oria-punchcard")["--oria-pattern-surface"]).toBe("radial-gradient(circle at center, #2a25201f 0 0.9px, transparent 0.9px) 0 0 / 1rem 1rem repeat");
+    expect(variables("oria-punchcard", "dark")["--oria-pattern-surface"]).toBe("radial-gradient(circle at center, #fff1d926 0 0.9px, transparent 0.9px) 0 0 / 1rem 1rem repeat");
+    expect(variables("oria-ocean")["--oria-pattern-surface"]).toBeUndefined();
+    expect(oriaSketchbookTheme.id).toBe("oria-sketchbook");
+    expect(variables("oria-sketchbook")["--oria-color-background"]).toBe("#fffefa");
+    expect(variables("oria-sketchbook")["--oria-color-primary"]).toBe("#2d2927");
+    expect(variables("oria-sketchbook")["--oria-color-secondary"]).toBe("#b7f3c5");
+    expect(variables("oria-sketchbook")["--oria-color-accent"]).toBe("#ffe49c");
+    expect(variables("oria-sketchbook")["--oria-typography-font-display"]).toContain("Chalkboard SE");
+    expect(variables("oria-sketchbook")["--oria-shape-borderWidth-default"]).toBe("2px");
+    expect(variables("oria-sketchbook")["--oria-pattern-surface"]).toContain("radial-gradient");
+    expect(variables("oria-sketchbook")["--oria-pattern-surface"]).toContain("data:image/svg+xml");
+    expect(variables("oria-sketchbook", "dark")["--oria-color-background"]).toBe("#211f1c");
+    expect(oriaSoftClayTheme.id).toBe("oria-soft-clay");
+    expect(variables("oria-soft-clay")["--oria-color-background"]).toBe("#f3f0eb");
+    expect(variables("oria-soft-clay")["--oria-color-primary"]).toBe("#e9781c");
+    expect(variables("oria-soft-clay")["--oria-typography-font-sans"]).toContain("ui-rounded");
+    expect(variables("oria-soft-clay")["--oria-shape-radius-lg"]).toBe("2.75rem");
+    expect(variables("oria-soft-clay")["--oria-elevation-shadow-lg"]!.split(",")).toHaveLength(3);
+    expect(variables("oria-soft-clay")["--oria-gradient-surface"]).toContain("#ffffff");
+    expect(variables("oria-soft-clay", "dark")["--oria-color-background"]).toBe("#28221d");
+    expect(oriaGoldenBazaarTheme.id).toBe("oria-golden-bazaar");
+    expect(variables("oria-golden-bazaar")["--oria-color-background"]).toBe("#fff0d8");
+    expect(variables("oria-golden-bazaar")["--oria-color-primary"]).toBe("#f4b522");
+    expect(variables("oria-golden-bazaar")["--oria-color-secondary"]).toBe("#f06d36");
+    expect(variables("oria-golden-bazaar")["--oria-color-accent"]).toBe("#413896");
+    expect(variables("oria-golden-bazaar")["--oria-shape-radius-lg"]).toBe("2.625rem");
+    expect(variables("oria-golden-bazaar")["--oria-gradient-background"]).toContain("radial-gradient");
+    expect(variables("oria-golden-bazaar")["--oria-elevation-shadow-lg"]!.split(",")).toHaveLength(2);
+    expect(variables("oria-golden-bazaar", "dark")["--oria-color-background"]).toBe("#2b1c16");
+    expect(oriaTheoremTheme.id).toBe("oria-theorem");
+    expect(variables("oria-theorem")["--oria-color-background"]).toBe("#f0ede5");
+    expect(variables("oria-theorem")["--oria-color-primary"]).toBe("#27231e");
+    expect(variables("oria-theorem")["--oria-color-accent"]).toBe("#8d3029");
+    expect(variables("oria-theorem")["--oria-typography-font-display"]).toContain("Iowan Old Style");
+    expect(variables("oria-theorem")["--oria-shape-radius-lg"]).toBe("0");
+    expect(variables("oria-theorem")["--oria-color-scrim"]).toBe("#25231f59");
+    expect(variables("oria-theorem")["--oria-elevation-shadow-md"]).toBe("");
+    expect(variables("oria-theorem")["--oria-elevation-shadow-lg"]).toBe("8px 10px 0 0 #6b675f91, 0 18px 36px -18px #24221d59");
+    expect(variables("oria-theorem", "dark")["--oria-color-background"]).toBe("#292824");
     expect(variables("oria-neumorphism")["--oria-elevation-shadow-md"]!.split(",")).toHaveLength(2);
     expect(variables("oria-editorial")["--oria-typography-size-4xl"]).toBe("4.5rem");
     expect(variables("oria-retro-terminal")["--oria-shape-radius-md"]).toBe("0");
@@ -189,6 +250,7 @@ describe("Oria preset collection", () => {
     for (const id of ["oria-neo-brutalism", "oria-cyberpunk", "oria-retro-terminal"]) expect(radii(id)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
     expect(radii("oria-editorial")).toEqual([0, 0, 0.125, 0.25, 0.375, 0.5, 0.75, 1]);
     expect(radii("oria-line-art")).toEqual([0, 0, 0, 0.125, 0.125, 0.25, 0.375, 0.5]);
+    expect(radii("oria-punchcard")).toEqual([0.25, 0.5, 0.75, 1, 1.25, 1.5, 2.25, 3]);
     expect(radii("oria-glass")).toEqual([0.25, 0.5, 0.75, 0.9, 1.25, 1.75, 2.625, 3.5]);
     expect(radii("oria-y2k")).toEqual([0.5, 1, 1.5, 2.25, 3.25, 4, 6, 8]);
     expect(radii("oria-kawaii")).toEqual([0.75, 1, 1.5, 2.25, 3.5, 5, 7.5, 10]);

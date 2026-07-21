@@ -2,7 +2,7 @@ import { OriaThemeError } from "./errors.js";
 import type { TokenContract, TokenContractInput, TokenDefinition, TokenPath, TokenType } from "./types.js";
 
 const PATH = /^[a-z][a-zA-Z0-9]*(\.(?:[a-z][a-zA-Z0-9]*|[0-9]+(?:[a-z][a-zA-Z0-9]*)?))+$/;
-const TYPES: ReadonlySet<string> = new Set(["color", "dimension", "number", "fontFamily", "fontWeight", "duration", "cubicBezier", "shadow", "gradient"]);
+const TYPES: ReadonlySet<string> = new Set(["color", "dimension", "number", "fontFamily", "fontWeight", "duration", "cubicBezier", "shadow", "gradient", "pattern"]);
 
 export function isTokenPath(value: string): value is TokenPath { return PATH.test(value); }
 
@@ -63,6 +63,7 @@ function validDefault(definition: TokenDefinition): boolean {
   if (definition.type === "cubicBezier") return Array.isArray(value) && value.length === 4 && value.every(item => typeof item === "number" && Number.isFinite(item));
   if (definition.type === "shadow") return Array.isArray(value) && value.every(layer => typeof layer === "object" && layer !== null);
   if (definition.type === "gradient") return typeof value === "object" && value !== null && !Array.isArray(value);
+  if (definition.type === "pattern") return Array.isArray(value);
   if (typeof value !== "string" || !safeString(value)) return false;
   if (definition.type === "dimension") return /^(?:0|[-+]?(?:\d+|\d*\.\d+)(?:px|rem|em|%|vw|vh|vmin|vmax|ch|ex|cm|mm|in|pt|pc))$/.test(value);
   if (definition.type === "duration") return /^(?:0|[-+]?(?:\d+|\d*\.\d+)(?:ms|s))$/.test(value);

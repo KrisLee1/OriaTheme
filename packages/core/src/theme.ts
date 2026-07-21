@@ -2,7 +2,7 @@ import { issue, OriaThemeError } from "./errors.js";
 import type { OriaThemeErrorCode } from "./errors.js";
 import { isTokenPath } from "./contract.js";
 import { oriaDefaultTheme, oriaStandardContract } from "./standard.js";
-import type { Clock, CloneIdentity, CreateThemeOptions, GradientDefinition, GradientPosition, GradientStop, ImportResult, ImportThemeOptions, ResolveOptions, ResolvedMode, ResolvedTheme, ShadowLayer, ThemeDefinition, ThemeSeed, ThemeTokenInput, TokenContract, TokenDefinition, TokenPath, TokenReference, TokenType, TokenValue, ValidationIssue, ValidationResult } from "./types.js";
+import type { Clock, CloneIdentity, CreateThemeOptions, GradientDefinition, GradientPosition, GradientStop, ImportResult, ImportThemeOptions, NoisePatternVariant, PatternLayer, PatternLayers, ResolveOptions, ResolvedMode, ResolvedTheme, ShadowLayer, ThemeDefinition, ThemeSeed, ThemeTokenInput, TokenContract, TokenDefinition, TokenPath, TokenReference, TokenType, TokenValue, ValidationIssue, ValidationResult } from "./types.js";
 
 const ID = /^[a-z][a-z0-9-]{1,63}$/;
 const UNSAFE = /[;{}<>]/;
@@ -13,6 +13,7 @@ const RGB = /^rgba?\(\s*(?:\d{1,3}%?\s*,\s*){2}\d{1,3}%?(?:\s*[,/]\s*(?:0|1|0?\.
 const HSL = /^hsla?\(\s*[-+]?\d+(?:\.\d+)?(?:deg|rad|turn)?\s*(?:,|\s)\s*\d+(?:\.\d+)?%\s*(?:,|\s)\s*\d+(?:\.\d+)?%(?:\s*[,/]\s*(?:0|1|0?\.\d+|\d{1,3}%))?\s*\)$/i;
 const NAMED = new Set(["transparent", "currentcolor", "black", "white", "red", "green", "blue", "gray", "grey", "yellow", "purple", "orange", "pink", "brown"]);
 const GRADIENT_POSITIONS = new Set(["top left", "top", "top right", "left", "center", "right", "bottom left", "bottom", "bottom right"]);
+const NOISE_VARIANTS = new Set<NoisePatternVariant>(["paper", "film", "frosted"]);
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
 const reference = (value: unknown): value is TokenReference => object(value) && Object.keys(value).length === 1 && typeof value.$ref === "string" && isTokenPath(value.$ref);
 const stableClone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
@@ -148,6 +149,7 @@ function validateTokenSet(value: unknown, mode: string, contract: TokenContract,
     if (reference(input)) { if (!contract.tokens[input.$ref]) issues.push(issue("TOKEN_REFERENCE_NOT_FOUND", `Unknown reference ${input.$ref}.`, fullPath)); continue; }
     const reason = valueError(input, definition);
     if (reason) issues.push(issue("INVALID_TOKEN_VALUE", reason, fullPath));
+    else validatePatternReference(input, definition, contract, fullPath, issues);
   }
   for (const [path, definition] of Object.entries(contract.tokens)) if (definition.required && value[path] === undefined && definition.default === undefined) issues.push(issue("INVALID_THEME", "Required token is missing.", `modes.${mode}.${path}`));
 }
@@ -157,6 +159,7 @@ function valueError(value: unknown, definition: TokenDefinition): string | undef
   if (definition.type === "cubicBezier") return !Array.isArray(value) || value.length !== 4 || value.some(item => typeof item !== "number" || !Number.isFinite(item)) ? "Expected a four-number cubic bezier tuple." : undefined;
   if (definition.type === "shadow") return !Array.isArray(value) || value.some(layer => !validShadow(layer)) ? "Expected structured shadow layers." : undefined;
   if (definition.type === "gradient") return !validGradient(value) ? "Expected a structured gradient with at least two valid stops." : undefined;
+  if (definition.type === "pattern") return !validPatternLayers(value) ? "Expected 1–8 ordered dot, stripe, or grid layers with safe colors, positive dimensions, and valid angles." : undefined;
   if (typeof value !== "string" || !safeString(value)) return "Expected a safe CSS string.";
   if (definition.type === "color") return validColor(value) ? undefined : "Expected a statically parseable color.";
   if (definition.type === "dimension") return DIMENSION.test(value) ? undefined : "Expected a dimension with an allowed unit.";
@@ -183,6 +186,29 @@ function validGradientPosition(value: unknown): value is GradientPosition {
 }
 function compileGradientPosition(value: GradientPosition | undefined): string { return value === undefined ? "center" : typeof value === "string" ? value : `${value.x}% ${value.y}%`; }
 function validStop(value: unknown): value is GradientStop { return object(value) && (typeof value.color === "string" ? validColor(value.color) : reference(value.color)) && (value.position === undefined || (typeof value.position === "number" && value.position >= 0 && value.position <= 100)); }
+function positiveDimension(value: unknown): value is string { return typeof value === "string" && DIMENSION.test(value) && Number.parseFloat(value) > 0; }
+function validPatternColor(value: unknown): boolean { return typeof value === "string" ? validColor(value) : reference(value); }
+function validPatternAngle(value: unknown): value is number { return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 360; }
+function validPatternIntensity(value: unknown): value is number { return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1; }
+function validPatternLayer(value: unknown): value is PatternLayer {
+  if (!object(value) || !validPatternColor(value.color)) return false;
+  if (value.type === "noise") return Object.keys(value).length === 5 && typeof value.variant === "string" && NOISE_VARIANTS.has(value.variant as NoisePatternVariant) && positiveDimension(value.tileSize) && validPatternIntensity(value.intensity);
+  if (!positiveDimension(value.spacing)) return false;
+  if (value.type === "dot") return Object.keys(value).length === (value.angle === undefined ? 4 : 5) && positiveDimension(value.radius) && (value.angle === undefined || validPatternAngle(value.angle));
+  if (value.type === "stripe") return Object.keys(value).length === 5 && positiveDimension(value.stripeWidth) && validPatternAngle(value.angle);
+  return value.type === "grid" && Object.keys(value).length === 5 && positiveDimension(value.lineWidth) && validPatternAngle(value.angle);
+}
+function validPatternLayers(value: unknown): value is PatternLayers { return Array.isArray(value) && value.length > 0 && value.length <= 8 && value.every(validPatternLayer); }
+function validatePatternReference(input: unknown, definition: TokenDefinition, contract: TokenContract, path: string, issues: ValidationIssue[]): void {
+  if (definition.type !== "pattern" || !Array.isArray(input)) return;
+  for (const [index, layer] of input.entries()) {
+    if (!object(layer) || !reference(layer.color)) continue;
+    const target = contract.tokens[layer.color.$ref];
+    const layerPath = `${path}.${index}.color`;
+    if (!target) issues.push(issue("TOKEN_REFERENCE_NOT_FOUND", `Unknown pattern color reference ${layer.color.$ref}.`, layerPath));
+    else if (target.type !== "color") issues.push(issue("TOKEN_REFERENCE_TYPE_MISMATCH", "Pattern color references must target a color token.", layerPath, { target: layer.color.$ref }));
+  }
+}
 function compileValue(value: TokenValue, type: TokenType, get: (path: TokenPath) => TokenValue): string {
   if (type === "fontFamily") return (value as readonly string[]).map(family => /[\s,]/.test(family) ? `"${family.replace(/["\\]/g, "\\$&")}"` : family).join(", ");
   if (type === "cubicBezier") return `cubic-bezier(${(value as readonly number[]).join(", ")})`;
@@ -196,7 +222,36 @@ function compileValue(value: TokenValue, type: TokenType, get: (path: TokenPath)
     if (gradient.type === "repeating-radial") return `repeating-radial-gradient(circle at ${compileGradientPosition(gradient.position)}, ${stops})`;
     return `conic-gradient(from ${gradient.angle}deg at ${compileGradientPosition(gradient.position)}, ${stops})`;
   }
+  if (type === "pattern") {
+    const patterns = value as PatternLayers;
+    return patterns.map(pattern => compilePatternLayer(pattern, get)).join(", ");
+  }
   return String(value);
+}
+function compilePatternLayer(pattern: PatternLayer, get: (path: TokenPath) => TokenValue): string {
+  const color = typeof pattern.color === "string" ? pattern.color : String(get(pattern.color.$ref));
+  if (pattern.type === "dot") {
+    if (pattern.angle === undefined || pattern.angle === 0) return `radial-gradient(circle at center, ${color} 0 ${pattern.radius}, transparent ${pattern.radius}) 0 0 / ${pattern.spacing} ${pattern.spacing} repeat`;
+    return rotatedDotPattern(color, pattern.radius, pattern.spacing, pattern.angle);
+  }
+  if (pattern.type === "noise") return noisePattern(color, pattern.variant, pattern.tileSize, pattern.intensity);
+  if (pattern.type === "stripe") return repeatingLinePattern(color, pattern.stripeWidth, pattern.spacing, pattern.angle);
+  return `${repeatingLinePattern(color, pattern.lineWidth, pattern.spacing, pattern.angle)}, ${repeatingLinePattern(color, pattern.lineWidth, pattern.spacing, (pattern.angle + 90) % 360)}`;
+}
+function repeatingLinePattern(color: string, width: string, spacing: string, angle: number): string { return `repeating-linear-gradient(${angle}deg, ${color} 0 ${width}, transparent ${width} ${spacing})`; }
+function rotatedDotPattern(color: string, radius: string, spacing: string, angle: number): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><defs><pattern id="oria-dot" width="${spacing}" height="${spacing}" patternUnits="userSpaceOnUse" patternTransform="rotate(${angle})"><circle cx="0" cy="0" r="${radius}" fill="${color}"/></pattern></defs><rect width="100%" height="100%" fill="url(#oria-dot)"/></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}") 0 0 / 256px 256px repeat`;
+}
+function noisePattern(color: string, variant: NoisePatternVariant, tileSize: string, intensity: number): string {
+  if (variant === "paper") {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><defs><filter id="oria-paper-base" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.18" numOctaves="2" seed="17" stitchTiles="stitch" result="noise"/><feColorMatrix in="noise" type="luminanceToAlpha" result="alpha"/><feFlood flood-color="${color}" result="tint"/><feComposite in="tint" in2="alpha" operator="in"/></filter></defs><g opacity="${intensity}"><rect width="96" height="96" filter="url(#oria-paper-base)" opacity="0.18"/><g data-oria-paper="specks" fill="${color}" opacity="0.85"><circle cx="8.5" cy="11.75" r="0.78"/><circle cx="28" cy="7" r="0.45"/><circle cx="50.5" cy="21.5" r="0.9"/><ellipse cx="77" cy="14" rx="1.2" ry="0.45" transform="rotate(24 77 14)"/><circle cx="15" cy="48" r="0.38"/><ellipse cx="38" cy="43" rx="0.5" ry="1.1" transform="rotate(70 38 43)"/><circle cx="64" cy="52" r="0.65"/><circle cx="87" cy="40" r="0.36"/><ellipse cx="23" cy="76" rx="0.75" ry="0.32" transform="rotate(-32 23 76)"/><circle cx="56" cy="86" r="0.46"/><circle cx="80" cy="72" r="1"/></g><g data-oria-paper="fibers" fill="none" stroke="${color}" stroke-width="0.7" stroke-linecap="round" opacity="0.65"><path d="m8.5 29.5 6.5 2.1"/><path d="m34 64 3.2-4.8"/><path d="m68.5 31 7.5-1.8"/><path d="m5 89 4.2-4.1"/><path d="m47 9.2 2.5 5"/><path d="m83 92-4.6-3.4"/></g></g></svg>`;
+    return `url("data:image/svg+xml,${encodeURIComponent(svg)}") 0 0 / ${tileSize} ${tileSize} repeat`;
+  }
+  const profile: Readonly<Record<Exclude<NoisePatternVariant, "paper">, readonly [frequency: string, octaves: number, seed: number]>> = { film: ["0.92", 2, 29], frosted: ["0.38", 3, 41] };
+  const [frequency, octaves, seed] = profile[variant];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><filter id="oria-noise" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="${frequency}" numOctaves="${octaves}" seed="${seed}" stitchTiles="stitch" result="noise"/><feColorMatrix in="noise" type="luminanceToAlpha" result="alpha"/><feFlood flood-color="${color}" result="tint"/><feComposite in="tint" in2="alpha" operator="in"/></filter><rect width="64" height="64" filter="url(#oria-noise)" opacity="${intensity}"/></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}") 0 0 / ${tileSize} ${tileSize} repeat`;
 }
 function uniqueId(seed: string, themes: readonly ThemeDefinition[]): string { const ids = new Set(themes.map(theme => theme.id)); for (let index = 2; ; index += 1) { const suffix = `-${index}`; const id = `${seed.slice(0, 64 - suffix.length)}${suffix}`; if (!ids.has(id)) return id; } }
 function freezeTheme(theme: ThemeDefinition): ThemeDefinition { return Object.freeze({ ...theme, contract: Object.freeze({ ...theme.contract }), modes: Object.freeze({ light: Object.freeze(stableClone(theme.modes.light)), dark: Object.freeze(stableClone(theme.modes.dark)) }), ...(theme.metadata === undefined ? {} : { metadata: Object.freeze({ ...theme.metadata }) }) }); }

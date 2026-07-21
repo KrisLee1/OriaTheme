@@ -15,7 +15,7 @@ export interface TokenFieldDescriptor {
 
 export type TokenModeScope = "shared" | "mode";
 
-const MODE_SCOPED_STANDARD_PREFIXES = Object.freeze(["color.", "gradient.", "elevation.shadow."] as const);
+const MODE_SCOPED_STANDARD_PREFIXES = Object.freeze(["color.", "gradient.", "pattern.", "elevation.shadow."] as const);
 
 const words = (value: string): string => value
   .replace(/([a-z0-9])([A-Z])/g, "$1 $2")

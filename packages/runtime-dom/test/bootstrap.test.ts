@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
 import { oriaDefaultTheme, oriaStandardContract, resolveTheme } from "@oriatheme/core";
+import type { ThemeDefinition, ThemeTokenSet } from "@oriatheme/core";
 import { bootstrapTheme, createBootstrapScript, createBootstrapStorageScript, createOriaThemeRuntime } from "../src/index.js";
 
 const domDocument = globalThis.document;
@@ -33,6 +34,27 @@ describe("bootstrap", () => {
     bootstrapTheme({ snapshot: { ...snapshot, lightVariables: { "--oria-color-background": "#fff; color:red" } }, target: domDocument });
     expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
     expect(domDocument.documentElement.dataset.oriaTheme).toBeUndefined();
+  });
+
+  it("accepts Core-generated inline SVG pattern variables and still rejects arbitrary url() values", () => {
+    const noiseTheme: ThemeDefinition = {
+      ...oriaDefaultTheme,
+      id: "oria-default-noise",
+      modes: {
+        light: { ...oriaDefaultTheme.modes.light, "pattern.surface": [{ type: "noise", variant: "paper", color: "#2d2927", tileSize: "52px", intensity: 0.055 }] } as ThemeTokenSet,
+        dark: { ...oriaDefaultTheme.modes.dark, "pattern.surface": [{ type: "noise", variant: "paper", color: "#f6f1e7", tileSize: "52px", intensity: 0.045 }] } as ThemeTokenSet
+      }
+    };
+    const noisySnapshot = { ...snapshot, themeId: "oria-default-noise", lightVariables: resolveTheme(noiseTheme, "light", { contract: oriaStandardContract }).variables, darkVariables: resolveTheme(noiseTheme, "dark", { contract: oriaStandardContract }).variables };
+    expect(noisySnapshot.lightVariables["--oria-pattern-surface"]).toContain('url("data:image/svg+xml,');
+    bootstrapTheme({ snapshot: noisySnapshot, target: domDocument });
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain("--oria-pattern-surface:url(\"data:image/svg+xml,");
+    expect(domDocument.documentElement.dataset.oriaTheme).toBe("oria-default-noise");
+    domDocument.head.innerHTML = ""; domDocument.documentElement.removeAttribute("data-oria-theme");
+    bootstrapTheme({ snapshot: { ...snapshot, lightVariables: { ...snapshot.lightVariables, "--oria-pattern-surface": 'url("https://evil.example/tracker.png")' } }, target: domDocument });
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
+    bootstrapTheme({ snapshot: { ...snapshot, lightVariables: { ...snapshot.lightVariables, "--oria-pattern-surface": 'url( "data:image/svg+xml,%3Csvg%20onload=alert(1)%3E")' } }, target: domDocument });
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
   });
 
   it("generates a head-safe script that validates and restores the stored active snapshot", () => {

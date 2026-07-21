@@ -204,6 +204,16 @@ export const oriaMinimalismTheme = theme("oria-minimalism");
 export const oriaLineArtTheme = theme("oria-line-art");
 export const oriaGlassTheme = theme("oria-glass");
 export const oriaNeoBrutalismTheme = theme("oria-neo-brutalism");
+/** Warm paper dashboards, ink outlines, and high-contrast stat cards. */
+export const oriaPunchcardTheme = theme("oria-punchcard");
+/** Inked paper, hand-drawn type, and pastel studio-note accents. */
+export const oriaSketchbookTheme = theme("oria-sketchbook");
+/** Thick, rounded cream surfaces with directional clay highlights and shadows. */
+export const oriaSoftClayTheme = theme("oria-soft-clay");
+/** Sunlit gold, coral, and indigo storefront surfaces with generous soft corners. */
+export const oriaGoldenBazaarTheme = theme("oria-golden-bazaar");
+/** Quiet mathematical paper, charcoal serif typography, and wine-red annotation accents. */
+export const oriaTheoremTheme = theme("oria-theorem");
 export const oriaNeumorphismTheme = theme("oria-neumorphism");
 export const oriaMemphisTheme = theme("oria-memphis");
 export const oriaSoftUiTheme = theme("oria-soft-ui");

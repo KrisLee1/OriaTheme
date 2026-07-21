@@ -19,9 +19,10 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
+    var(--oria-pattern-background, none),
     radial-gradient(circle at 88% 7%, color-mix(in srgb, var(--oria-color-primary) 22%, transparent), transparent 23rem),
     radial-gradient(circle at 8% 44%, color-mix(in srgb, var(--oria-color-accent) 13%, transparent), transparent 25rem),
-    var(--oria-color-background);
+    var(--oria-gradient-background, var(--oria-color-background));
 }
 
 button, input, select, textarea { font: inherit; }
@@ -49,8 +50,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   min-height: var(--oria-control-height-md);
   padding: var(--oria-spacing-2) var(--oria-spacing-3) var(--oria-spacing-2) var(--oria-spacing-4);
   color: var(--oria-color-surfaceForeground);
-  background: color-mix(in srgb, var(--oria-color-surface) 78%, transparent);
-  border: var(--oria-shape-borderWidth-hairline) solid color-mix(in srgb, var(--oria-color-border) 70%, transparent);
+  background: color-mix(in srgb, var(--oria-color-surface) calc(var(--oria-effect-opacity-overlay) * 100%), transparent);
+  border: var(--oria-shape-borderWidth-hairline) solid color-mix(in srgb, var(--oria-color-border) calc(var(--oria-effect-opacity-muted) * 100%), transparent);
   border-radius: var(--oria-shape-radius-xl);
   box-shadow: var(--oria-elevation-shadow-sm);
   -webkit-backdrop-filter: blur(var(--oria-effect-backdropBlur-lg)) saturate(var(--oria-effect-backdropSaturation));
@@ -328,7 +329,11 @@ select, input:not([type="color"]):not([type="range"]) {
 .theme-picker-palette i:nth-child(3) { z-index: 3; transform: none; }
 .theme-picker-palette i:nth-child(4) { z-index: 2; transform: rotate(16deg); }
 .theme-picker-palette i:nth-child(5) { z-index: 1; transform: rotate(32deg); }
-.theme-picker-menu { position: absolute; top: calc(100% + var(--oria-spacing-2)); right: 0; left: 0; z-index: 4; max-height: min(22rem, 50vh); padding: var(--oria-spacing-2); overflow-y: auto; overscroll-behavior: contain; isolation: isolate; color: var(--oria-color-surfaceForeground); background: color-mix(in srgb, var(--oria-color-surface) 62%, transparent); border: var(--oria-shape-borderWidth-default) solid color-mix(in srgb, var(--oria-color-border) 76%, transparent); border-radius: var(--oria-shape-radius-md); box-shadow: var(--oria-elevation-shadow-lg); -webkit-backdrop-filter: blur(var(--oria-effect-backdropBlur-xl)) saturate(var(--oria-effect-backdropSaturation)); backdrop-filter: blur(var(--oria-effect-backdropBlur-xl)) saturate(var(--oria-effect-backdropSaturation)); }
+.theme-picker-menu { position: absolute; top: calc(100% + var(--oria-spacing-2)); right: 0; left: 0; z-index: 4; max-height: min(22rem, 50vh); padding: var(--oria-spacing-2); overflow-y: auto; overscroll-behavior: contain; isolation: isolate; color: var(--oria-color-surfaceForeground); background: color-mix(in srgb, var(--oria-color-surface) 62%, transparent); border: var(--oria-shape-borderWidth-default) solid color-mix(in srgb, var(--oria-color-border) 76%, transparent); border-radius: var(--oria-shape-radius-md); box-shadow: var(--oria-elevation-shadow-lg); -webkit-backdrop-filter: blur(var(--oria-effect-backdropBlur-xl)) saturate(var(--oria-effect-backdropSaturation)); backdrop-filter: blur(var(--oria-effect-backdropBlur-xl)) saturate(var(--oria-effect-backdropSaturation)); scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--oria-color-mutedForeground) 36%, transparent) transparent; }
+.theme-picker-menu::-webkit-scrollbar { width: var(--oria-spacing-2); }
+.theme-picker-menu::-webkit-scrollbar-track { margin-block: var(--oria-spacing-2); background: transparent; }
+.theme-picker-menu::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--oria-color-mutedForeground) 32%, transparent); border-radius: 999px; }
+.theme-picker-menu::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--oria-color-mutedForeground) 54%, transparent); }
 .theme-picker-group + .theme-picker-group { margin-top: var(--oria-spacing-2); padding-top: var(--oria-spacing-2); border-top: var(--oria-shape-borderWidth-hairline) solid color-mix(in srgb, var(--oria-color-border) 72%, transparent); }
 .theme-picker-group > span { display: block; padding: var(--oria-spacing-1) var(--oria-spacing-2); color: var(--oria-color-mutedForeground); font-size: var(--oria-typography-size-xs); font-weight: var(--oria-typography-weight-bold); letter-spacing: var(--oria-typography-letterSpacing-wide); }
 .theme-picker-option { min-height: calc(var(--oria-control-height-md) - var(--oria-spacing-2)); gap: var(--oria-spacing-2); padding: var(--oria-spacing-1) var(--oria-spacing-2); border-color: transparent; border-radius: var(--oria-shape-radius-sm); background: transparent; transition: color var(--oria-motion-duration-fast) var(--oria-motion-easing-standard), background-color var(--oria-motion-duration-fast) var(--oria-motion-easing-standard); }
@@ -575,7 +580,7 @@ code { overflow-wrap: anywhere; }
 .typography-card { grid-column: 1 / -1; }
 .rhythm-card,
 .control-shape-card,
-.gradient-card,
+.material-card,
 .motion-card { grid-column: span 6; }
 .elevation-card,
 .effects-card { grid-column: 1 / -1; }
@@ -660,9 +665,23 @@ code { overflow-wrap: anywhere; }
 .backdrop-scale b { position: relative; z-index: 0; color: var(--oria-color-surfaceRaisedForeground); font-family: var(--oria-typography-font-display); font-size: var(--oria-typography-size-xl); font-weight: var(--oria-typography-weight-black); letter-spacing: var(--oria-typography-letterSpacing-tight); line-height: var(--oria-typography-lineHeight-tight); transform: rotate(-8deg) scale(1.08); }
 .backdrop-scale i { position: absolute; z-index: 1; inset: var(--oria-spacing-2); background: color-mix(in srgb, var(--oria-color-overlay) 38%, transparent); border: var(--oria-shape-borderWidth-hairline) solid color-mix(in srgb, var(--oria-color-border) 70%, transparent); border-radius: var(--oria-shape-radius-sm); }
 
-.gradient-list { display: grid; gap: var(--oria-spacing-3); }
-.gradient-list > div { min-width: 0; }
-.gradient-list i { display: block; height: calc(var(--oria-control-height-lg) * 1.8); margin-bottom: var(--oria-spacing-2); border: var(--oria-shape-borderWidth-hairline) solid var(--oria-color-border); border-radius: var(--oria-shape-radius-lg); box-shadow: var(--oria-elevation-shadow-sm); }
+.material-preview-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--oria-spacing-4); }
+.material-preview-grid > section { min-width: 0; }
+.material-preview-grid h4 { margin: 0 0 var(--oria-spacing-3); color: var(--oria-color-mutedForeground); font-size: var(--oria-typography-size-xs); font-weight: var(--oria-typography-weight-bold); letter-spacing: var(--oria-typography-letterSpacing-wide); text-transform: uppercase; }
+.gradient-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--oria-spacing-2); }
+.gradient-list > div { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: var(--oria-spacing-1); min-width: 0; padding: var(--oria-spacing-2); background: var(--oria-color-surface); border: var(--oria-shape-borderWidth-hairline) solid var(--oria-color-border); border-radius: var(--oria-shape-radius-md); }
+.gradient-list i { display: block; height: calc(var(--oria-control-height-md) * .72); border: var(--oria-shape-borderWidth-hairline) solid var(--oria-color-border); border-radius: var(--oria-shape-radius-sm); box-shadow: var(--oria-elevation-shadow-xs); }
+.material-card .pattern-preview { min-height: calc(var(--oria-control-height-lg) * 2.25); padding: var(--oria-spacing-3); }
+.material-card .pattern-preview-samples i { min-height: calc(var(--oria-control-height-md) * .8); }
+.pattern-preview { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: var(--oria-spacing-3); min-height: calc(var(--oria-control-height-lg) * 4); padding: var(--oria-spacing-5); overflow: hidden; place-items: end start; color: var(--oria-color-surfaceRaisedForeground); background: var(--oria-pattern-surface, none), var(--oria-color-surfaceRaised); border: var(--oria-shape-borderWidth-hairline) solid var(--oria-color-border); border-radius: var(--oria-shape-radius-lg); box-shadow: var(--oria-elevation-shadow-sm); }
+.pattern-preview-samples { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--oria-spacing-2); width: min(100%, 24rem); }
+.pattern-preview-samples i { position: relative; display: grid; min-height: calc(var(--oria-control-height-lg) * 1.25); overflow: hidden; place-items: end start; border: var(--oria-shape-borderWidth-hairline) solid var(--oria-color-border); border-radius: var(--oria-shape-radius-md); box-shadow: var(--oria-elevation-shadow-xs); }
+.pattern-preview-samples i::after { padding: var(--oria-spacing-1) var(--oria-spacing-2); color: var(--oria-color-surfaceRaisedForeground); background: color-mix(in srgb, var(--oria-color-overlay) 80%, transparent); border-top-right-radius: var(--oria-shape-radius-sm); font-family: var(--oria-typography-font-mono); font-size: var(--oria-typography-size-xs); font-style: normal; font-weight: var(--oria-typography-weight-semibold); content: attr(data-pattern); }
+.pattern-preview-samples [data-pattern=dot] { background: radial-gradient(circle at center, color-mix(in srgb, var(--oria-color-primary) 42%, transparent) 0 1px, transparent 1px) 0 0 / .75rem .75rem repeat; }
+.pattern-preview-samples [data-pattern=stripe] { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--oria-color-secondary) 72%, transparent) 0 1px, transparent 1px .55rem); }
+.pattern-preview-samples [data-pattern=grid] { background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--oria-color-accent) 68%, transparent) 0 1px, transparent 1px .65rem), repeating-linear-gradient(90deg, color-mix(in srgb, var(--oria-color-accent) 68%, transparent) 0 1px, transparent 1px .65rem); }
+.pattern-preview-samples [data-pattern=noise] { background: radial-gradient(circle at 13% 27%, color-mix(in srgb, var(--oria-color-mutedForeground) 38%, transparent) 0 .55px, transparent .7px) 0 0 / .42rem .42rem, radial-gradient(circle at 77% 63%, color-mix(in srgb, var(--oria-color-mutedForeground) 28%, transparent) 0 .5px, transparent .68px) 0 0 / .57rem .57rem, var(--oria-color-surface); }
+.pattern-preview span { padding: var(--oria-spacing-2) var(--oria-spacing-3); background: color-mix(in srgb, var(--oria-color-overlay) 82%, transparent); border: var(--oria-shape-borderWidth-hairline) solid var(--oria-color-border); border-radius: var(--oria-shape-radius-full); box-shadow: var(--oria-elevation-shadow-xs); font-size: var(--oria-typography-size-xs); font-weight: var(--oria-typography-weight-semibold); }
 .motion-card section + section { margin-top: var(--oria-spacing-5); }
 .motion-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--oria-spacing-2); }
 .motion-list > div { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: var(--oria-spacing-3); align-items: center; min-width: 0; min-height: var(--oria-control-height-lg); padding: var(--oria-spacing-2); overflow: hidden; background: var(--oria-color-surface); border-radius: var(--oria-shape-radius-md); }
@@ -695,13 +714,13 @@ code { overflow-wrap: anywhere; }
   line-height: var(--oria-typography-lineHeight-tight);
 }
 .card p:not(.card-kicker) { color: var(--oria-color-mutedForeground); line-height: var(--oria-typography-lineHeight-relaxed); }
-.project-card { grid-column: span 7; display: flex; min-height: 21rem; flex-direction: column; justify-content: space-between; background: var(--oria-gradient-surface, linear-gradient(145deg, color-mix(in srgb, var(--oria-color-primary) 12%, var(--oria-color-surfaceRaised)), var(--oria-color-surfaceRaised) 58%)); }
+.project-card { grid-column: span 7; display: flex; min-height: 21rem; flex-direction: column; justify-content: space-between; background: var(--oria-pattern-surface, none), var(--oria-gradient-surface, var(--oria-color-surfaceRaised)); }
 .project-card h2 { max-width: 11ch; margin-top: var(--oria-spacing-3); font-size: clamp(var(--oria-typography-size-2xl), 3.6vw, var(--oria-typography-size-4xl)); }
 .project-card p:not(.card-kicker) { max-width: 32rem; }
 .badge { display: inline-flex; align-items: center; min-height: var(--oria-control-height-sm); padding: 0 var(--oria-control-paddingInline-sm); border-radius: var(--oria-shape-radius-full); color: var(--oria-color-accentForeground); background: var(--oria-color-accent); font-size: var(--oria-typography-size-xs); font-weight: var(--oria-typography-weight-bold); letter-spacing: var(--oria-typography-letterSpacing-wide); }
 .actions { display: flex; gap: var(--oria-spacing-3); flex-wrap: wrap; }
 .actions button, .icon-button, .quiet-button { min-height: var(--oria-control-height-md); border-radius: var(--oria-shape-radius-md); font-size: var(--oria-typography-size-sm); font-weight: var(--oria-typography-weight-bold); letter-spacing: var(--oria-typography-letterSpacing-normal); transition: transform var(--oria-motion-duration-fast) var(--oria-motion-easing-standard), filter var(--oria-motion-duration-fast) var(--oria-motion-easing-standard); }
-.actions button { padding: 0 var(--oria-control-paddingInline-md); border: 0; color: var(--oria-color-primaryForeground); background: var(--oria-color-primary); }
+.actions button { padding: 0 var(--oria-control-paddingInline-md); border: 0; color: var(--oria-color-primaryForeground); background: var(--oria-gradient-accent, var(--oria-color-primary)); }
 .actions .secondary { color: var(--oria-color-secondaryForeground); background: var(--oria-color-secondary); }
 .people-card { grid-column: span 5; }
 .card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--oria-spacing-4); }
@@ -742,7 +761,7 @@ button:active { transform: scale(.97); }
   .token-heading { grid-template-columns: 1fr; gap: var(--oria-spacing-3); }
   .palette-card { grid-column: 1 / -1; }
   .color-showcase-columns { grid-template-columns: 1fr; }
-  .typography-card, .rhythm-card, .control-shape-card, .gradient-card, .motion-card { grid-column: span 12; }
+  .typography-card, .rhythm-card, .control-shape-card, .material-card, .motion-card { grid-column: span 12; }
   .project-card { grid-column: span 12; }
   .people-card, .stats { grid-column: span 6; }
   .table-card { grid-column: span 12; }
@@ -775,11 +794,12 @@ button:active { transform: scale(.97); }
   .editor-panel [data-oria-editor-token-list] { grid-template-columns: 1fr; }
   .token-gallery { margin-top: var(--oria-spacing-12); }
   .token-heading { padding-inline: var(--oria-spacing-2); }
-  .palette-card, .semantic-feedback-card, .typography-card, .rhythm-card, .control-shape-card, .elevation-card, .effects-card, .gradient-card, .motion-card, .project-card, .people-card, .stats, .table-card { grid-column: span 12; }
+  .palette-card, .semantic-feedback-card, .typography-card, .rhythm-card, .control-shape-card, .elevation-card, .effects-card, .material-card, .motion-card, .project-card, .people-card, .stats, .table-card { grid-column: span 12; }
   .color-pair-grid, .interaction-grid { grid-template-columns: 1fr; }
   .chart-visuals { grid-template-columns: 1fr; }
   .interaction-family { grid-template-columns: 1fr; }
-  .typography-overview, .font-family-grid, .rhythm-columns, .effect-columns { grid-template-columns: 1fr; }
+  .typography-overview, .font-family-grid, .rhythm-columns, .effect-columns, .material-preview-grid { grid-template-columns: 1fr; }
+  .gradient-list { grid-template-columns: 1fr; }
   .weight-scale { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .radius-scale, .shadow-scale { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .blur-scale, .backdrop-scale { grid-template-columns: repeat(4, minmax(0, 1fr)); }

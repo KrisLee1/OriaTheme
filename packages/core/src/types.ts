@@ -12,7 +12,8 @@ export type TokenType =
   | "duration"
   | "cubicBezier"
   | "shadow"
-  | "gradient";
+  | "gradient"
+  | "pattern";
 
 /** A dotted token path validated by a TokenContract. */
 export type TokenPath = string & { readonly __tokenPath: unique symbol };
@@ -43,7 +44,44 @@ export type GradientDefinition =
   | { readonly type: "radial"; readonly position?: GradientPosition; readonly stops: readonly GradientStop[] }
   | { readonly type: "repeating-radial"; readonly position?: GradientPosition; readonly stops: readonly GradientStop[] }
   | { readonly type: "conic"; readonly angle: number; readonly position?: GradientPosition; readonly stops: readonly GradientStop[] };
-export type TokenValue = string | number | readonly string[] | readonly [number, number, number, number] | readonly ShadowLayer[] | GradientDefinition;
+/** A repeatable, safely compiled background or surface pattern. */
+export interface DotPatternDefinition {
+  readonly type: "dot";
+  readonly color: string | TokenReference;
+  readonly radius: string;
+  readonly spacing: string;
+  readonly angle?: number;
+}
+export interface StripePatternDefinition {
+  readonly type: "stripe";
+  readonly color: string | TokenReference;
+  readonly stripeWidth: string;
+  readonly spacing: string;
+  readonly angle: number;
+}
+export interface GridPatternDefinition {
+  readonly type: "grid";
+  readonly color: string | TokenReference;
+  readonly lineWidth: string;
+  readonly spacing: string;
+  readonly angle: number;
+}
+/** A deterministic SVG grain layer with a constrained material profile. */
+export type NoisePatternVariant = "paper" | "film" | "frosted";
+export interface NoisePatternDefinition {
+  readonly type: "noise";
+  readonly color: string | TokenReference;
+  readonly variant: NoisePatternVariant;
+  readonly tileSize: string;
+  readonly intensity: number;
+}
+/** One safely compiled layer in an ordered pattern stack. */
+export type PatternLayer = DotPatternDefinition | StripePatternDefinition | GridPatternDefinition | NoisePatternDefinition;
+/** @deprecated Use PatternLayer. Kept as a source-compatible name for a single layer. */
+export type PatternDefinition = PatternLayer;
+/** CSS background layers in paint order: the first layer is visually on top. */
+export type PatternLayers = readonly PatternLayer[];
+export type TokenValue = string | number | readonly string[] | readonly [number, number, number, number] | readonly ShadowLayer[] | GradientDefinition | PatternLayers;
 export type ThemeTokenInput = TokenValue | TokenReference;
 
 export type TokenValueFor<T extends TokenType> =
@@ -51,7 +89,8 @@ export type TokenValueFor<T extends TokenType> =
   T extends "fontFamily" ? readonly string[] :
   T extends "cubicBezier" ? readonly [number, number, number, number] :
   T extends "shadow" ? readonly ShadowLayer[] :
-  T extends "gradient" ? GradientDefinition : string;
+  T extends "gradient" ? GradientDefinition :
+  T extends "pattern" ? PatternLayers : string;
 
 export interface TokenDefinition<T extends TokenType = TokenType> {
   readonly type: T;

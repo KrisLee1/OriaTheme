@@ -4,6 +4,7 @@ import type { GradientDefinition, GradientPosition, GradientStop, ThemeTokenInpu
 import type { TokenFieldProps } from "../types";
 import { BaseColorPalette } from "./base-color-palette";
 import { nativeColor, previewColor, safeColor } from "./color-utils";
+import { EditorSelect } from "./editor-select";
 import { FieldFrame, fieldId } from "./field-frame";
 import { LinearSlider } from "./linear-slider";
 
@@ -195,9 +196,9 @@ export function GradientField(props: TokenFieldProps): ReactElement {
       <div data-oria-editor-gradient-toolbar>
         <label data-oria-editor-gradient-type>
           <span>Type</span>
-          <select aria-label="Gradient type" value={gradient.type} onChange={event => changeType(event.target.value as GradientDefinition["type"])}>
+          <EditorSelect aria-label="Gradient type" value={gradient.type} onChange={event => changeType(event.target.value as GradientDefinition["type"])}>
             {gradientTypes.map(type => <option key={type} value={type}>{gradientTypeLabels[type]}</option>)}
-          </select>
+          </EditorSelect>
         </label>
         <button type="button" data-oria-editor-gradient-unset aria-label={`Unset ${props.field.label} gradient`} title="Unset gradient" onClick={() => props.session.removeToken(props.mode, props.field.path)}>
           <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.5" /><path d="M6.5 13.5l7-7" /></svg>

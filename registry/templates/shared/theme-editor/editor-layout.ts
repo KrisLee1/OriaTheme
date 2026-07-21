@@ -41,7 +41,8 @@ export const editorTabs: readonly EditorTabLayout[] = [
     { id: "opacity", title: "Opacity", summary: "Disabled, muted and overlay strengths.", prefixes: ["effect.opacity."] },
     { id: "blur", title: "Blur", summary: "Foreground blur scale.", prefixes: ["effect.blur."] },
     { id: "backdrop", title: "Backdrop", summary: "Backdrop blur scale and saturation.", prefixes: ["effect.backdrop"] },
-    { id: "gradients", title: "Gradients", summary: "Structured optional gradients.", prefixes: ["gradient."] }
+    { id: "gradients", title: "Gradients", summary: "Structured optional gradients.", prefixes: ["gradient."] },
+    { id: "patterns", title: "Patterns", summary: "Structured optional background and surface patterns.", prefixes: ["pattern."] }
   ] },
   { id: "motion", title: "Motion", panels: [
     { id: "duration", title: "Duration Scale", summary: "Instant through slow response.", prefixes: ["motion.duration."] },

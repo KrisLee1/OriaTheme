@@ -88,7 +88,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 }
 ```
 
-`createBootstrapStorageScript()` 只在已有 active snapshot 时写入变量；首次访问没有快照时会静默返回。因此 SSR 应在它之前提供使用方应用自己的完整默认主题 CSS，不能先绘制一份缺少 `--oria-*` 的页面再等待 Provider 启动。Next 示例通过服务端模块调用 Core `resolveTheme()` 解析 Oria Default 的 light/dark 变量，并按系统模式输出静态 fallback：
+`createBootstrapStorageScript()` 只在已有 active snapshot 时写入变量；首次访问没有快照时会静默返回。因此 SSR 应在它之前提供使用方应用自己的完整默认主题 CSS，不能先绘制一份缺少 `--oria-*` 的页面再等待 Provider 启动。Next 示例通过服务端模块调用 Core `resolveTheme()` 解析 Default 的 light/dark 变量，并按系统模式输出静态 fallback：
 
 ```tsx
 // app/layout.tsx

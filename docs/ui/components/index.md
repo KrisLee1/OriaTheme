@@ -19,9 +19,10 @@ rg -i "<component|capability|interaction>" docs/ui
 | `EditorModeSwitch` | `registry/templates/react/theme-editor/editor-mode-switch.tsx` | 切换草稿 Light/Dark；可由 host 受控并与 runtime appearance 共用单一切换/过渡入口 | 稳定 |
 | `EditorWorkspace` / `TokenAccordion` | `registry/templates/react/theme-editor/editor-workspace.tsx`、`token-accordion.tsx` | Contract 分组、搜索过滤、默认展开且可独立折叠的 token 面板 | 稳定 |
 | `ThemesWorkspace` / `ThemeAccordion` / `ThemeListItem` | React `themes-workspace.tsx` / Vue `ThemesWorkspace.vue` 及相邻组件 | Runtime 主题列表与 custom/preset 生命周期操作；复制后载入 session 并进入 Colors，不复制持久化状态机 | React/Vue 稳定 |
-| `TokenField` 与 `fields/*` | `registry/templates/react/theme-editor/token-field.tsx`、`fields/` | 按 editor-core 字段类型路由到颜色、尺寸、数值、字体、时长、曲线、阴影和渐变控件 | 稳定 |
+| `TokenField` 与 `fields/*` | `registry/templates/react/theme-editor/token-field.tsx`、`fields/` | 按 editor-core 字段类型路由到颜色、尺寸、数值、字体、时长、曲线、阴影、渐变和图案控件；Pattern 为 background/surface 提供安全的有序 dot/stripe/grid/noise 图层、受控 Paper/Film/Frosted 颗粒参数、添加/删除/排序和 Create / Unset，并按容器宽度重排控件 | 稳定 |
 | `BaseColorPalette` | `registry/templates/react/theme-editor/fields/base-color-palette.tsx` | 锚定、无遮罩、可搜索的基础色 popover；只返回安全色值 | 稳定 |
 | `LinearSlider` | `registry/templates/react/theme-editor/fields/linear-slider.tsx` | Pointer Capture、逐帧提交和键盘步进的统一滑块 | 稳定 |
+| `EditorSelect` | React `fields/editor-select.tsx` / Vue `fields/EditorSelect.vue` | 带原生键盘语义的统一下拉框 chrome | 稳定高度、主题化边框、无障碍焦点、指示箭头；供 Gradient 与 Pattern 的 Type、Style 和 Add layer 选择使用 |
 | `ConfirmationDialog` | `registry/templates/react/theme-editor/overlays/confirmation-dialog.tsx` | 重置、dirty 离开和破坏性操作的可访问确认模态 | 稳定 |
 | `ResetMenu` / `ImportDialog` / `ExportMenu` / `IssuesPopover` | `registry/templates/react/theme-editor/overlays/` | 锚定菜单、文件卡片与粘贴式原子导入、`.oria-theme.json` 下载、Save 左侧三态校验反馈与问题导航；浮层消费 Overlay / Overlay foreground + background blur，不得绕过 session/Core | 稳定 |
 | `ShadowLayerEditor` / `ShadowPreview` | `registry/templates/react/theme-editor/shadows/` | 多层阴影的结构化编辑与预览 | 稳定 |

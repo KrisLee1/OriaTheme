@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactElement } from "react";
 
+// pattern.background is applied to the shared page canvas; this gallery documents pattern.surface specimens.
+
 type TokenSample = {
   readonly label: string;
   readonly token: string;
@@ -134,9 +136,12 @@ export function ThemeTokenShowcase(): ReactElement {
       <CardHeading kicker="Material depth" title="Blur & Backdrop Blur" path="effect.blur.* / backdropBlur.*" />
       <div className="effect-columns"><section><h4>Foreground blur</h4><div className="blur-scale">{blurs.map(item => <div key={item.token}><span><i style={{ filter: `blur(${item.value})` }} /></span><code>{item.label}</code></div>)}</div></section><section><h4>Backdrop blur</h4><div className="backdrop-scale">{backdropBlurs.map(item => <div key={item.token}><span><b aria-hidden="true">Oria</b><i style={{ WebkitBackdropFilter: `blur(${item.value}) saturate(var(--oria-effect-backdropSaturation))`, backdropFilter: `blur(${item.value}) saturate(var(--oria-effect-backdropSaturation))` } as CSSProperties} /></span><code>{item.label}</code></div>)}</div></section></div>
     </article>
-    <article className="token-card gradient-card">
-      <CardHeading kicker="Structured color" title="Gradients" path="gradient.*" />
-      <div className="gradient-list">{gradients.map(item => <div key={item.token}><i style={{ background: item.value }} /><span>{item.label}<code>{item.token}</code></span></div>)}</div>
+    <article className="token-card material-card">
+      <CardHeading kicker="Structured material" title="Gradients & Surface Patterns" path="gradient.* / pattern.surface" />
+      <div className="material-preview-grid">
+        <section><h4>Gradients</h4><div className="gradient-list">{gradients.map(item => <div key={item.token}><i style={{ background: item.value }} /><span>{item.label}<code>{item.token}</code></span></div>)}</div></section>
+        <section><h4>Surface Patterns</h4><div className="pattern-preview" role="img" aria-label="Theme surface pattern layer preview"><div className="pattern-preview-samples" aria-hidden="true"><i data-pattern="dot" /><i data-pattern="stripe" /><i data-pattern="grid" /><i data-pattern="noise" /></div><span>Optional ordered pattern layers: geometry and grain</span></div></section>
+      </div>
     </article>
     <article className="token-card motion-card">
       <CardHeading kicker="Time & feel" title="Duration & Easing" path="motion.*" />

@@ -12,15 +12,16 @@ const manifest = (framework: "react" | "vue"): RegistryManifest => JSON.parse(re
 
 describe("theme editor registry", () => {
   it("maps all standard fields to exactly one of five token tabs plus Themes", () => {
-    const script = 'import { describeTokenContract } from "@oriatheme/editor-core"; import { editorTabs, resolveEditorLayout } from "../../registry/templates/react/theme-editor/editor-layout.ts"; const fields=describeTokenContract(); const layout=resolveEditorLayout(fields); console.log(JSON.stringify({tabs:editorTabs.length,fields:fields.length,assigned:[...layout.values()].flat().length,unique:new Set([...layout.values()].flat().map(field=>field.path)).size,blur:layout.get("blur")?.map(field=>field.path),backdrop:layout.get("backdrop")?.map(field=>field.path)}));';
+    const script = 'import { describeTokenContract } from "@oriatheme/editor-core"; import { editorTabs, resolveEditorLayout } from "../../registry/templates/react/theme-editor/editor-layout.ts"; const fields=describeTokenContract(); const layout=resolveEditorLayout(fields); console.log(JSON.stringify({tabs:editorTabs.length,fields:fields.length,assigned:[...layout.values()].flat().length,unique:new Set([...layout.values()].flat().map(field=>field.path)).size,blur:layout.get("blur")?.map(field=>field.path),backdrop:layout.get("backdrop")?.map(field=>field.path),patterns:layout.get("patterns")?.map(field=>field.path)}));';
     const result = JSON.parse(execFileSync(process.execPath, ["--experimental-strip-types", "--input-type=module", "-e", script], { cwd: resolve(root, "packages/editor-core"), encoding: "utf8" })) as { readonly tabs: number; readonly fields: number; readonly assigned: number; readonly unique: number };
     expect(result).toEqual({
       tabs: 6,
-      fields: 152,
-      assigned: 152,
-      unique: 152,
+      fields: 154,
+      assigned: 154,
+      unique: 154,
       blur: ["effect.blur.xs", "effect.blur.sm", "effect.blur.md", "effect.blur.lg", "effect.blur.xl", "effect.blur.2xl", "effect.blur.3xl"],
-      backdrop: ["effect.backdropBlur.xs", "effect.backdropBlur.sm", "effect.backdropBlur.md", "effect.backdropBlur.lg", "effect.backdropBlur.xl", "effect.backdropBlur.2xl", "effect.backdropBlur.3xl", "effect.backdropSaturation"]
+      backdrop: ["effect.backdropBlur.xs", "effect.backdropBlur.sm", "effect.backdropBlur.md", "effect.backdropBlur.lg", "effect.backdropBlur.xl", "effect.backdropBlur.2xl", "effect.backdropBlur.3xl", "effect.backdropSaturation"],
+      patterns: ["pattern.background", "pattern.surface"]
     });
   });
 
@@ -43,6 +44,8 @@ describe("theme editor registry", () => {
       expect(targets).toContain("fields/base-color-palette.tsx");
       expect(targets).toContain("fields/color-utils.ts");
       expect(targets).toContain("fields/linear-slider.tsx");
+      expect(targets).toContain("fields/editor-select.tsx");
+      expect(targets).toContain("fields/pattern-field.tsx");
       expect(targets).toContain("fields/slider-ranges.ts");
       expect(targets).toContain("hooks/use-details-dismiss.ts");
       const picker = readFileSync(resolve(root, "registry/templates/react/theme-editor/fields/base-color-palette.tsx"), "utf8");
@@ -170,7 +173,11 @@ describe("theme editor registry", () => {
       expect(toolbarStyles).toContain("background: var(--oria-color-selection)");
       expect(toolbarStyles).toContain("grid-template-columns: minmax(5.25rem, .85fr) minmax(0, 1.75fr)");
       expect(toolbarStyles).toContain("[data-oria-editor-field-kind=color] [data-oria-editor-color] { width: max-content");
-      expect(toolbarStyles).toContain("[data-oria-editor-field-kind=shadow], [data-oria-editor-field-kind=gradient], [data-oria-editor-field-kind=cubicBezier]");
+      expect(toolbarStyles).toContain("[data-oria-editor-field-kind=shadow], [data-oria-editor-field-kind=gradient], [data-oria-editor-field-kind=pattern], [data-oria-editor-field-kind=cubicBezier]");
+      expect(toolbarStyles).toContain("[data-oria-editor-pattern-layer-fields] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))");
+      expect(toolbarStyles).toContain("[data-oria-editor-pattern-layer-fields] > [data-oria-editor-color] { grid-column: 1 / -1");
+      expect(toolbarStyles).toContain("@container (max-width: 29rem) { [data-oria-editor-pattern-layer] > header");
+      expect(toolbarStyles).toContain("@container (max-width: 21rem) { [data-oria-editor-pattern-layer] > header");
       expect(toolbarStyles).toContain("[data-oria-editor-shadow-details] > summary");
       expect(toolbarStyles).toContain("cursor: pointer; user-select: none");
       expect(toolbarStyles).toContain("@keyframes oria-editor-easing-preview");
@@ -214,16 +221,34 @@ describe("theme editor registry", () => {
       expect(gradient).toContain("data-oria-editor-gradient-unset");
       expect(gradient).toContain("session.removeToken");
       expect(gradient).not.toContain("JSON.parse");
+      const pattern = readFileSync(resolve(root, "registry/templates/react/theme-editor/fields/pattern-field.tsx"), "utf8");
+      expect(pattern).toContain("data-oria-editor-pattern-preview");
+      expect(pattern).toContain("BaseColorPalette");
+      expect(pattern).toContain("Add a pattern layer");
+      expect(pattern).toContain("Move pattern layer");
+      expect(pattern).toContain("first is on top");
+      expect(pattern).toContain('"stripe"');
+      expect(pattern).toContain('"grid"');
+      expect(pattern).toContain('"noise"');
+      expect(pattern).toContain("Grain size");
+      expect(pattern).toContain("EditorSelect");
+      expect(pattern).toContain("useFieldBuffer");
+      expect(pattern).toContain("colorBuffer.setText");
+      expect(toolbarStyles).toContain("[data-oria-editor-select] > select");
+      expect(pattern).toContain("session.removeToken");
     } else {
       const vueStyles = readFileSync(resolve(root, "registry/templates/vue/theme-editor/theme-editor.css"), "utf8");
       const vueShell = readFileSync(resolve(root, "registry/templates/vue/theme-editor/EditorShell.vue"), "utf8");
       const vueThemes = readFileSync(resolve(root, "registry/templates/vue/theme-editor/ThemesWorkspace.vue"), "utf8");
       const vueGradient = readFileSync(resolve(root, "registry/templates/vue/theme-editor/fields/GradientField.vue"), "utf8");
+      const vuePattern = readFileSync(resolve(root, "registry/templates/vue/theme-editor/fields/PatternField.vue"), "utf8");
       const vuePalette = readFileSync(resolve(root, "registry/templates/vue/theme-editor/fields/BaseColorPalette.vue"), "utf8");
       expect(item.dependencies).toContain("@oriatheme/colors@^0.1.0");
       expect(targets).toContain("ThemesWorkspace.vue");
       expect(targets).toContain("fields/BaseColorPalette.vue");
       expect(targets).toContain("fields/LinearSlider.vue");
+      expect(targets).toContain("fields/EditorSelect.vue");
+      expect(targets).toContain("fields/PatternField.vue");
       expect(targets).toContain("overlays/ConfirmationDialog.vue");
       expect(vueShell).toContain("previewFollowsAppearance ? undefined : currentMode.value");
       expect(vueShell).toContain('addEventListener("beforeunload"');
@@ -232,6 +257,14 @@ describe("theme editor registry", () => {
       expect(vueGradient).toContain('"repeating-linear"');
       expect(vueGradient).toContain("BaseColorPalette");
       expect(vueGradient).not.toContain("JSON.parse");
+      expect(vuePattern).toContain("data-oria-editor-pattern-preview");
+      expect(vuePattern).toContain('"noise"');
+      expect(vuePattern).toContain("Grain size");
+      expect(vuePattern).toContain("EditorSelect");
+      expect(vuePattern).toContain("colorBuffers");
+      expect(vuePattern).toContain("updateColorBuffer");
+      expect(vueStyles).toContain("[data-oria-editor-select] > select");
+      expect(vuePattern).toContain("session.removeToken");
       expect(vuePalette).toContain("oriaColorFamilies");
       expect(vuePalette).toContain('<Teleport to="body">');
       expect(vueStyles).toContain("--oria-editor-weight-semibold: var(--oria-typography-weight-semibold)");
@@ -259,6 +292,30 @@ describe("theme editor registry", () => {
     expect(vueStyles).toBe(reactStyles);
   });
 
+  it("keeps installed React and Next pattern editor sources synchronized with the registry", () => {
+    const registryStyles = readFileSync(resolve(root, "registry/templates/react/theme-editor/theme-editor.css"), "utf8");
+    const registryField = readFileSync(resolve(root, "registry/templates/react/theme-editor/fields/pattern-field.tsx"), "utf8");
+    const registryGradient = readFileSync(resolve(root, "registry/templates/react/theme-editor/fields/gradient-field.tsx"), "utf8");
+    const registrySelect = readFileSync(resolve(root, "registry/templates/react/theme-editor/fields/editor-select.tsx"), "utf8");
+    const reactStyles = readFileSync(resolve(root, "apps/examples/react/src/components/oria-theme-editor/theme-editor.css"), "utf8");
+    const nextStyles = readFileSync(resolve(root, "apps/examples/next/app/components/oria-theme-editor/theme-editor.css"), "utf8");
+    const reactField = readFileSync(resolve(root, "apps/examples/react/src/components/oria-theme-editor/fields/pattern-field.tsx"), "utf8");
+    const nextField = readFileSync(resolve(root, "apps/examples/next/app/components/oria-theme-editor/fields/pattern-field.tsx"), "utf8");
+    const reactGradient = readFileSync(resolve(root, "apps/examples/react/src/components/oria-theme-editor/fields/gradient-field.tsx"), "utf8");
+    const nextGradient = readFileSync(resolve(root, "apps/examples/next/app/components/oria-theme-editor/fields/gradient-field.tsx"), "utf8");
+    const reactSelect = readFileSync(resolve(root, "apps/examples/react/src/components/oria-theme-editor/fields/editor-select.tsx"), "utf8");
+    const nextSelect = readFileSync(resolve(root, "apps/examples/next/app/components/oria-theme-editor/fields/editor-select.tsx"), "utf8");
+
+    expect(reactStyles).toBe(registryStyles);
+    expect(nextStyles).toBe(registryStyles);
+    expect(reactField).toBe(registryField);
+    expect(nextField).toBe(registryField);
+    expect(reactGradient).toBe(registryGradient);
+    expect(nextGradient).toBe(registryGradient);
+    expect(reactSelect).toBe(registrySelect);
+    expect(nextSelect).toBe(registrySelect);
+  });
+
   it("keeps the example token gallery comprehensive and theme-driven", () => {
     const styles = readFileSync(resolve(root, "apps/examples/styles.css"), "utf8");
     const reactShowcase = readFileSync(resolve(root, "apps/examples/react/src/token-showcase.tsx"), "utf8");
@@ -270,6 +327,13 @@ describe("theme editor registry", () => {
       expect(source).toContain("motion.easing");
       expect(source).toContain("elevation.shadow");
       expect(source).toContain("gradient.background");
+      expect(source).toContain("pattern.background");
+      expect(source).toContain("pattern.surface");
+      expect(source).toContain("pattern-preview-samples");
+      expect(source).toContain("data-pattern");
+      expect(source).toContain("stripe");
+      expect(source).toContain("grid");
+      expect(source).toContain("noise");
       expect(source).toContain("Semantic & Feedback Color");
       expect(source).toContain("color.secondaryHover");
       expect(source).toContain("color.selectionForeground");
@@ -283,10 +347,17 @@ describe("theme editor registry", () => {
     expect(styles).toContain("var(--oria-color-selectionForeground)");
     expect(styles).toContain(".backdrop-scale b");
     expect(styles).toContain("var(--oria-effect-backdropSaturation)");
+    expect(styles).toContain(".pattern-preview-samples");
+    expect(styles).toContain("var(--oria-pattern-surface, none)");
+    expect(styles).toContain("var(--oria-pattern-background, none)");
     expect(styles).toContain("var(--oria-motion-duration-slow)");
     expect(styles).toContain(".color-pair-ring i");
     expect(styles).toContain(".chart-swatch:nth-child(8) i");
     expect(styles).toContain("conic-gradient(var(--oria-color-chart1)");
+    expect(styles).toContain("var(--oria-pattern-surface, none), var(--oria-color-surfaceRaised)");
+    expect(styles).toContain(".project-card { grid-column: span 7; display: flex; min-height: 21rem; flex-direction: column; justify-content: space-between; background: var(--oria-pattern-surface, none), var(--oria-gradient-surface");
+    expect(styles).toContain("var(--oria-gradient-background, var(--oria-color-background))");
+    expect(styles).toContain(".actions button { padding: 0 var(--oria-control-paddingInline-md); border: 0; color: var(--oria-color-primaryForeground); background: var(--oria-gradient-accent, var(--oria-color-primary)); }");
     expect(styles).toContain(".font-size-scale > div:nth-child(13)");
     expect(styles).toContain("@keyframes token-easing-value");
     expect(styles).toContain(".people-card .search-control input { padding-inline-start: calc(var(--oria-spacing-3) + var(--oria-typography-size-xl) + var(--oria-spacing-2)); }");

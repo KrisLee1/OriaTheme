@@ -20,12 +20,12 @@
   ],
   "files": [
     {
-      "sha256": "73bd3d00a7046fc8fd22df7fb69982d654dbf7a2c2bea0ba3dbcda9bd7d59fad",
+      "sha256": "81b92e0655280c3e11d9d392d575e2ee2ced64a9b5788b6627e7ca6bf20ad6d9",
       "source": "templates/shared/theme-editor/editor-layout.ts",
       "target": "editor-layout.ts"
     },
     {
-      "sha256": "ae1decfec4a3ed5f4c9d601e7c235386e3a74e41173ae432330bca6965c93420",
+      "sha256": "f61edd9d3f86d1a7f58180df49aecf5e3fe9f4cb605783dc3e24dd01831c18c2",
       "source": "templates/vue/theme-editor/theme-editor.css",
       "target": "theme-editor.css"
     },
@@ -95,7 +95,7 @@
       "target": "EditorToolbar.vue"
     },
     {
-      "sha256": "7be6ca70e21de8ca52e3381ad5ed25b251236f7f0843f2df106b6af0992ed0f0",
+      "sha256": "322a31574655e74f9cf6b54feb839d36f8a26d26849c8a2cbaf55ae0337b470e",
       "source": "templates/vue/theme-editor/TokenField.vue",
       "target": "TokenField.vue"
     },
@@ -105,9 +105,19 @@
       "target": "EditorWorkspace.vue"
     },
     {
-      "sha256": "917ac873de9113cd5e21f6ed20ef1d9bd0cb8d1f74cfc94a09a886f1cee94347",
+      "sha256": "2287f1be0a971d50baac76d291210a4a9e3c25249ce6ec44e8b08d2684fa39e5",
       "source": "templates/vue/theme-editor/fields/GradientField.vue",
       "target": "fields/GradientField.vue"
+    },
+    {
+      "sha256": "70807eecf8f166c28ed5c7043b39a26a62778b1bcd3f8dbffb9fb9f85d24a286",
+      "source": "templates/vue/theme-editor/fields/EditorSelect.vue",
+      "target": "fields/EditorSelect.vue"
+    },
+    {
+      "sha256": "459c4319856d93f275ca735865bf4fb9a8c207575f96cd791a796c24a9d73344",
+      "source": "templates/vue/theme-editor/fields/PatternField.vue",
+      "target": "fields/PatternField.vue"
     },
     {
       "sha256": "d5b8aac5d070b75401ce321c7ac47fae810c338521e07a9a98a97daa51628033",

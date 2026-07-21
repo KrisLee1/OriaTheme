@@ -21,12 +21,12 @@
   ],
   "files": [
     {
-      "sha256": "73bd3d00a7046fc8fd22df7fb69982d654dbf7a2c2bea0ba3dbcda9bd7d59fad",
+      "sha256": "81b92e0655280c3e11d9d392d575e2ee2ced64a9b5788b6627e7ca6bf20ad6d9",
       "source": "templates/react/theme-editor/editor-layout.ts",
       "target": "editor-layout.ts"
     },
     {
-      "sha256": "ae1decfec4a3ed5f4c9d601e7c235386e3a74e41173ae432330bca6965c93420",
+      "sha256": "f61edd9d3f86d1a7f58180df49aecf5e3fe9f4cb605783dc3e24dd01831c18c2",
       "source": "templates/react/theme-editor/theme-editor.css",
       "target": "theme-editor.css"
     },
@@ -36,7 +36,7 @@
       "target": "editor-tabs.tsx"
     },
     {
-      "sha256": "15f8fb28a84b13f660d9b1d21ffe7d1eeb12cd755ead43a32c9d832824621f96",
+      "sha256": "875850e74f8f9d435d8007f78c9ad9e3c76946e3a5195836f0a39678dea013bf",
       "source": "templates/react/theme-editor/token-field.tsx",
       "target": "token-field.tsx"
     },
@@ -151,9 +151,19 @@
       "target": "fields/shadow-field.tsx"
     },
     {
-      "sha256": "8fe7b7321cbb88e3125e9fc1de09ec0dd07c8169c78a348171e37283f936c577",
+      "sha256": "1b4fe778194c84e54dccd640bf1ce5a56b0524c47f0aecc1ad29787a0fd9be83",
       "source": "templates/react/theme-editor/fields/gradient-field.tsx",
       "target": "fields/gradient-field.tsx"
+    },
+    {
+      "sha256": "c67b1e8554eb873d0e30ffe11121edc8d69e48871b6132d50ce20d177cabefb2",
+      "source": "templates/react/theme-editor/fields/editor-select.tsx",
+      "target": "fields/editor-select.tsx"
+    },
+    {
+      "sha256": "0f85f6e2bfbdc4b15d2dd78b7663b925966b8564d38f6fabaf5d6d8332269bee",
+      "source": "templates/react/theme-editor/fields/pattern-field.tsx",
+      "target": "fields/pattern-field.tsx"
     },
     {
       "sha256": "c432e5d0f4f76e06b5fcc67ba2094dc07e52daf8afcffe1e2e3f76e3b0486c9d",

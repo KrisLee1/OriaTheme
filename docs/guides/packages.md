@@ -9,7 +9,7 @@ OriaTheme 是 ESM-only 的多包项目；源码仓库使用 pnpm workspace，但
 | 包 | 何时安装 | 公开能力 |
 | --- | --- | --- |
 | `@oriatheme/core` | 定义、校验、解析、导入导出主题，或在服务端生成可信默认 CSS | 纯 TypeScript contract、主题模型、诊断、`oriaDefaultTheme`；不访问 DOM、Storage、React 或 Vue |
-| `@oriatheme/presets` | 需要 36 款官方主题 | `oriaPresetThemes`、`oriaPresetCatalog` 与具名主题导出；依赖 Core |
+| `@oriatheme/presets` | 需要 41 款官方主题 | `oriaPresetThemes`、`oriaPresetCatalog` 与具名主题导出；依赖 Core |
 | `@oriatheme/runtime-dom` | 浏览器中应用、持久化和切换主题 | `createOriaThemeRuntime()`、Bootstrap、外部 store、View Transition；只有 `start()` 后访问浏览器 API |
 | `@oriatheme/react` | React 18.2 或 19 应用 | `OriaThemeProvider`、`useOriaTheme()`、`useThemeSnapshot()`；React/React DOM 是 peer dependency |
 | `@oriatheme/vue` | Vue 3.5 应用 | `createOriaTheme()`、`provideOriaTheme()`、`useOriaTheme()`；Vue 是 peer dependency |
@@ -21,7 +21,7 @@ OriaTheme 是 ESM-only 的多包项目；源码仓库使用 pnpm workspace，但
 
 ## 常见组合
 
-仅使用 Oria Default：
+仅使用 Default：
 
 ```ts
 import { oriaDefaultTheme } from "@oriatheme/core";

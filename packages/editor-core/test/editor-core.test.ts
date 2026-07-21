@@ -9,11 +9,11 @@ const primaryPath = "color.primary" as TokenPath;
 
 describe("ThemeEditorSession", () => {
   it("creates an available custom identity for each preset editing session", () => {
-    expect(createThemeEditorIdentity(oriaDefaultTheme, [])).toEqual({ id: "oria-default-editor", name: "Oria Default custom" });
+    expect(createThemeEditorIdentity(oriaDefaultTheme, [])).toEqual({ id: "oria-default-editor", name: "Default custom" });
     expect(createThemeEditorIdentity(oriaDefaultTheme, [
       { id: "oria-default-editor" },
       { id: "oria-default-editor-2" }
-    ])).toEqual({ id: "oria-default-editor-3", name: "Oria Default custom 3" });
+    ])).toEqual({ id: "oria-default-editor-3", name: "Default custom 3" });
   });
 
   it("saves a preset draft when an earlier generated custom identity already exists", () => {
@@ -144,6 +144,7 @@ describe("ThemeEditorSession", () => {
     expect(fields.find(field => field.path === "control.paddingInline.sm")).toMatchObject({ label: "Horizontal padding Sm", modeScope: "shared" });
     expect(fields.find(field => field.path === "typography.lineHeight.normal")).toMatchObject({ modeScope: "shared" });
     expect(fields.find(field => field.path === "elevation.shadow.md")).toMatchObject({ modeScope: "mode" });
+    expect(fields.find(field => field.path === "pattern.background")).toMatchObject({ label: "Background", modeScope: "mode" });
     expect(getTokenModeScope("app.custom" as TokenPath)).toBe("mode");
     expect(fields.some(field => field.type === "gradient")).toBe(true);
   });

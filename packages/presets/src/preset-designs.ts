@@ -46,6 +46,7 @@ const geometricSans = ["Avenir Next", "Futura", "Century Gothic", "sans-serif"] 
 const roundedSans = ["ui-rounded", "SF Pro Rounded", "Nunito", "system-ui", "sans-serif"] as const;
 const developerSans = ["Geist", "Inter", "ui-sans-serif", "system-ui", "sans-serif"] as const;
 const mono = ["SFMono-Regular", "Cascadia Code", "Consolas", "monospace"] as const;
+const handwrittenSans = ["Chalkboard SE", "Bradley Hand", "Comic Sans MS", "cursive"] as const;
 
 function scaledDimension(value: string, factor: number): string {
   if (value === "0") return "0";
@@ -65,7 +66,7 @@ function backdropBlurScale(lg: number): TokenOverrides {
 
 const unorderedPresetSpecs: readonly PresetSpec[] = [
   {
-    id: "oria-ocean", name: "Oria Ocean", category: "oria",
+    id: "oria-ocean", name: "Ocean", category: "oria",
     tokens: {
       "typography.font.sans": humanistSans, "typography.font.display": humanistSans,
       ...radiusScale("0.375rem", "0.625rem", "1rem", "1.5rem", "2.25rem", "3rem"),
@@ -207,6 +208,92 @@ const unorderedPresetSpecs: readonly PresetSpec[] = [
     modes: {
       light: { colors: { background: "#fff7dc", foreground: "#171717", surface: "#ffe55c", raised: "#ffffff", primary: ["#165dff", "#0d4ee6", "#073dba", "#ffffff"], secondary: ["#ffcf3f", "#f2bc24", "#dfa70d", "#211900"], muted: ["#eee6ca", "#554f3c"], accent: ["#ff6f91", "#4d0d1d"], border: ["#171717", "#000000"], input: "#ffffff", ring: "#165dff", selection: ["#7eddf2", "#102d34"], charts: ["#165dff", "#00a878", "#f04444", "#7a3ff2", "#ff8a00", "#00a7c4", "#759400", "#dd2f8c"] } },
       dark: { colors: { background: "#141414", foreground: "#fff7dc", surface: "#252525", raised: "#303030", overlay: "#292929", primary: ["#74a0ff", "#91b4ff", "#5a8cf5", "#10214a"], secondary: ["#7d6314", "#967817", "#ad8b1c", "#fff4c4"], muted: ["#2b2b2b", "#c6bea3"], accent: ["#7a2940", "#ffdce5"], border: ["#fff7dc", "#ffffff"], input: "#1d1d1d", ring: "#82a9ff", selection: ["#257389", "#f4fdff"], charts: ["#74a0ff", "#51d0ad", "#ff8181", "#b28cf7", "#ffb35f", "#55c9de", "#b4cc5f", "#f184bd"] }, tokens: { "elevation.shadow.xs": [{ x: "2px", y: "2px", blur: "0", spread: "0", color: "#fff7dc" }], "elevation.shadow.sm": [{ x: "4px", y: "4px", blur: "0", spread: "0", color: "#fff7dc" }], "elevation.shadow.md": [{ x: "7px", y: "7px", blur: "0", spread: "0", color: "#fff7dc" }], "elevation.shadow.lg": [{ x: "10px", y: "10px", blur: "0", spread: "0", color: "#fff7dc" }] } }
+    }
+  },
+  {
+    id: "oria-punchcard", name: "Punchcard", category: "visual-style",
+    tokens: {
+      "typography.font.sans": roundedSans, "typography.font.display": roundedSans, "typography.weight.normal": "500", "typography.weight.semibold": "700", "typography.weight.bold": "900",
+      "typography.size.4xl": "3.75rem", "typography.size.5xl": "4.5rem", "typography.size.6xl": "5.5rem", "typography.size.7xl": "6.75rem", "typography.size.8xl": "9rem", "typography.size.9xl": "12rem", "typography.letterSpacing.tight": "-0.04em", "typography.letterSpacing.wide": "0.075em", "typography.letterSpacing.wider": "0.1em", "typography.letterSpacing.widest": "0.14em",
+      ...radiusScale("0.25rem", "0.5rem", "0.75rem", "1rem", "1.25rem", "1.5rem"),
+      "shape.borderWidth.hairline": "1px", "shape.borderWidth.default": "2px", "shape.borderWidth.strong": "2px", "shape.focusRingWidth": "3px", "shape.focusRingOffset": "3px",
+      "elevation.shadow.xs": [{ x: "2px", y: "2px", blur: "0", spread: "0", color: "#2a2520" }], "elevation.shadow.sm": [{ x: "4px", y: "4px", blur: "0", spread: "0", color: "#2a2520" }], "elevation.shadow.md": [{ x: "6px", y: "6px", blur: "0", spread: "0", color: "#2a2520" }], "elevation.shadow.lg": [{ x: "8px", y: "8px", blur: "0", spread: "0", color: "#2a2520" }],
+      "motion.duration.fast": "90ms", "motion.duration.normal": "160ms", "motion.easing.standard": [0.2, 0, 0, 1]
+    },
+    modes: {
+      light: { colors: { background: "#fff2da", foreground: "#27211c", surface: "#fffaf0", raised: "#fffdf8", overlay: "#fffdf8", primary: ["#ffd84d", "#f4c935", "#e6b91e", "#2d2517"], secondary: ["#f4a4bd", "#e98ea8", "#dd7d9a", "#3c1f29"], muted: ["#f0e1c5", "#6e6254"], accent: ["#9ed4f2", "#153d54"], border: ["#2a2520", "#171411"], input: "#fffaf0", ring: "#ff8a2b", selection: ["#ffddb3", "#3a2412"], charts: ["#ffd84d", "#f4a4bd", "#9ed4f2", "#ff6a3d", "#5fbd84", "#7a72db", "#d89020", "#bd5f8b"] }, tokens: { "gradient.background": { type: "linear", angle: 180, stops: [{ color: "#fff4e1" }, { color: "#fff2da", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#fffdf8" }, { color: "#fff8ed", position: 100 }] }, "gradient.accent": { type: "linear", angle: 100, stops: [{ color: "#ffd84d" }, { color: "#ffbd56", position: 100 }] }, "pattern.surface": [{ type: "dot", color: "#2a25201f", radius: "0.9px", spacing: "1rem" }] } },
+      dark: { colors: { background: "#211b17", foreground: "#fff1d9", surface: "#2c251f", raised: "#3a3028", overlay: "#322a23", primary: ["#ffe073", "#ffea9a", "#f8ce4a", "#3a2910"], secondary: ["#a54868", "#c15c7f", "#d06a90", "#fff2f6"], muted: ["#342c25", "#d0c0a6"], accent: ["#265f80", "#e0f5ff"], border: ["#f3ddba", "#fff4dc"], input: "#29221d", ring: "#ffe073", selection: ["#7b4c1f", "#fff9ee"], charts: ["#ffe073", "#e57899", "#75c7ef", "#ff9a62", "#77c99c", "#aaa1f2", "#efbd67", "#eb8cba"] }, tokens: { "gradient.background": { type: "linear", angle: 180, stops: [{ color: "#2c2118" }, { color: "#211b17", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#3a3028" }, { color: "#2c251f", position: 100 }] }, "gradient.accent": { type: "linear", angle: 100, stops: [{ color: "#ffe073" }, { color: "#f59f5a", position: 100 }] }, "pattern.surface": [{ type: "dot", color: "#fff1d926", radius: "0.9px", spacing: "1rem" }], "elevation.shadow.xs": [{ x: "2px", y: "2px", blur: "0", spread: "0", color: "#080604" }], "elevation.shadow.sm": [{ x: "4px", y: "4px", blur: "0", spread: "0", color: "#080604" }], "elevation.shadow.md": [{ x: "6px", y: "6px", blur: "0", spread: "0", color: "#080604" }], "elevation.shadow.lg": [{ x: "8px", y: "8px", blur: "0", spread: "0", color: "#080604" }] } }
+    }
+  },
+  {
+    id: "oria-sketchbook", name: "Sketchbook", category: "visual-style",
+    tokens: {
+      "typography.font.sans": handwrittenSans, "typography.font.display": handwrittenSans, "typography.font.mono": mono,
+      "typography.weight.normal": "500", "typography.weight.medium": "600", "typography.weight.semibold": "700", "typography.weight.bold": "800",
+      "typography.lineHeight.normal": 1.6, "typography.lineHeight.relaxed": 1.82, "typography.letterSpacing.wide": "0.04em", "spacing.density": 1.06,
+      ...radiusScale("0.375rem", "0.625rem", "0.875rem", "1.125rem", "1.5rem", "2rem"),
+      "shape.borderWidth.hairline": "1px", "shape.borderWidth.default": "2px", "shape.borderWidth.strong": "2px", "shape.focusRingWidth": "3px", "shape.focusRingOffset": "3px",
+      "elevation.shadow.xs": [{ x: "0", y: "1px", blur: "2px", spread: "0", color: "#2d292714" }],
+      "elevation.shadow.sm": [{ x: "0", y: "3px", blur: "7px", spread: "-4px", color: "#2d29272e" }],
+      "elevation.shadow.md": [{ x: "0", y: "8px", blur: "18px", spread: "-12px", color: "#2d292733" }],
+      "elevation.shadow.inner": [{ x: "0", y: "1px", blur: "0", spread: "0", color: "#ffffffbf", inset: true }],
+      "motion.duration.fast": "110ms", "motion.duration.normal": "190ms", "motion.easing.standard": [0.2, 0, 0, 1]
+    },
+    modes: {
+      light: { colors: { background: "#fffefa", foreground: "#2d2927", surface: "#faf8f1", raised: "#fffefb", overlay: "#fffefb", primary: ["#2d2927", "#171513", "#000000", "#fffefa"], secondary: ["#b7f3c5", "#9ce8af", "#82dc9c", "#183d24"], muted: ["#f1eee5", "#716c66"], accent: ["#ffe49c", "#4d3c16"], border: ["#393431", "#171513"], input: "#fffefb", ring: "#4f9fd0", selection: ["#b8e2f8", "#17394f"], charts: ["#2d2927", "#9ce8af", "#f39ca3", "#69c7ee", "#ffe49c", "#9b8adc", "#e59a54", "#d97eac"] }, tokens: { "gradient.background": { type: "linear", angle: 180, stops: [{ color: "#fffefa" }, { color: "#fbfaf4", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#fffefc" }, { color: "#f8f5ec", position: 100 }] }, "gradient.accent": { type: "linear", angle: 110, stops: [{ color: "#b7f3c5" }, { color: "#69c7ee", position: 100 }] }, "pattern.surface": [{ type: "dot", color: "#2d29271f", radius: "0.75px", spacing: "2rem" }, { type: "noise", variant: "paper", color: "#2d2927", tileSize: "52px", intensity: 0.055 }] } },
+      dark: { colors: { background: "#211f1c", foreground: "#f6f1e7", surface: "#2a2723", raised: "#332f2a", overlay: "#302c27", primary: ["#f6f1e7", "#ffffff", "#dfd7c8", "#26221e"], secondary: ["#2f7250", "#39815c", "#438f68", "#eaffef"], muted: ["#302d28", "#c7c0b4"], accent: ["#785e27", "#fff0b8"], border: ["#d9d0c1", "#fff8e8"], input: "#2c2924", ring: "#81cef1", selection: ["#315b71", "#effaff"], charts: ["#f6f1e7", "#83d99c", "#f58f9a", "#74ccef", "#f7d77c", "#b5a5ed", "#efa76e", "#ee95bd"] }, tokens: { "gradient.background": { type: "linear", angle: 180, stops: [{ color: "#2b2823" }, { color: "#211f1c", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#38332d" }, { color: "#292620", position: 100 }] }, "gradient.accent": { type: "linear", angle: 110, stops: [{ color: "#397d58" }, { color: "#31769d", position: 100 }] }, "pattern.surface": [{ type: "dot", color: "#f6f1e724", radius: "0.75px", spacing: "2rem" }, { type: "noise", variant: "paper", color: "#f6f1e7", tileSize: "52px", intensity: 0.045 }], "elevation.shadow.xs": [{ x: "0", y: "1px", blur: "2px", spread: "0", color: "#07060599" }], "elevation.shadow.sm": [{ x: "0", y: "3px", blur: "7px", spread: "-4px", color: "#070605a6" }], "elevation.shadow.md": [{ x: "0", y: "8px", blur: "18px", spread: "-12px", color: "#070605b3" }], "elevation.shadow.inner": [{ x: "0", y: "1px", blur: "0", spread: "0", color: "#ffffff1f", inset: true }] } }
+    }
+  },
+  {
+    id: "oria-soft-clay", name: "Soft Clay", category: "visual-style",
+    tokens: {
+      "typography.font.sans": roundedSans, "typography.font.display": roundedSans, "typography.weight.normal": "500", "typography.weight.semibold": "700", "spacing.density": 1.12,
+      ...radiusScale("0.875rem", "1.25rem", "1.875rem", "2.75rem", "3.75rem", "4.75rem"), "shape.borderWidth.hairline": "1px", "shape.borderWidth.default": "1px", "shape.borderWidth.strong": "1px", "shape.focusRingWidth": "3px", "shape.focusRingOffset": "4px",
+      "elevation.shadow.sm": [{ x: "0", y: "6px", blur: "12px", spread: "-7px", color: "#a99c9140" }, { x: "5px", y: "5px", blur: "12px", spread: "0", color: "#c9beb452" }, { x: "-6px", y: "-6px", blur: "12px", spread: "0", color: "#ffffffed" }],
+      "elevation.shadow.md": [{ x: "0", y: "14px", blur: "28px", spread: "-13px", color: "#a99c9145" }, { x: "10px", y: "10px", blur: "22px", spread: "0", color: "#c9beb459" }, { x: "-12px", y: "-12px", blur: "22px", spread: "0", color: "#ffffff" }],
+      "elevation.shadow.lg": [{ x: "0", y: "24px", blur: "48px", spread: "-20px", color: "#a99c9147" }, { x: "20px", y: "20px", blur: "38px", spread: "0", color: "#c9beb452" }, { x: "-22px", y: "-22px", blur: "38px", spread: "0", color: "#ffffff" }],
+      "elevation.shadow.inner": [{ x: "0", y: "3px", blur: "7px", spread: "0", color: "#b9ada34d", inset: true }, { x: "4px", y: "4px", blur: "9px", spread: "0", color: "#c9beb459", inset: true }, { x: "-5px", y: "-5px", blur: "9px", spread: "0", color: "#ffffffed", inset: true }],
+      "effect.opacity.overlay": 0.9, "motion.duration.normal": "280ms", "motion.easing.standard": [0.18, 0.88, 0.28, 1]
+    },
+    modes: {
+      light: { colors: { background: "#f3f0eb", foreground: "#584842", surface: "#eae4dc", raised: "#fbf9f5", overlay: "#fcfaf7", primary: ["#e9781c", "#d66410", "#bd520c", "#382015"], secondary: ["#f0ebe4", "#e4dcd3", "#d8cec3", "#5a4b43"], muted: ["#e8e2db", "#8b7d75"], accent: ["#f0decc", "#684225"], border: ["#ffffffd9", "#d8cec4"], input: "#f6f2ed", ring: "#e9781c", selection: ["#f4cfaa", "#532f15"], charts: ["#e9781c", "#c96f68", "#789bb6", "#927bb3", "#7f9b73", "#c19358", "#75a0a7", "#b97894"] }, tokens: { "gradient.background": { type: "radial", position: "top left", stops: [{ color: "#ffffff" }, { color: "#f3f0eb", position: 58 }, { color: "#e7e0d7", position: 100 }] }, "gradient.surface": { type: "linear", angle: 145, stops: [{ color: "#ffffff" }, { color: "#f3eee8", position: 48 }, { color: "#e5ddd4", position: 100 }] }, "gradient.accent": { type: "linear", angle: 135, stops: [{ color: "#f8b06d" }, { color: "#e9781c", position: 100 }] } } },
+      dark: { colors: { background: "#28221d", foreground: "#f8f0e7", surface: "#302923", raised: "#3a312a", overlay: "#342c26", primary: ["#f3a362", "#f7b87f", "#de8742", "#3b2010"], secondary: ["#443a32", "#51453a", "#5f5145", "#f8f0e7"], muted: ["#382f29", "#cbbcaf"], accent: ["#553a28", "#f5d6bb"], border: ["#4d4137", "#706154"], input: "#302923", ring: "#f3a362", selection: ["#744728", "#fff3e5"], charts: ["#f3a362", "#df8e88", "#91b6ce", "#ae9acf", "#9ab58e", "#d3ad78", "#91b9bd", "#cd96ac"] }, tokens: { "gradient.background": { type: "radial", position: "top left", stops: [{ color: "#3c322a" }, { color: "#28221d", position: 70 }] }, "gradient.surface": { type: "linear", angle: 145, stops: [{ color: "#473c33" }, { color: "#302923", position: 100 }] }, "gradient.accent": { type: "linear", angle: 135, stops: [{ color: "#f6b678" }, { color: "#dc7f3b", position: 100 }] }, "elevation.shadow.sm": [{ x: "0", y: "6px", blur: "12px", spread: "-7px", color: "#0c0806a6" }, { x: "5px", y: "5px", blur: "12px", spread: "0", color: "#120d0abf" }, { x: "-6px", y: "-6px", blur: "12px", spread: "0", color: "#51453a99" }], "elevation.shadow.md": [{ x: "0", y: "14px", blur: "28px", spread: "-13px", color: "#0c0806b3" }, { x: "10px", y: "10px", blur: "22px", spread: "0", color: "#120d0acc" }, { x: "-12px", y: "-12px", blur: "22px", spread: "0", color: "#51453ab3" }], "elevation.shadow.lg": [{ x: "0", y: "24px", blur: "48px", spread: "-20px", color: "#0c0806b3" }, { x: "20px", y: "20px", blur: "38px", spread: "0", color: "#120d0acc" }, { x: "-22px", y: "-22px", blur: "38px", spread: "0", color: "#51453aa6" }], "elevation.shadow.inner": [{ x: "0", y: "3px", blur: "7px", spread: "0", color: "#120d0aa6", inset: true }, { x: "4px", y: "4px", blur: "9px", spread: "0", color: "#120d0ab3", inset: true }, { x: "-5px", y: "-5px", blur: "9px", spread: "0", color: "#51453a99", inset: true }] } }
+    }
+  },
+  {
+    id: "oria-golden-bazaar", name: "Golden Bazaar", category: "visual-style",
+    tokens: {
+      "typography.font.sans": roundedSans, "typography.font.display": geometricSans, "typography.weight.semibold": "700", "typography.weight.bold": "800", "typography.letterSpacing.tight": "-0.025em", "spacing.density": 1.06,
+      ...radiusScale("0.75rem", "1.125rem", "1.75rem", "2.625rem", "3.875rem", "5.25rem"),
+      "shape.borderWidth.hairline": "1px", "shape.borderWidth.default": "1px", "shape.borderWidth.strong": "1px", "shape.focusRingWidth": "3px", "shape.focusRingOffset": "4px",
+      "elevation.shadow.sm": [{ x: "0", y: "5px", blur: "16px", spread: "-9px", color: "#bb63342e" }, { x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffffb8", inset: true }],
+      "elevation.shadow.md": [{ x: "0", y: "16px", blur: "34px", spread: "-18px", color: "#bb633447" }, { x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffffd9", inset: true }],
+      "elevation.shadow.lg": [{ x: "0", y: "28px", blur: "58px", spread: "-28px", color: "#bb63345c" }, { x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffffe6", inset: true }],
+      "elevation.shadow.highlight": [{ x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffffcc", inset: true }],
+      "effect.opacity.overlay": 0.9, "motion.duration.fast": "160ms", "motion.duration.normal": "260ms", "motion.duration.slow": "420ms", "motion.easing.standard": [0.22, 1, 0.36, 1]
+    },
+    modes: {
+      light: { colors: { background: "#fff0d8", foreground: "#2f241d", surface: "#ffe5b7", raised: "#fffaf2", overlay: "#fff8eb", primary: ["#f4b522", "#df9b12", "#c88209", "#3b2903"], secondary: ["#f06d36", "#db5b28", "#bf491c", "#3b1b10"], muted: ["#f8dfbd", "#765e50"], accent: ["#413896", "#fff8eb"], border: ["#ffffffc7", "#f2cb89"], input: "#fffdf8", ring: "#f4b522", selection: ["#f6c95e", "#3a2805"], charts: ["#f4b522", "#f06d36", "#413896", "#2faa75", "#2786d7", "#de4e79", "#d28b18", "#7984d1"] }, tokens: { "gradient.background": { type: "radial", position: "top", stops: [{ color: "#fff8d4" }, { color: "#ffd16a", position: 38 }, { color: "#f3a861", position: 74 }, { color: "#ffe7c6", position: 100 }] }, "gradient.surface": { type: "linear", angle: 145, stops: [{ color: "#fffdf9" }, { color: "#fff4e6", position: 100 }] }, "gradient.accent": { type: "linear", angle: 120, stops: [{ color: "#ffd965" }, { color: "#f4b522", position: 52 }, { color: "#ee8b24", position: 100 }] } } },
+      dark: { colors: { background: "#2b1c16", foreground: "#fff4df", surface: "#38241c", raised: "#492f23", overlay: "#41291f", primary: ["#ffd66c", "#ffe08e", "#efbd43", "#4a3100"], secondary: ["#ff9566", "#ffad87", "#ed7750", "#43180d"], muted: ["#3a271f", "#d4bdac"], accent: ["#aaa6ff", "#211b59"], border: ["#ffffff24", "#a86d46"], input: "#342119", ring: "#ffda79", selection: ["#704d18", "#fff6dc"], charts: ["#ffd66c", "#ff9566", "#aaa6ff", "#6dd5a0", "#6eb8ff", "#ff8eae", "#e6b75f", "#aab4f5"] }, tokens: { "gradient.background": { type: "radial", position: "top", stops: [{ color: "#70421d" }, { color: "#422719", position: 46 }, { color: "#2b1c16", position: 100 }] }, "gradient.surface": { type: "linear", angle: 145, stops: [{ color: "#573827" }, { color: "#38241c", position: 100 }] }, "gradient.accent": { type: "linear", angle: 120, stops: [{ color: "#ffe08b" }, { color: "#f8bb45", position: 55 }, { color: "#e98131", position: 100 }] }, "elevation.shadow.sm": [{ x: "0", y: "5px", blur: "16px", spread: "-9px", color: "#08040399" }, { x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffff1f", inset: true }], "elevation.shadow.md": [{ x: "0", y: "16px", blur: "34px", spread: "-18px", color: "#080403b3" }, { x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffff2b", inset: true }], "elevation.shadow.lg": [{ x: "0", y: "28px", blur: "58px", spread: "-28px", color: "#080403cc" }, { x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffff33", inset: true }], "elevation.shadow.highlight": [{ x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffff24", inset: true }] } }
+    }
+  },
+  {
+    id: "oria-theorem", name: "Theorem", category: "visual-style",
+    tokens: {
+      "typography.font.sans": readingSerif, "typography.font.display": editorialSerif, "typography.font.mono": mono,
+      "typography.weight.normal": "400", "typography.weight.medium": "500", "typography.weight.semibold": "600", "typography.weight.bold": "700",
+      "typography.lineHeight.normal": 1.48, "typography.lineHeight.relaxed": 1.72, "typography.letterSpacing.tight": "-0.025em", "typography.letterSpacing.wide": "0.025em", "spacing.density": 1.04,
+      ...radiusScale("0", "0", "0", "0", "0", "0"),
+      "shape.borderWidth.hairline": "1px", "shape.borderWidth.default": "1px", "shape.borderWidth.strong": "1px", "shape.focusRingWidth": "2px", "shape.focusRingOffset": "3px",
+      "elevation.shadow.2xs": [], "elevation.shadow.xs": [], "elevation.shadow.sm": [], "elevation.shadow.md": [], "elevation.shadow.inner": [], "elevation.shadow.highlight": [],
+      "elevation.shadow.lg": [{ x: "8px", y: "10px", blur: "0", spread: "0", color: "#6b675f91" }, { x: "0", y: "18px", blur: "36px", spread: "-18px", color: "#24221d59" }],
+      "elevation.shadow.xl": [{ x: "10px", y: "12px", blur: "0", spread: "0", color: "#6b675f99" }, { x: "0", y: "24px", blur: "46px", spread: "-22px", color: "#24221d66" }],
+      "elevation.shadow.2xl": [{ x: "12px", y: "14px", blur: "0", spread: "0", color: "#6b675fa3" }, { x: "0", y: "30px", blur: "58px", spread: "-28px", color: "#24221d73" }],
+      "motion.duration.fast": "100ms", "motion.duration.normal": "180ms", "motion.easing.standard": [0.2, 0, 0, 1]
+    },
+    modes: {
+      light: { colors: { background: "#f0ede5", foreground: "#25231f", surface: "#ebe8df", raised: "#fffdf5", overlay: "#fffef9", primary: ["#27231e", "#15130f", "#000000", "#fffdf5"], secondary: ["#e6e0d4", "#d8d0c1", "#c8bead", "#322e28"], muted: ["#e4e0d7", "#59554e"], accent: ["#8d3029", "#fff8f1"], border: ["#d6d0c4", "#8a8479"], input: "#fffdf5", ring: "#8d3029", selection: ["#d8b6ae", "#321411"], scrim: "#25231f59", charts: ["#27231e", "#8d3029", "#756848", "#5d6972", "#62735e", "#806075", "#9a633c", "#46616c"] }, tokens: { "gradient.background": { type: "linear", angle: 180, stops: [{ color: "#f3f0e8" }, { color: "#f0ede5", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#fffef9" }, { color: "#f8f3e8", position: 100 }] }, "gradient.accent": { type: "linear", angle: 100, stops: [{ color: "#a5463d" }, { color: "#8d3029", position: 100 }] } } },
+      dark: { colors: { background: "#292824", foreground: "#f4eee1", surface: "#34332e", raised: "#45423a", overlay: "#403d36", primary: ["#f5eee2", "#ffffff", "#ded5c5", "#27241f"], secondary: ["#514d43", "#625d52", "#716a5d", "#f4eee1"], muted: ["#393731", "#ccc4b6"], accent: ["#c76b5d", "#28110e"], border: ["#716c61", "#aaa294"], input: "#3a3832", ring: "#d27a6b", selection: ["#704039", "#fff6ef"], scrim: "#00000080", charts: ["#f5eee2", "#dc8173", "#c9b783", "#9eb3be", "#9bb58f", "#c59bb8", "#e1a979", "#87aab8"] }, tokens: { "gradient.background": { type: "linear", angle: 180, stops: [{ color: "#32312b" }, { color: "#292824", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#4c483f" }, { color: "#403d36", position: 100 }] }, "gradient.accent": { type: "linear", angle: 100, stops: [{ color: "#db8879" }, { color: "#c76b5d", position: 100 }] }, "elevation.shadow.lg": [{ x: "8px", y: "10px", blur: "0", spread: "0", color: "#0c0b0acc" }, { x: "0", y: "18px", blur: "36px", spread: "-18px", color: "#00000099" }], "elevation.shadow.xl": [{ x: "10px", y: "12px", blur: "0", spread: "0", color: "#0c0b0ad9" }, { x: "0", y: "24px", blur: "46px", spread: "-22px", color: "#000000a6" }], "elevation.shadow.2xl": [{ x: "12px", y: "14px", blur: "0", spread: "0", color: "#0c0b0ae6" }, { x: "0", y: "30px", blur: "58px", spread: "-28px", color: "#000000b3" }] } }
     }
   },
   {
@@ -447,7 +534,7 @@ const unorderedPresetSpecs: readonly PresetSpec[] = [
     }
   },
   {
-    id: "oria-forest", name: "Oria Forest", category: "oria",
+    id: "oria-forest", name: "Forest", category: "oria",
     tokens: {
       "typography.font.sans": humanistSans, "typography.font.display": editorialSerif,
       "typography.lineHeight.relaxed": 1.74, ...radiusScale("0.25rem", "0.5rem", "0.875rem", "1.375rem", "2rem", "2.75rem"),
@@ -461,7 +548,7 @@ const unorderedPresetSpecs: readonly PresetSpec[] = [
     }
   },
   {
-    id: "oria-aurora", name: "Oria Aurora", category: "visual-style",
+    id: "oria-aurora", name: "Aurora", category: "visual-style",
     tokens: {
       "typography.font.sans": geometricSans, "typography.font.display": geometricSans,
       "typography.letterSpacing.tight": "-0.03em", ...radiusScale("0.375rem", "0.625rem", "1rem", "1.5rem", "2.25rem", "3rem"),
@@ -521,14 +608,15 @@ const unorderedPresetSpecs: readonly PresetSpec[] = [
   {
     id: "oria-document-canvas", name: "Document Canvas", category: "brand-product",
     tokens: {
-      "typography.font.sans": systemSans, "typography.font.display": systemSans, "typography.font.serif": readingSerif,
-      "typography.lineHeight.normal": 1.55, "typography.lineHeight.relaxed": 1.75, ...radiusScale("0.125rem", "0.25rem", "0.375rem", "0.5rem", "0.75rem", "1rem"),
-      "elevation.shadow.sm": [{ x: "0", y: "1px", blur: "2px", spread: "0", color: "#37352f1a" }], "elevation.shadow.md": [{ x: "0", y: "5px", blur: "18px", spread: "-9px", color: "#37352f33" }],
-      "motion.duration.normal": "170ms", "motion.easing.standard": [0.25, 0.1, 0.25, 1]
+      "typography.font.sans": systemSans, "typography.font.display": mono, "typography.font.mono": mono, "typography.font.serif": readingSerif,
+      "typography.weight.medium": "500", "typography.weight.semibold": "600", "typography.lineHeight.normal": 1.55, "typography.lineHeight.relaxed": 1.75, "typography.letterSpacing.wide": "0.04em", "spacing.density": 1.04,
+      ...radiusScale("0", "0", "0", "0", "0", "0"),
+      "shape.borderWidth.hairline": "1px", "shape.borderWidth.default": "1px", "shape.borderWidth.strong": "1px", "elevation.shadow.xs": [{ x: "0", y: "1px", blur: "2px", spread: "-1px", color: "#191a1e12" }], "elevation.shadow.sm": [{ x: "0", y: "3px", blur: "8px", spread: "-6px", color: "#191a1e1c" }], "elevation.shadow.md": [{ x: "0", y: "8px", blur: "24px", spread: "-18px", color: "#191a1e29" }], "elevation.shadow.highlight": [{ x: "0", y: "1px", blur: "0", spread: "0", color: "#ffffffd9", inset: true }],
+      "motion.duration.fast": "120ms", "motion.duration.normal": "180ms", "motion.easing.standard": [0.2, 0, 0, 1]
     },
     modes: {
-      light: { colors: { background: "#fbfaf7", foreground: "#37352f", surface: "#f2f1ed", raised: "#ffffff", primary: ["#346795", "#2c5982", "#244a6d", "#ffffff"], secondary: ["#e9e7e2", "#dfddd7", "#d2cfc7", "#37352f"], muted: ["#efeeea", "#6b6962"], accent: ["#e6f0f7", "#31546d"], border: ["#dfddd7", "#aaa69d"], ring: "#4679a6", selection: ["#cde2f0", "#2a465a"], charts: ["#346795", "#4e8065", "#8a6745", "#735f91", "#a05d6e", "#9b7b37", "#4f7a84", "#676f43"] } },
-      dark: { colors: { background: "#191919", foreground: "#f1f1ef", surface: "#202020", raised: "#292929", overlay: "#252525", primary: ["#76acd6", "#91bde0", "#5c99ca", "#102b3d"], secondary: ["#303030", "#3a3a3a", "#464646", "#f2f2f0"], muted: ["#262626", "#b9b8b3"], accent: ["#20394b", "#d3eafa"], border: ["#383838", "#66645f"], input: "#222222", ring: "#7db3db", selection: ["#315c79", "#f5fbff"], charts: ["#76acd6", "#82b79a", "#c4a17d", "#aa93c5", "#d18e9f", "#d0b16b", "#7eafb5", "#a6ae78"] }, tokens: { "elevation.shadow.md": [{ x: "0", y: "7px", blur: "22px", spread: "-10px", color: "#000000a6" }] } }
+      light: { colors: { background: "#eeeeef", foreground: "#26262b", surface: "#e6e6e8", raised: "#fbfbfc", overlay: "#f9f9fa", primary: ["#292a31", "#202127", "#18191e", "#ffffff"], secondary: ["#dedee1", "#d4d4d8", "#c8c8cd", "#303037"], muted: ["#e3e3e6", "#707077"], accent: ["#d8dce1", "#3a444d"], border: ["#ffffffcc", "#d0d0d4"], input: "#fafafb", ring: "#5a6470", selection: ["#d7dce1", "#2b3640"], charts: ["#292a31", "#536c7a", "#3e7e82", "#6d85a3", "#526b91", "#7e9a6c", "#b07d4f", "#977089"] }, tokens: { "gradient.background": { type: "linear", angle: 180, stops: [{ color: "#f3f3f4" }, { color: "#e9e9eb", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#fdfdfe" }, { color: "#f5f5f6", position: 100 }] }, "pattern.surface": [{ type: "noise", variant: "paper", color: "#24262b", tileSize: "48px", intensity: 0.03 }] } },
+      dark: { colors: { background: "#1b1c21", foreground: "#f0f0f1", surface: "#24252b", raised: "#2d2e35", overlay: "#292a30", primary: ["#e0e1e5", "#f0f0f2", "#c8c9cf", "#202126"], secondary: ["#36373f", "#40414a", "#4a4b55", "#f0f0f2"], muted: ["#2b2c32", "#b8b8c0"], accent: ["#343940", "#e2e6ea"], border: ["#ffffff1f", "#ffffff3b"], input: "#26272d", ring: "#b2c2ce", selection: ["#4b5663", "#f7f8fa"], charts: ["#e0e1e5", "#8aa7b7", "#70b1b3", "#9aafd2", "#8298be", "#a5be91", "#d0a172", "#bb94ae"] }, tokens: { "gradient.background": { type: "linear", angle: 180, stops: [{ color: "#23242a" }, { color: "#1a1b20", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#303138" }, { color: "#24252b", position: 100 }] }, "pattern.surface": [{ type: "noise", variant: "paper", color: "#f3f3f5", tileSize: "48px", intensity: 0.025 }], "elevation.shadow.md": [{ x: "0", y: "10px", blur: "28px", spread: "-18px", color: "#0000008f" }], "elevation.shadow.highlight": [{ x: "0", y: "1px", blur: "0", spread: "0", color: "#ffffff1f", inset: true }] } }
     }
   },
   {
@@ -566,7 +654,7 @@ const presetOrder = [
   "oria-ocean", "oria-forest", "oria-aurora",
   "oria-warm-reading", "oria-monochrome-deploy", "oria-precision-flow", "oria-document-canvas", "oria-elevated-surface",
   "oria-bento-ui", "oria-dashboard", "oria-editorial", "oria-ai-native", "oria-command-center", "oria-spatial-ui",
-  "oria-mono", "oria-minimalism", "oria-line-art", "oria-glass", "oria-neo-brutalism", "oria-neumorphism", "oria-memphis", "oria-soft-ui", "oria-cyberpunk", "oria-y2k", "oria-retro-terminal", "oria-paper",
+  "oria-mono", "oria-minimalism", "oria-line-art", "oria-glass", "oria-neo-brutalism", "oria-punchcard", "oria-sketchbook", "oria-soft-clay", "oria-golden-bazaar", "oria-theorem", "oria-neumorphism", "oria-memphis", "oria-soft-ui", "oria-cyberpunk", "oria-y2k", "oria-retro-terminal", "oria-paper",
   "oria-calm", "oria-playful", "oria-premium", "oria-organic", "oria-cottagecore", "oria-nature", "oria-retro", "oria-kawaii", "oria-sunset"
 ] as const;
 

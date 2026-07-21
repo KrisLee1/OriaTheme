@@ -45,7 +45,7 @@
 | 颜色 Colors | Semantic Color | Canvas & Surfaces、Primary、Secondary、Muted & Accent、Feedback、Borders & Selection、Charts |
 | 排版 Typography | Typography | Font Families、Font Weights、Type Scale、Line Height、Letter Spacing |
 | 布局与形状 Layout & Shape | Spacing & Density、Control、Shape & Border | Spacing & Density、Control Size、Radius Scale、Borders & Focus Ring |
-| 层次与材质 Depth & Material | Elevation、Effects、Gradient | Elevation Scale、Inner Shadows & Highlights、Opacity、Blur、Backdrop、Gradients |
+| 层次与材质 Depth & Material | Elevation、Effects、Gradient、Pattern | Elevation Scale、Inner Shadows & Highlights、Opacity、Blur、Backdrop、Gradients、Patterns |
 | 动效 Motion | Motion | Duration Scale、Easing Curves |
 
 中文界面使用中文标题，Token Path 作为次级技术信息保留。公开稳定的 `data-oria-editor-*` hook 和文档中的分组 ID 使用英文，不依赖可见文案。
@@ -167,7 +167,7 @@ Colors Tab 的所有分组标题只显示分组名称、必要的问题数量和
 ### 6.3 Light/Dark 分段控件
 
 - 分段控件在独立嵌入时只切换当前编辑和预览模式，不自行改写用户持久化的 appearance 偏好。官方 React、Next 与 Vue 主题工作台由 host 显式启用 appearance-following preview：页面 Appearance 和编辑器 Light/Dark 共用一个 runtime `setAppearance()` 入口，编辑器以 `resolvedMode` 显示 Light/Dark，System 仍只在页面控件中选择。
-- Semantic Color、Gradient 与 Elevation Shadow 按当前模式编辑；Typography、Layout & Shape、Effects 与 Motion 是共享字段，从任一模式修改都会原子同步到 Light/Dark。共享字段不得伪装成两份独立值。
+- Semantic Color、Gradient、Pattern 与 Elevation Shadow 按当前模式编辑；Typography、Layout & Shape、Effects 与 Motion 是共享字段，从任一模式修改都会原子同步到 Light/Dark。共享字段不得伪装成两份独立值。
 - UI 必须读取 editor-core 的 `modeScope`，不得自行维护 token path 白名单；当前紧凑编辑界面不额外显示 `Shared` 辅助文字。
 - 滑动指示背板从当前屏幕位置开始，使用无过冲的弹簧转移。
 - 示例页的 Theme 与 Appearance 控件置于顶栏：Theme 使用与编辑器一致的五扇色卡触发器和带背景模糊的可滚动列表；Appearance 使用显示器、太阳和月亮图标。基础色库的圆形色块/紧凑色阶二段控件复用编辑器 Appearance 的分段背板规格。全部切换使用主题 motion token 驱动的连续滑动背板；新操作在动画完成前可直接重定向。`prefers-reduced-motion` 下保留状态与颜色反馈，但不移动背板。
@@ -201,6 +201,7 @@ Colors Tab 的所有分组标题只显示分组名称、必要的问题数量和
 | `cubicBezier` | 独立名称行 + 四个数值 + 曲线图 + 可重播运动效果预览 | 可拖动控制点和同步运动对照；键盘可调 |
 | `shadow` | 阴影缩略图 + 层数 + 展开按钮 | 多层阴影编辑、添加/删除/排序、inset |
 | `gradient` | 五类渐变预览 + 类型对应的角度/中心 | 停止点颜色/引用、位置、排序与删除 |
+| `pattern` | 表面上的重复图层预览 | 有序 dot/stripe/grid/noise 图层、颜色、受控颗粒变体、添加/删除/排序、Create / Unset |
 
 ### 8.1 颜色
 
@@ -210,6 +211,7 @@ Colors Tab 的所有分组标题只显示分组名称、必要的问题数量和
 - 前景/背景成对 token 在同一卡片中显示实时对比度。诊断是文字 + 数值 + 图标，不只是红/绿。
 - 引用模式使用可搜索 token picker，只显示同模式下类型兼容且不会构成循环的候选。
 - 渐变不得以 JSON 文本作为默认编辑方式。字段必须提供实时渐变预览、停止点位置标记，以及 linear、radial、repeating-linear、repeating-radial、conic 五种类型的紧凑选择；线性类提供角度，径向类提供中心，conic 同时提供起始角度和中心。类型增加后不得把五个长标签挤进不可读的单行按钮组，应使用明确标注的紧凑 Type 选择控件并把几何参数放在下一行。Origin 以 3×3 空间映射按钮呈现九个常用位置，选中状态同时依赖边框、背景和中心标记而非仅靠颜色；Custom 是相邻的明确模式切换，展开至少保留 0.1% 精度的 X/Y 百分比滑块与数值输入，并从当前预设无跳变地继承等价坐标。逐个停止点继续提供颜色、位置、添加和删除操作；每个停止点的颜色同时提供原生颜色选择、颜色值输入和可搜索基础色库三种入口，并映射到同一个安全提交函数。可选渐变缺失时显示明确的创建空态。预览只能消费已通过安全颜色约束的数据，所有修改继续通过 editor session 原子提交。
+- Pattern 不得暴露自由 CSS textarea。`pattern.background` 与 `pattern.surface` 各自最多 8 个按背景绘制顺序排列的图层；每层通过明确 Type 控件选择 `dot`、`stripe`、`grid` 或 `noise`，颜色使用原生色选、色值输入和基础色库。几何图层继续编辑尺寸、间距和角度；noise 仅可选择 Paper、Film、Frosted 三种固定 profile，并编辑 Grain size 与 0–1 Intensity。Paper 预览使用与 Core 相同的低对比底纹、稀疏短纤维和细小杂点，不得回退为均匀高频颗粒；Film/Frosted 保持各自颗粒 profile。只有 Core-safe 的颜色、dimension、angle、variant 与 intensity 才能提交。缺失时显示 Create，已设置时提供 Unset；每个图层有类型、上移、下移和删除按钮，第一层明确标记为最上方，预览显示实际叠加结果。颜色控件独占第一行，三项参数固定为第二行三列；仅在容器小于 21rem 时收为单列，避免侧栏和窄屏重叠。
 
 ### 8.2 数值、尺寸与滑块
 
@@ -375,7 +377,7 @@ runtime.previewTheme() 原子替换完整 stylesheet
 - 路由/页面文件只导入并组合本地 `ThemeEditor`，类型字段、阴影、阶梯、浮层和预览均有独立源码组件。
 - 顶部同时提供重置、导入、导出和保存，不存在手动 Preview/Stop Preview。
 - Themes Tab 管理 runtime 主题；其余五个 token Tab 覆盖全部标准 Contract token，搜索能跨 token Tab 导航到任意 token。
-- color、dimension、number、fontFamily、fontWeight、duration、cubicBezier、shadow、gradient 都有类型化控件，不再使用通用 JSON textarea 作为主编辑方式。
+- color、dimension、number、fontFamily、fontWeight、duration、cubicBezier、shadow、gradient、pattern 都有类型化控件，不再使用通用 JSON textarea 作为主编辑方式。
 - 色阶、字号、间距、控件尺寸、圆角、阴影、模糊和时长阶梯均支持主值派生和单项覆写。
 - 每个有效 revision 自动预览；快速连续更改以最新 revision 为准；非法草稿保留最后有效画面。
 - 重置、导入、导出、保存冲突和离开 dirty 页面均按本文档语义处理。

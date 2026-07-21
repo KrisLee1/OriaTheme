@@ -7,6 +7,6 @@ export default defineComponent({
   setup() {
     const { runtime } = useOriaTheme();
 
-    return () => h(ThemeEditor, { runtime, options: { source: oriaDefaultTheme, identity: { id: "oria-default-demo", name: "Oria Default demo" } } });
+    return () => h(ThemeEditor, { runtime, options: { source: oriaDefaultTheme, identity: { id: "oria-default-demo", name: "Default demo" } } });
   },
 });

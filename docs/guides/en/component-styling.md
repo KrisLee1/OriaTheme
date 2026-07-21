@@ -26,6 +26,20 @@ Do not create a static stylesheet or Tailwind configuration for every preset, an
   color: var(--oria-color-primaryForeground);
   background: var(--oria-color-primary);
 }
+
+.textured-page {
+  /* The background pattern sits over the optional gradient and base color. */
+  background:
+    var(--oria-pattern-background, none),
+    var(--oria-gradient-background, var(--oria-color-background));
+}
+
+.patterned-card {
+  /* A missing optional pattern leaves a normal surface. */
+  background:
+    var(--oria-pattern-surface, none),
+    var(--oria-color-surfaceRaised);
+}
 ```
 
 After a theme change, matched rules use the new values immediately. No CSS rebuild or component rerender is required.

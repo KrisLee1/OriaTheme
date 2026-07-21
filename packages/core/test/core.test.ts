@@ -1,14 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { analyzeTheme, cloneTheme, colorToken, createThemeFromSeed, defineTokenContract, exportTheme, importTheme, oriaDefaultTheme, oriaStandardContract, resolveTheme, validateTheme } from "../src/index.js";
-import type { GradientDefinition, ThemeDefinition, TokenPath } from "../src/index.js";
+import type { DotPatternDefinition, GradientDefinition, GridPatternDefinition, NoisePatternDefinition, StripePatternDefinition, ThemeDefinition, TokenPath } from "../src/index.js";
 
 describe("standard contract and preset", () => {
   it("covers the required design-language categories and resolves in Node", () => {
     expect(Object.keys(oriaStandardContract.tokens)).toContain("gradient.accent");
+    expect(Object.keys(oriaStandardContract.tokens)).toContain("pattern.background");
+    expect(Object.keys(oriaStandardContract.tokens)).toContain("pattern.surface");
     expect(Object.keys(oriaStandardContract.tokens)).toContain("motion.easing.emphasized");
     expect(Object.keys(oriaStandardContract.tokens)).toContain("color.chart8");
     expect(oriaStandardContract.version).toBe(1);
-    expect(Object.keys(oriaStandardContract.tokens)).toHaveLength(152);
+    expect(Object.keys(oriaStandardContract.tokens)).toHaveLength(154);
     expect(Object.keys(oriaStandardContract.tokens).some(path => path.startsWith("palette."))).toBe(false);
     const result = resolveTheme(oriaDefaultTheme, "light");
     expect(result.variables["--oria-color-background"]).toBe("#f1f3f4");
@@ -32,6 +34,8 @@ describe("standard contract and preset", () => {
     expect(result.variables["--oria-elevation-shadow-md"]!.split(",")).toHaveLength(1);
     expect(result.variables["--oria-elevation-shadow-highlight"]!.split(",")).toHaveLength(4);
     expect(Object.keys(result.variables).some(variable => variable.startsWith("--oria-palette-"))).toBe(false);
+    expect(result.variables["--oria-pattern-surface"]).toBeUndefined();
+    expect(result.variables["--oria-pattern-background"]).toBeUndefined();
   });
 
   it("has no blocking validation errors or AA body-text warnings", () => {
@@ -73,6 +77,54 @@ describe("standard contract and preset", () => {
       };
       expect(resolveTheme(theme, "light").variables["--oria-gradient-surface"]).toBe(expected);
     }
+  });
+
+  it("compiles a validated dot layer as a repeatable CSS background layer", () => {
+    const patternPath = "pattern.background" as TokenPath;
+    const pattern: DotPatternDefinition = { type: "dot", color: { $ref: "color.borderStrong" as TokenPath }, radius: "0.9px", spacing: "1rem" };
+    const theme: ThemeDefinition = {
+      ...oriaDefaultTheme,
+      modes: {
+        light: { ...oriaDefaultTheme.modes.light, [patternPath]: [pattern] },
+        dark: { ...oriaDefaultTheme.modes.dark, [patternPath]: [pattern] }
+      }
+    };
+    expect(resolveTheme(theme, "light").variables["--oria-pattern-background"]).toBe("radial-gradient(circle at center, #cbd2d7 0 0.9px, transparent 0.9px) 0 0 / 1rem 1rem repeat");
+  });
+
+  it("compiles ordered angled dot, stripe, and grid pattern layers", () => {
+    const dot: DotPatternDefinition = { type: "dot", color: "#123456", radius: "1px", spacing: "12px", angle: 45 };
+    const stripe: StripePatternDefinition = { type: "stripe", color: "#123456", stripeWidth: "1px", spacing: "12px", angle: 30 };
+    const grid: GridPatternDefinition = { type: "grid", color: "#123456", lineWidth: "1px", spacing: "12px", angle: 30 };
+    const theme: ThemeDefinition = {
+      ...oriaDefaultTheme,
+      modes: {
+        light: { ...oriaDefaultTheme.modes.light, "pattern.surface": [dot, stripe, grid] } as never,
+        dark: { ...oriaDefaultTheme.modes.dark, "pattern.surface": [dot, stripe, grid] } as never
+      }
+    };
+    const variables = resolveTheme(theme, "light").variables;
+    const surface = variables["--oria-pattern-surface"]!;
+    expect(surface).toContain("patternTransform%3D%22rotate(45)%22");
+    expect(surface).toContain("repeating-linear-gradient(30deg, #123456 0 1px, transparent 1px 12px)");
+    expect(surface).toContain("repeating-linear-gradient(120deg, #123456 0 1px, transparent 1px 12px)");
+    expect(surface.indexOf("patternTransform")).toBeLessThan(surface.indexOf("repeating-linear-gradient(30deg"));
+  });
+
+  it("compiles deterministic paper fibers and preserves film and frosted grain layers", () => {
+    const paper: NoisePatternDefinition = { type: "noise", variant: "paper", color: "#123456", tileSize: "48px", intensity: 0.12 };
+    const film: NoisePatternDefinition = { type: "noise", variant: "film", color: "#654321", tileSize: "32px", intensity: 0.18 };
+    const frosted: NoisePatternDefinition = { type: "noise", variant: "frosted", color: "#abcdef", tileSize: "64px", intensity: 0.08 };
+    const theme: ThemeDefinition = { ...oriaDefaultTheme, modes: { light: { ...oriaDefaultTheme.modes.light, "pattern.surface": [paper, film, frosted] } as never, dark: { ...oriaDefaultTheme.modes.dark, "pattern.surface": [paper, film, frosted] } as never } };
+    const surface = resolveTheme(theme, "light").variables["--oria-pattern-surface"]!;
+    expect(surface).toContain("feTurbulence");
+    expect(surface).toContain("baseFrequency%3D%220.18%22");
+    expect(surface).toContain("data-oria-paper%3D%22specks%22");
+    expect(surface).toContain("data-oria-paper%3D%22fibers%22");
+    expect(surface).toContain("stroke-linecap%3D%22round%22");
+    expect(surface).toContain("baseFrequency%3D%220.92%22");
+    expect(surface).toContain("baseFrequency%3D%220.38%22");
+    expect(surface).toContain('") 0 0 / 48px 48px repeat');
   });
 });
 
@@ -116,7 +168,8 @@ describe("contracts and validation", () => {
       ["duration", { "motion.value": { type: "duration", required: true, description: "duration" } }, "20minutes"],
       ["cubicBezier", { "curve.value": { type: "cubicBezier", required: true, description: "curve" } }, [0, 0, 1]],
       ["shadow", { "shadow.value": { type: "shadow", required: true, description: "shadow" } }, [{ x: "0", y: "0", blur: "0", spread: "0", color: "bad-color" }]],
-      ["gradient", { "gradient.value": { type: "gradient", required: true, description: "gradient" } }, { type: "linear", angle: 0, stops: [{ color: "#fff" }] }]
+      ["gradient", { "gradient.value": { type: "gradient", required: true, description: "gradient" } }, { type: "linear", angle: 0, stops: [{ color: "#fff" }] }],
+      ["pattern", { "pattern.value": { type: "pattern", required: true, description: "pattern" } }, [{ type: "stripe", color: "#fff", stripeWidth: "1px", spacing: "0.5px", angle: 420 }]]
     ];
     for (const [name, tokens, invalid] of cases) {
       const slug = name.toLowerCase();
@@ -142,9 +195,40 @@ describe("contracts and validation", () => {
       expect(validateTheme(theme, gradientContract).ok).toBe(false);
     }
   });
+
+  it("rejects unsafe or incompatible pattern-layer color references", () => {
+    const patternContract = defineTokenContract({ name: "pattern-references", version: 1, tokens: {
+      "color.base": { type: "color", required: true, description: "base" },
+      "spacing.unit": { type: "dimension", required: true, description: "unit" },
+      "pattern.surface": { type: "pattern", required: true, description: "pattern" }
+    } });
+    const theme = (color: unknown): ThemeDefinition => ({ schemaVersion: 1, contract: { name: "pattern-references", version: 1 }, id: "pattern-reference", name: "Pattern", kind: "custom", modes: { light: { "color.base": "#fff", "spacing.unit": "1rem", "pattern.surface": [{ type: "dot", color, radius: "1px", spacing: "1rem" }] } as never, dark: { "color.base": "#fff", "spacing.unit": "1rem", "pattern.surface": [{ type: "dot", color, radius: "1px", spacing: "1rem" }] } as never } });
+    expect(validateTheme(theme({ $ref: "spacing.unit" as TokenPath }), patternContract).ok).toBe(false);
+    expect(validateTheme(theme("url(https://unsafe.example)"), patternContract).ok).toBe(false);
+  });
+
+  it("requires one to eight pattern layers", () => {
+    const patternContract = defineTokenContract({ name: "pattern-limits", version: 1, tokens: { "pattern.surface": { type: "pattern", required: true, description: "pattern" } } });
+    const layer: DotPatternDefinition = { type: "dot", color: "#ffffff", radius: "1px", spacing: "8px" };
+    const theme = (layers: unknown): ThemeDefinition => ({ schemaVersion: 1, contract: { name: "pattern-limits", version: 1 }, id: "pattern-limits", name: "Pattern limits", kind: "custom", modes: { light: { "pattern.surface": layers } as never, dark: { "pattern.surface": layers } as never } });
+    expect(validateTheme(theme([]), patternContract).ok).toBe(false);
+    expect(validateTheme(theme(Array.from({ length: 9 }, () => layer)), patternContract).ok).toBe(false);
+  });
+
+  it("rejects invalid noise profiles, sizes, and intensities", () => {
+    const patternContract = defineTokenContract({ name: "noise-limits", version: 1, tokens: { "pattern.surface": { type: "pattern", required: true, description: "pattern" } } });
+    const theme = (layer: unknown): ThemeDefinition => ({ schemaVersion: 1, contract: { name: "noise-limits", version: 1 }, id: "noise-limits", name: "Noise limits", kind: "custom", modes: { light: { "pattern.surface": [layer] } as never, dark: { "pattern.surface": [layer] } as never } });
+    expect(validateTheme(theme({ type: "noise", variant: "canvas", color: "#fff", tileSize: "32px", intensity: 0.1 }), patternContract).ok).toBe(false);
+    expect(validateTheme(theme({ type: "noise", variant: "paper", color: "#fff", tileSize: "0px", intensity: 0.1 }), patternContract).ok).toBe(false);
+    expect(validateTheme(theme({ type: "noise", variant: "film", color: "#fff", tileSize: "32px", intensity: 1.1 }), patternContract).ok).toBe(false);
+  });
 });
 
 describe("theme lifecycle", () => {
+  it("uses the concise stable display name for the built-in default preset", () => {
+    expect(oriaDefaultTheme).toMatchObject({ id: "oria-default", name: "Default" });
+  });
+
   it("clones deterministically and preserves round-trip visual semantics", () => {
     const clone = cloneTheme(oriaDefaultTheme, { id: "my-copy", name: "My Copy" }, { now: () => 123 });
     expect(clone.kind).toBe("custom");

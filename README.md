@@ -9,7 +9,7 @@ OriaTheme 是 framework-agnostic 的客户端主题 runtime，提供类型化 To
 ## Packages
 
 - `@oriatheme/core`：无环境依赖的 contract、校验、解析、导入导出与诊断。
-- `@oriatheme/presets`：可选安装的 36 款官方完整主题集合，并提供可发现的目录元数据。
+- `@oriatheme/presets`：可选安装的 41 款官方完整主题集合，并提供可发现的目录元数据。
 - `@oriatheme/runtime-dom`：client-only runtime、storage、bootstrap 和可选 View Transition。
 - `@oriatheme/react`：React Provider、snapshot hooks 和 selector。
 - `@oriatheme/vue`：Vue Plugin、provide 和 composable。
