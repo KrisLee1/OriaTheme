@@ -1,5 +1,16 @@
 # @oriatheme/vue-editor
 
+## 0.1.1
+
+### Patch Changes
+
+- 095f880: Add package-specific README files to every public npm tarball.
+- Updated dependencies [095f880]
+- Updated dependencies [1cb13aa]
+  - @oriatheme/core@0.2.0
+  - @oriatheme/editor-core@0.1.1
+  - @oriatheme/runtime-dom@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

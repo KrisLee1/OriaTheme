@@ -1,5 +1,13 @@
 # @oriatheme/react
 
+## 0.1.1
+
+### Patch Changes
+
+- 095f880: Add package-specific README files to every public npm tarball.
+- Updated dependencies [095f880]
+  - @oriatheme/runtime-dom@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

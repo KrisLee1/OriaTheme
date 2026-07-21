@@ -1,5 +1,11 @@
 # @oriatheme/colors
 
+## 0.1.1
+
+### Patch Changes
+
+- 095f880: Add package-specific README files to every public npm tarball.
+
 ## 0.1.0
 
 ### Minor Changes

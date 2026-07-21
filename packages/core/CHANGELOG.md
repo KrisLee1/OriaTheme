@@ -1,5 +1,15 @@
 # @oriatheme/core
 
+## 0.2.0
+
+### Minor Changes
+
+- 1cb13aa: Add the Punchcard official preset: a warm-paper dashboard with ink outlines, hard shadows, yellow, pink, and sky-blue stat surfaces, and an optional structured dot pattern. Add the `pattern.dot` Token Contract capability with safe validation and CSS compilation. Rename the first four official display names to Default, Ocean, Forest, and Aurora while preserving their stable IDs and named exports.
+
+### Patch Changes
+
+- 095f880: Add package-specific README files to every public npm tarball.
+
 ## 0.1.0
 
 ### Minor Changes

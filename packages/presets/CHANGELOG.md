@@ -1,5 +1,22 @@
 # @oriatheme/presets
 
+## 0.2.0
+
+### Minor Changes
+
+- 1cb13aa: Add the Golden Bazaar preset with sunlit gold, coral, and indigo storefront styling.
+- 1cb13aa: Add the Punchcard official preset: a warm-paper dashboard with ink outlines, hard shadows, yellow, pink, and sky-blue stat surfaces, and an optional structured dot pattern. Add the `pattern.dot` Token Contract capability with safe validation and CSS compilation. Rename the first four official display names to Default, Ocean, Forest, and Aurora while preserving their stable IDs and named exports.
+- 1cb13aa: Add the Sketchbook preset with hand-drawn paper, ink, and pastel note styling.
+- 1cb13aa: Add the Soft Clay preset for thick, rounded cream control surfaces with directional highlights and shadows.
+
+### Patch Changes
+
+- 1cb13aa: Refresh Document Canvas with a cool-gray paper surface, graphite controls, restrained elevation, monospaced display typography, and safe optional paper texture.
+- 095f880: Add package-specific README files to every public npm tarball.
+- Updated dependencies [095f880]
+- Updated dependencies [1cb13aa]
+  - @oriatheme/core@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes
