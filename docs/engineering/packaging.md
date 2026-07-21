@@ -59,6 +59,6 @@
 ## GitHub Actions Trusted Publishing
 
 - 发布工作流位于 `.github/workflows/publish.yml`；npm Trusted Publisher 的 workflow filename 必须填写 `publish.yml`。
-- `prepare-release` 会在 `main` 推送后运行完整门禁，并在存在 Changeset 时使用 `changesets/action` 创建或更新版本 PR。版本 PR 合并后，只有提交确实变更 `packages/*/package.json` 时才进入 `publish` job。
+- `prepare-release` 会在 `main` 推送后先构建 workspace 包，再运行 typecheck、lint 与 test；这是因为 workspace 的公开 exports 指向未提交的 `dist/` 产物。存在 Changeset 时，它使用 `changesets/action` 创建或更新版本 PR。版本 PR 合并后，只有提交确实变更 `packages/*/package.json` 时才进入 `publish` job。
 - `publish` job 使用 GitHub Environment `npm-publish`、`id-token: write` 和 npm `^11.5.1` 的 OIDC Trusted Publishing；不得配置或使用长期 `NPM_TOKEN`。npm 中每个公开包的 Trusted Publisher 必须使用仓库 `KrisLee1/OriaTheme`、文件名 `publish.yml` 和同名 Environment。
 - GitHub 仓库 Settings → Environments 中必须创建 `npm-publish`；建议仅允许 `main` 部署并要求发布维护者审批。该环境只保护实际 publish job，不阻止 Changesets 版本 PR 的创建。
