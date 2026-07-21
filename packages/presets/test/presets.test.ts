@@ -18,10 +18,12 @@ import {
 } from "../src/index.js";
 
 const expectedThemeIds = [
-  "oria-default", "oria-ocean", "oria-forest", "oria-aurora",
-  "oria-warm-reading", "oria-monochrome-deploy", "oria-precision-flow", "oria-document-canvas", "oria-elevated-surface",
+  "oria-default", "oria-manuscript",
+  "oria-mono", "oria-minimalism", "oria-line-art", "oria-glass", "oria-neo-brutalism", "oria-punchcard", "oria-sketchbook", "oria-soft-clay", "oria-golden-bazaar", "oria-theorem", "oria-neumorphism", "oria-memphis",
+  "oria-ocean", "oria-forest", "oria-aurora",
+  "oria-warm-reading", "oria-monochrome-deploy", "oria-precision-flow", "oria-elevated-surface",
   "oria-bento-ui", "oria-dashboard", "oria-editorial", "oria-ai-native", "oria-command-center", "oria-spatial-ui",
-  "oria-mono", "oria-minimalism", "oria-line-art", "oria-glass", "oria-neo-brutalism", "oria-punchcard", "oria-sketchbook", "oria-soft-clay", "oria-golden-bazaar", "oria-theorem", "oria-neumorphism", "oria-memphis", "oria-soft-ui", "oria-cyberpunk", "oria-y2k", "oria-retro-terminal", "oria-paper",
+  "oria-soft-ui", "oria-cyberpunk", "oria-y2k", "oria-retro-terminal", "oria-paper",
   "oria-calm", "oria-playful", "oria-premium", "oria-organic", "oria-cottagecore", "oria-nature", "oria-retro", "oria-kawaii", "oria-sunset"
 ];
 
@@ -33,9 +35,22 @@ describe("Oria preset collection", () => {
   });
 
   it("fully validates, resolves, compiles safe CSS values, and meets contrast guidance", () => {
+    // Glass deliberately ships translucent raised surfaces whose alpha stops static
+    // contrast computation, plus a bright dark selection; these three warnings are
+    // an intentional, documented exception (see docs/specifications/preset-catalog.md).
+    const documentedWarnings = new Map<string, string[]>([
+      ["oria-glass", [
+        "color.surfaceRaised/color.surfaceRaisedForeground (light)",
+        "color.surfaceRaised/color.surfaceRaisedForeground (dark)",
+        "color.selection/color.selectionForeground (dark)"
+      ]]
+    ]);
     for (const theme of oriaPresetThemes) {
       expect(validateTheme(theme, oriaStandardContract).ok, theme.id).toBe(true);
-      expect(analyzeTheme(theme, oriaStandardContract), theme.id).toEqual({ errors: [], warnings: [] });
+      const analysis = analyzeTheme(theme, oriaStandardContract);
+      expect(analysis.errors, theme.id).toEqual([]);
+      const expectedPairs = documentedWarnings.get(theme.id) ?? [];
+      expect(analysis.warnings.map(warning => warning.pair).sort(), theme.id).toEqual([...expectedPairs].sort());
       expect(Object.keys(resolveTheme(theme, "light").variables)).not.toHaveLength(0);
       expect(Object.keys(resolveTheme(theme, "dark").variables)).not.toHaveLength(0);
     }
@@ -145,7 +160,7 @@ describe("Oria preset collection", () => {
     expect(feedbackKeys.map(key => light[`--oria-color-${key}`])).toEqual(["#d53740", "#1f9058", "#c15701", "#1982bd"]);
     expect(feedbackKeys.map(key => dark[`--oria-color-${key}`])).toEqual(["#f46767", "#56b17c", "#fba171", "#52a4db"]);
     expect(chartKeys.map(key => light[key])).toEqual(["#20aeea", "#1488a4", "#1c8c85", "#1982bd", "#3675e2", "#626bdc", "#1f9058", "#d53740"]);
-    expect(chartKeys.map(key => dark[key])).toEqual(["#4ac5ff", "#48a9c7", "#4caea6", "#52a4db", "#5f99fe", "#8390f8", "#56b17c", "#f46767"]);
+    expect(chartKeys.map(key => dark[key])).toEqual(["#4bc5ff", "#48a9c7", "#4caea6", "#52a4db", "#5f99fe", "#8390f8", "#56b17c", "#f46767"]);
   });
 
   it("preserves the defining traits of representative style families", () => {
@@ -159,16 +174,22 @@ describe("Oria preset collection", () => {
     expect(variables("oria-glass")["--oria-typography-font-sans"]).toContain("-apple-system");
     expect(variables("oria-glass")["--oria-elevation-shadow-highlight"]!.split(",")).toHaveLength(6);
     expect(variables("oria-glass")["--oria-elevation-shadow-md"]!.split(",")).toHaveLength(7);
-    expect(variables("oria-glass", "dark")["--oria-color-primary"]).toBe("#4ac5ff");
-    expect(variables("oria-document-canvas")["--oria-color-background"]).toBe("#eeeeef");
-    expect(variables("oria-document-canvas")["--oria-color-primary"]).toBe("#292a31");
-    expect(variables("oria-document-canvas")["--oria-typography-font-display"]).toContain("SFMono-Regular");
-    expect(variables("oria-document-canvas")["--oria-shape-radius-md"]).toBe("0");
-    expect(variables("oria-document-canvas")["--oria-color-border"]).toBe("#ffffffcc");
-    expect(variables("oria-document-canvas")["--oria-elevation-shadow-highlight"]).toContain("inset");
-    expect(variables("oria-document-canvas")["--oria-pattern-surface"]).toContain("data:image/svg+xml");
-    expect(variables("oria-document-canvas", "dark")["--oria-color-background"]).toBe("#1b1c21");
-    expect(variables("oria-document-canvas", "dark")["--oria-color-border"]).toBe("#ffffff1f");
+    expect(variables("oria-glass", "dark")["--oria-color-primary"]).toBe("#4bc5ff");
+    expect(variables("oria-glass", "dark")["--oria-color-chart1"]).toBe("#4bc5ff");
+    expect(variables("oria-glass", "dark")["--oria-color-surface"]).toBe("#181818");
+    expect(variables("oria-glass")["--oria-color-surfaceRaised"]).toBe("#f8f8f880");
+    expect(variables("oria-glass", "dark")["--oria-color-surfaceRaised"]).toBe("#101010a0");
+    expect(variables("oria-glass")["--oria-gradient-background"]).toBeUndefined();
+    expect(variables("oria-glass", "dark")["--oria-gradient-background"]).toBeUndefined();
+    expect(variables("oria-manuscript")["--oria-color-background"]).toBe("#eeeeef");
+    expect(variables("oria-manuscript")["--oria-color-primary"]).toBe("#292a31");
+    expect(variables("oria-manuscript")["--oria-typography-font-display"]).toContain("SFMono-Regular");
+    expect(variables("oria-manuscript")["--oria-shape-radius-md"]).toBe("0");
+    expect(variables("oria-manuscript")["--oria-color-border"]).toBe("#ffffffcc");
+    expect(variables("oria-manuscript")["--oria-elevation-shadow-highlight"]).toContain("inset");
+    expect(variables("oria-manuscript")["--oria-pattern-surface"]).toContain("data:image/svg+xml");
+    expect(variables("oria-manuscript", "dark")["--oria-color-background"]).toBe("#1b1c21");
+    expect(variables("oria-manuscript", "dark")["--oria-color-border"]).toBe("#ffffff1f");
     expect(variables("oria-neo-brutalism")["--oria-shape-borderWidth-strong"]).toBe("3px");
     expect(variables("oria-neo-brutalism")["--oria-elevation-shadow-md"]).toContain("7px 7px 0 0");
     expect(oriaPunchcardTheme.id).toBe("oria-punchcard");
@@ -177,8 +198,8 @@ describe("Oria preset collection", () => {
     expect(variables("oria-punchcard")["--oria-color-accent"]).toBe("#9ed4f2");
     expect(variables("oria-punchcard")["--oria-shape-borderWidth-strong"]).toBe("2px");
     expect(variables("oria-punchcard")["--oria-elevation-shadow-lg"]).toContain("8px 8px 0 0");
-    expect(variables("oria-punchcard")["--oria-pattern-surface"]).toBe("radial-gradient(circle at center, #2a25201f 0 0.9px, transparent 0.9px) 0 0 / 1rem 1rem repeat");
-    expect(variables("oria-punchcard", "dark")["--oria-pattern-surface"]).toBe("radial-gradient(circle at center, #fff1d926 0 0.9px, transparent 0.9px) 0 0 / 1rem 1rem repeat");
+    expect(variables("oria-punchcard")["--oria-pattern-surface"]).toBe("radial-gradient(circle at center, #2a25201f 0 1.5px, transparent 1.5px) 0 0 / 1.5rem 1.5rem repeat");
+    expect(variables("oria-punchcard", "dark")["--oria-pattern-surface"]).toBe("radial-gradient(circle at center, #fff1d91f 0 1.5px, transparent 1.5px) 0 0 / 1.5rem 1.5rem repeat");
     expect(variables("oria-ocean")["--oria-pattern-surface"]).toBeUndefined();
     expect(oriaSketchbookTheme.id).toBe("oria-sketchbook");
     expect(variables("oria-sketchbook")["--oria-color-background"]).toBe("#fffefa");
@@ -187,8 +208,10 @@ describe("Oria preset collection", () => {
     expect(variables("oria-sketchbook")["--oria-color-accent"]).toBe("#ffe49c");
     expect(variables("oria-sketchbook")["--oria-typography-font-display"]).toContain("Chalkboard SE");
     expect(variables("oria-sketchbook")["--oria-shape-borderWidth-default"]).toBe("2px");
-    expect(variables("oria-sketchbook")["--oria-pattern-surface"]).toContain("radial-gradient");
-    expect(variables("oria-sketchbook")["--oria-pattern-surface"]).toContain("data:image/svg+xml");
+    expect(variables("oria-sketchbook")["--oria-pattern-background"]).toBe("radial-gradient(circle at center, #2a25200f 0 1.5px, transparent 1.5px) 0 0 / 2rem 2rem repeat");
+    expect(variables("oria-sketchbook")["--oria-pattern-surface"]).toBe("repeating-linear-gradient(0deg, #2a25200f 0 1px, transparent 1px 1.5rem), repeating-linear-gradient(90deg, #2a25200f 0 1px, transparent 1px 1.5rem)");
+    expect(variables("oria-sketchbook", "dark")["--oria-pattern-background"]).toBe("radial-gradient(circle at center, #6060601f 0 1.5px, transparent 1.5px) 0 0 / 2rem 2rem repeat");
+    expect(variables("oria-sketchbook", "dark")["--oria-pattern-surface"]).toBe("repeating-linear-gradient(0deg, #f6f1e710 0 1px, transparent 1px 1.5rem), repeating-linear-gradient(90deg, #f6f1e710 0 1px, transparent 1px 1.5rem)");
     expect(variables("oria-sketchbook", "dark")["--oria-color-background"]).toBe("#211f1c");
     expect(oriaSoftClayTheme.id).toBe("oria-soft-clay");
     expect(variables("oria-soft-clay")["--oria-color-background"]).toBe("#f3f0eb");
@@ -216,6 +239,9 @@ describe("Oria preset collection", () => {
     expect(variables("oria-theorem")["--oria-color-scrim"]).toBe("#25231f59");
     expect(variables("oria-theorem")["--oria-elevation-shadow-md"]).toBe("");
     expect(variables("oria-theorem")["--oria-elevation-shadow-lg"]).toBe("8px 10px 0 0 #6b675f91, 0 18px 36px -18px #24221d59");
+    expect(variables("oria-theorem")["--oria-pattern-background"]).toContain("data:image/svg+xml");
+    expect(variables("oria-theorem")["--oria-pattern-background"]).toContain("80px 80px");
+    expect(variables("oria-theorem", "dark")["--oria-pattern-background"]).toContain("data:image/svg+xml");
     expect(variables("oria-theorem", "dark")["--oria-color-background"]).toBe("#292824");
     expect(variables("oria-neumorphism")["--oria-elevation-shadow-md"]!.split(",")).toHaveLength(2);
     expect(variables("oria-editorial")["--oria-typography-size-4xl"]).toBe("4.5rem");

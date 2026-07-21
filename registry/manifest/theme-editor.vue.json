@@ -115,7 +115,7 @@
       "target": "fields/EditorSelect.vue"
     },
     {
-      "sha256": "459c4319856d93f275ca735865bf4fb9a8c207575f96cd791a796c24a9d73344",
+      "sha256": "bec0c6595529b6139665555b423f802a675d39fbf253fe8f0938db8207f8d943",
       "source": "templates/vue/theme-editor/fields/PatternField.vue",
       "target": "fields/PatternField.vue"
     },

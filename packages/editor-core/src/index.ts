@@ -88,8 +88,7 @@ function materializeSharedTokens(theme: ThemeDefinition, contract: TokenContract
   return copyTheme({ ...theme, modes: { light, dark } });
 }
 
-function diagnosticsFor(theme: ThemeDefinition, contract: TokenContract): { readonly issues: readonly ValidationIssue[]; readonly diagnostics: ThemeDiagnostics } {
-  const validation = validateTheme(theme, contract);
+function diagnosticsFor(validation: ReturnType<typeof validateTheme>, contract: TokenContract): { readonly issues: readonly ValidationIssue[]; readonly diagnostics: ThemeDiagnostics } {
   if (!validation.ok) return { issues: validation.issues, diagnostics: { errors: validation.issues, warnings: [] } };
   const diagnostics = analyzeTheme(validation.value, contract);
   return { issues: diagnostics.errors, diagnostics };
@@ -112,8 +111,17 @@ export function createThemeEditorSession(options: ThemeEditorOptions): ThemeEdit
   let destroyed = false;
   const listeners = new Set<() => void>();
 
+  // validateTheme is a pure function of the immutable draft; cache it per draft
+  // reference so snapshot diagnostics, preview and save do not re-validate the
+  // same draft several times per revision.
+  let validationCache: { readonly draft: ThemeDefinition; readonly result: ReturnType<typeof validateTheme> } | undefined;
+  const validateDraft = (): ReturnType<typeof validateTheme> => {
+    if (validationCache?.draft !== draft) validationCache = { draft, result: validateTheme(draft, contract) };
+    return validationCache.result;
+  };
+
   const buildSnapshot = (): ThemeEditorSnapshot => {
-    const { issues, diagnostics } = diagnosticsFor(draft, contract);
+    const { issues, diagnostics } = diagnosticsFor(validateDraft(), contract);
     return Object.freeze({ draft, dirty, revision, issues, diagnostics });
   };
   let snapshot = buildSnapshot();
@@ -209,14 +217,14 @@ export function createThemeEditorSession(options: ThemeEditorOptions): ThemeEdit
     },
     exportJson(): string { return exportTheme(draft); },
     preview(runtime: OriaThemeRuntime, mode?: ResolvedMode): ThemeEditorPreviewResult {
-      const validation = validateTheme(draft, contract);
+      const validation = validateDraft();
       if (!validation.ok) return { ok: false, issues: validation.issues };
       clearPreview();
       activePreview = runtime.previewTheme(validation.value, mode);
       return { ok: true, handle: activePreview };
     },
     save(runtime: OriaThemeRuntime): ThemeEditorSaveResult {
-      const validation = validateTheme(draft, contract);
+      const validation = validateDraft();
       if (!validation.ok) return { ok: false, reason: "validation", issues: validation.issues };
       const normalized = normalizeTheme(validation.value, contract);
       const runtimeSnapshot = runtime.getSnapshot();

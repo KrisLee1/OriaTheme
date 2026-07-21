@@ -36,7 +36,7 @@
       "target": "editor-tabs.tsx"
     },
     {
-      "sha256": "875850e74f8f9d435d8007f78c9ad9e3c76946e3a5195836f0a39678dea013bf",
+      "sha256": "1e017ab867a2fc6e9472abf2b35047c25b357e87cd3da05bd965a97da6ef5031",
       "source": "templates/react/theme-editor/token-field.tsx",
       "target": "token-field.tsx"
     },
@@ -161,7 +161,7 @@
       "target": "fields/editor-select.tsx"
     },
     {
-      "sha256": "0f85f6e2bfbdc4b15d2dd78b7663b925966b8564d38f6fabaf5d6d8332269bee",
+      "sha256": "8ae4ee90c7d5c3477a27d4b4d68d39c92062f677e21b2a71ac62a0935a14b7e2",
       "source": "templates/react/theme-editor/fields/pattern-field.tsx",
       "target": "fields/pattern-field.tsx"
     },

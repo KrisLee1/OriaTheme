@@ -14,7 +14,7 @@
 
 仓库可核实的既有预设为 4 款：Default、Ocean、Forest、Aurora。需求文字中的“已经有的 5 款”已确认是笔误；没有缺失主题。Aurora 直接复用既有 `oria-aurora`，不得创建重复 ID 或同名副本。
 
-原 Phase 6 目录为 36 款：既有 4 款 + 新增 33 个方向 - 与既有 Aurora 重合 1 款。2026-07-18 先按新增需求加入 Line Art，再因 System Glass 与 Glass 定位重叠而移除前者；2026-07-21 根据用户提供的参考截图新增 Punchcard、Sketchbook、Soft Clay、Golden Bazaar 与 Theorem，当前目录为 41 款，所有条目均已实现。
+原 Phase 6 目录为 36 款：既有 4 款 + 新增 33 个方向 - 与既有 Aurora 重合 1 款。2026-07-18 先按新增需求加入 Line Art，再因 System Glass 与 Glass 定位重叠而移除前者；2026-07-21 根据用户提供的参考截图新增 Punchcard、Sketchbook、Soft Clay、Golden Bazaar 与 Theorem，当前目录为 41 款，所有条目均已实现。2026-07-21 Document Canvas 更名为 Manuscript，预览顺序调整为 Default 之后依次是 Manuscript 与 Mono～Memphis 视觉风格组，其余主题保持原相对顺序；同日经 ADR-0016 将稳定 ID 与具名导出同步为 `oria-manuscript` / `oriaManuscriptTheme`，token 数据不变。
 
 ## 2026-07-18 视觉重设计研究基线
 
@@ -41,7 +41,7 @@
 | Warm Reading | 温暖纸白、炭褐正文、安静长读 | Charter 类阅读衬线、宽松行距、陶土强调色、低干扰阴影 |
 | Monochrome Deploy | 黑白高对比、开发者工具、精细状态灰阶 | Geist 类排版、紧凑密度、小圆角、1px 边界、轻量阴影 |
 | Precision Flow | 去饱和蓝紫、精密、高效、暗色优先 | 低饱和蓝、0.82 密度、小控件、小圆角、短时长动效 |
-| Document Canvas | 冷灰工作纸、石墨控制、内容优先 | 系统无衬线正文与等宽标题、直角纸页、高亮细描边、极轻薄层级与可选轻纸纹 |
+| Manuscript | 冷灰工作纸、石墨控制、内容优先 | 系统无衬线正文与等宽标题、直角纸页、高亮细描边、极轻薄层级与可选轻纸纹 |
 | Elevated Surface | Tonal surface、分级 elevation、强调操作 | Material 式紫色系统、四级阴影、适中到大圆角、标准 easing |
 | Bento UI | 模块化卡片、清楚分区、大块留白 | 大圆角、明显 raised surface、稳固卡片阴影、少量渐变焦点 |
 | Dashboard | 数据密度、快速扫描、图表辨识 | 0.76 密度、小字号与控件、紧边界、8 个高辨识图表色 |
@@ -55,10 +55,10 @@
 | Glass | 清透磨砂面板、立体边缘折射、柔和悬浮、冷色焦点 | 30px blur、六向边缘高光与内侧亮带、分级轻投影；图表以 cyan→teal→emerald→lime→amber→orange→pink→violet 的棱镜序列配合透明材质 |
 | Neo Brutalism | 粗黑框、零圆角、硬偏移阴影、饱和原色 | 3px strong border、7px 无模糊阴影、机械 easing、粗重字重 |
 | Punchcard | 暖纸统计板、时间/进度格、亲和的大号数字 | 黄主操作、粉/浅蓝辅助表面、圆润但克制的卡片、统一墨黑硬偏移阴影、宽字距数据标签，以及白色浮起表面的可选规则小圆点；不复用 Neo Brutalism 的零圆角蓝色操作，也不复用 Memphis 的多色阴影和几何装饰 |
-| Sketchbook | 手绘作品集、点阵纸、墨线与便利贴拼贴 | 暖白点阵纸面与安全 Paper 纤维纹理、深墨主操作、手写字体栈、2px 墨线和轻纸张阴影；薄荷 secondary、柠檬 accent、粉/蓝图表色通过语义 token 表达，避免复制参考图的人像、文案、图标或布局 |
+| Sketchbook | 手绘作品集、点阵纸、墨线与便利贴拼贴 | 暖白纸面上的背景点阵与表面墨线网格、深墨主操作、手写字体栈、2px 墨线和轻纸张阴影；薄荷 secondary、柠檬 accent、粉/蓝图表色通过语义 token 表达，避免复制参考图的人像、文案、图标或布局 |
 | Soft Clay | 复古奶油软陶、厚实圆润的白色开关与表单控制、静谧日程面板 | 奶油背景和暖灰文字、低饱和橙色状态点、三层定向高光/阴影、内凹细节与从控件到容器显著放大的圆角；不修改 Neumorphism 的既有蓝灰视觉系统 |
 | Golden Bazaar | 日照橱窗、暖桃环境光、蜜糖黄操作与轻盈商品卡 | 桃杏至金黄的径向背景、奶油白浮起表面、明黄 primary、珊瑚 secondary、靛蓝 accent、超大圆角和暖色柔影；只提取图片的色彩、材质和层级原则，不复制品牌、商品、图标、文案或布局 |
-| Theorem | 数学讲义、遮罩中的象牙白浮层、炭黑衬线与酒红批注 | 暖白纸面配炭黑 `scrim` 形成遮罩后的暖灰背景、象牙白无圆角纸页、Palatino/Iowan 类衬线、炭黑 primary、酒红 accent、1px 细边；常规卡片无阴影，只有 `lg` 及以上浮层使用硬偏移加极轻扩散投影；只提取图片的色彩、排版、材质和层级原则，不复制人名、方程、文案或页面布局 |
+| Theorem | 数学讲义、遮罩中的象牙白浮层、炭黑衬线与酒红批注 | 暖白纸面配炭黑 `scrim` 形成遮罩后的暖灰背景，背景以安全 Paper noise 颗粒还原纸面纤维；象牙白无圆角纸页、Palatino/Iowan 类衬线、炭黑 primary、酒红 accent、1px 细边；常规卡片无阴影，只有 `lg` 及以上浮层使用硬偏移加极轻扩散投影；只提取图片的色彩、排版、材质和层级原则，不复制人名、方程、文案或页面布局 |
 | Neumorphism | 同色表面、明暗双向软阴影、凸起与凹陷 | 双层正负位移 shadow、inner shadow、大圆角、高对比前景修正 |
 | Memphis | 八十年代明亮撞色、几何、反理性趣味 | 黄蓝粉绿、黑边、彩色硬阴影、块状几何字体与回弹 easing |
 | Soft UI | 低饱和粉彩、舒适、柔和平面 | 蓝灰与薰衣草色、宽松圆角、单向弥散阴影；不使用浮雕双阴影 |
@@ -82,7 +82,7 @@
 
 | 形状方向 | 主题 | 规则 |
 |---|---|---|
-| 直角 | Neo Brutalism、Cyberpunk、Retro Terminal、Document Canvas | 六档均为 `0`，保持工业、机械、终端或纸页边界 |
+| 直角 | Neo Brutalism、Cyberpunk、Retro Terminal、Manuscript | 六档均为 `0`，保持工业、机械、终端或纸页边界 |
 | 近直角 | Editorial、Command Center、Line Art | 低层级为 `0`，大容器只保留极小圆角 |
 | 小圆角 | Warm Reading、Monochrome Deploy、Precision Flow、Dashboard、Mono、Minimalism、Memphis、Paper、Premium、Retro、Punchcard、Sketchbook | 控件克制，大容器不突然跳成胶囊或大圆角 |
 | 适中圆角 | Elevated Surface、Cottagecore、Nature | 提供日常产品所需的清晰层级，不过度柔化边界 |
@@ -91,7 +91,7 @@
 
 `shape.radius.full` 只用于明确的胶囊、圆点、头像或图表柱等语义元素；普通卡片不得无条件使用 full radius。示例应用的卡片、面板、输入框与按钮必须消费对应 shape token，不能写死圆角值。
 
-质量要求补充：每款主题必须拥有独立的浅色/深色色彩系统和独立视觉签名；`primary`/`secondary` 的 default、hover、active 不得使用同一颜色；Glass 的语义表面仍须使用可静态计算对比度的实色，透明感由结构化 gradient、backdrop、透明边缘与多层 highlight shadow 表达。用户提供的旧版 Glass 作为材质参考，其中多向边缘高光、上下内侧亮带和轻量分级投影予以保留；无法稳定保证正文对比度的透明背景/前景组合不直接照搬。
+质量要求补充：每款主题必须拥有独立的浅色/深色色彩系统和独立视觉签名；`primary`/`secondary` 的 default、hover、active 不得使用同一颜色。除下述 Glass 例外外，语义表面仍须使用可静态计算对比度的实色，透明感由结构化 gradient、backdrop、透明边缘与多层 highlight shadow 表达；无法稳定保证正文对比度的透明背景/前景组合不直接照搬。Glass 自 2026-07-21 起是有意的文档化例外：raised 表面使用带 alpha 的半透明值（light `#f8f8f880`、dark `#101010a0`），dark selection 使用亮青 `#5bd0ff`；`surfaceRaised` 前景对比度因此不再静态可计算（light/dark 各一条警告），dark selection 对比度 1.68 低于 AA 正文建议（一条警告）。这三条警告是维护者确认的取舍，透明材质观感优先；其余 40 款预设继续满足零警告要求。
 
 除单色主题外，所有预设使用相同且清晰的反馈语义：`destructive` 是纯红、`success` 是中等明度绿、`warning` 是橙色、`info` 是明亮 sky blue；不得以紫红、深红、棕色或过深蓝色替代这些含义。浅色模式使用适合实色状态表面的 500 阶，深色模式使用更明亮的 300/400 阶；对应 foreground 仍必须在实色表面达到 WCAG AA。Mono、Monochrome Deploy、Minimalism 与 Line Art 按定位保留有明确明度顺序的灰阶反馈色，但界面不得只以颜色传达状态。
 
@@ -112,7 +112,7 @@ Aurora             → oria-aurora
 Warm Reading       → oria-warm-reading
 Monochrome Deploy  → oria-monochrome-deploy
 Precision Flow     → oria-precision-flow
-Document Canvas    → oria-document-canvas
+Manuscript         → oria-manuscript
 Elevated Surface   → oria-elevated-surface
 
 Bento UI           → oria-bento-ui
@@ -169,7 +169,7 @@ Sunset             → oria-sunset
 | Warm Reading | Claude | 温暖米白、柔和橙色、亲和、安静，强调长时间阅读体验。 |
 | Monochrome Deploy | Vercel | 黑白极简、高对比、锐利排版与开发者工具感。 |
 | Precision Flow | Linear | 深色界面、紫蓝层次、精密网格与专业高效的工作氛围。 |
-| Document Canvas | 文档工作台 | 冷雾灰背景、石墨控制、等宽标题、直角纸页和高亮细描边，强调阅读与轻量协作；仅提取视觉原则，不复制参考图的品牌、控件或布局。 |
+| Manuscript | 文档工作台 | 冷雾灰背景、石墨控制、等宽标题、直角纸页和高亮细描边，强调阅读与轻量协作；仅提取视觉原则，不复制参考图的品牌、控件或布局。 |
 | Elevated Surface | Material | 清晰表面层级、卡片、阴影和强调操作的浮动感；组件行为仍由消费应用负责。 |
 
 ## 设计语言类
@@ -192,13 +192,13 @@ Sunset             → oria-sunset
 | Mono | 已实现 | 黑白灰、单色阶、克制、专业，强调内容本身。 |
 | Minimalism | 已实现 | 大面积留白、少量装饰、柔和黑色与深灰层级、功能优先。 |
 | Line Art | 已实现 | 纯黑白、高反差细线轮廓、近直角和大面积负空间，强调描边而非体积。 |
-| Glass | 已实现 | 冷色玻璃焦点、磨砂结构渐变、多向边缘折射、内侧亮带和柔和悬浮层级；Feedback 与 Chart 使用同源棱镜色序，浅色与深色均保持正文可读。 |
+| Glass | 已实现 | 冷色玻璃焦点、半透明浮起表面与表面渐变、多向边缘折射、内侧亮带和柔和悬浮层级；Feedback 与 Chart 使用同源棱镜色序。浅色保持正文可读；dark 为中性近黑玻璃，半透明 raised 表面与亮青 selection 的对比度警告属于文档化取舍。 |
 | Neo Brutalism | 已实现 | 粗边框、强对比色、硬阴影，直接醒目。 |
 | Punchcard | 已实现 | 暖纸统计板、黄/粉/浅蓝数据卡、适中圆角、统一墨黑硬偏移阴影、紧凑标签和白色表面上的规则小圆点；点阵通过可选 `pattern.surface` 的 dot 图层输出，不复制品牌、文案、素材或界面布局。 |
-| Sketchbook | 已实现 | 暖白点阵纸、深墨线、手写字体栈与薄荷/柠檬/粉/蓝便利贴色系；`pattern.surface` 的 dot 与安全 Paper noise 图层还原纸面材质，不复制图片中的人物、文案、图标或具体布局。 |
+| Sketchbook | 已实现 | 暖白点阵纸、深墨线、手写字体栈与薄荷/柠檬/粉/蓝便利贴色系；`pattern.background` 的稀疏 dot 点阵与 `pattern.surface` 的 1px grid 墨线还原点阵纸与方格纸材质，不复制图片中的人物、文案、图标或具体布局。 |
 | Soft Clay | 已实现 | 复古奶油底、灰褐文本、低饱和橙色强调、近白凸起面、夸张圆角和三层定向高光/阴影，形成厚实的软陶控制面板；参考图只提取可观察的材质与 token 原则，不复制界面、文案或布局。 |
 | Golden Bazaar | 已实现 | 暖桃至蜜糖黄的环境渐层、奶油白卡片、明黄 primary、珊瑚 secondary、靛蓝 accent、超大圆角和暖色柔影，呈现阳光零售橱窗的轻盈层级；参考图只提取可观察的视觉原则，不复制品牌、商品、图标、文案或页面布局。 |
-| Theorem | 已实现 | 暖白讲义画布以炭黑 `scrim` 形成遮罩后的暖灰背景，象牙白无圆角浮层、炭黑衬线排版、酒红批注强调、1px 细边与仅供 `lg` 及以上浮层使用的硬偏移投影；常规卡片无阴影。参考图只提取可观察的色彩、排版、材质和层级原则，不复制人名、方程、文案或页面布局。 |
+| Theorem | 已实现 | 暖白讲义画布以炭黑 `scrim` 形成遮罩后的暖灰背景，`pattern.background` 的安全 Paper noise 图层还原纸面纤维；象牙白无圆角浮层、炭黑衬线排版、酒红批注强调、1px 细边与仅供 `lg` 及以上浮层使用的硬偏移投影；常规卡片无阴影。参考图只提取可观察的色彩、排版、材质和层级原则，不复制人名、方程、文案或页面布局。 |
 | Neumorphism | 已实现 | 低对比度、柔和内外阴影与浮雕般控件质感。 |
 | Memphis | 已实现 | 几何图形、鲜艳配色、活泼装饰与八九十年代气质。 |
 | Soft UI | 已实现 | 柔和圆角、低对比度、浅色背景，舒适温和。 |

@@ -46,7 +46,7 @@ ThemeDefinition v1 为了让每个模式可独立完整校验，仍在 `modes.li
 
 - `@oriatheme/core` 保留 `oriaDefaultTheme`，保证基础使用场景与已有 API 的兼容性。
 - `@oriatheme/presets` 是可选安装包，重新导出默认主题，并提供 `oriaPresetThemes` 与其余具名官方 preset。
-- 使用多款官方主题时，将 `oriaPresetThemes`（或由具名导出组成的子集）传给 runtime 的 `presets`；主题 ID 是稳定选择标识。官方显示名称可以在发布版本间更正；此类更正不得改变主题 ID、具名导出或 token 数据。
+- 使用多款官方主题时，将 `oriaPresetThemes`（或由具名导出组成的子集）传给 runtime 的 `presets`；主题 ID 是稳定选择标识。官方显示名称可以在发布版本间更正；此类更正不得改变主题 ID、具名导出或 token 数据。主题 ID 与具名导出的更名是例外事件，必须经 ADR 批准、随 minor 及以上版本发布并在迁移指南中记录持久化选择回退行为；当前唯一实例是 ADR-0016 的 `oria-document-canvas` → `oria-manuscript`。
 - 所有官方 preset 必须使用标准 contract、`kind: "preset"`，且在 light/dark 下完整校验、解析并无关键对比度警告。
 - 官方名称、分类、描述、灵感和计划状态以 [官方预设主题目录](preset-catalog.md) 为准；发布包中的目录项只保留主题引用与分类，不把文档和流程元数据写入 `ThemeDefinition` v1 或额外复制到运行时 bundle。
 

@@ -19,3 +19,4 @@
 - [ADR-0013：将官网建设拆分至 Phase 9](ADR-0013-website-in-phase-09.md)
 - [ADR-0014：结构化表面图案](ADR-0014-structured-surface-patterns.md)
 - [ADR-0015：背景图案 Token](ADR-0015-background-pattern-token.md)
+- [ADR-0016：Manuscript 预设 ID 与具名导出更名](ADR-0016-manuscript-preset-id-rename.md)

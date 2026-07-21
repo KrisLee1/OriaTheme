@@ -59,6 +59,20 @@ function validLayer(layer: PatternLayer): boolean {
 function Icon({ kind }: { readonly kind: "up" | "down" | "delete" | "unset" }): ReactElement {
   return <svg viewBox="0 0 20 20" aria-hidden="true">{kind === "up" ? <path d="m5 11 5-5 5 5M10 6v9" /> : kind === "down" ? <path d="m5 9 5 5 5-5M10 14V5" /> : kind === "delete" ? <path d="M4 6h12M8 3.5h4M6.5 6l.6 10h5.8l.6-10M8.5 8.5v5M11.5 8.5v5" /> : <><circle cx="10" cy="10" r="6.5" /><path d="m6.5 13.5 7-7" /></>}</svg>;
 }
+function patternNumber(text: string, valid: (value: number) => boolean): number | undefined {
+  const trimmed = text.trim();
+  if (!trimmed || !/\d$/.test(trimmed)) return undefined;
+  const next = Number(trimmed);
+  return Number.isFinite(next) && valid(next) ? next : undefined;
+}
+function DimensionParam({ label, ariaLabel, value, onCommit }: { readonly label: string; readonly ariaLabel: string; readonly value: string; readonly onCommit: (next: string) => void }): ReactElement {
+  const buffer = useFieldBuffer(value, item => item, item => positiveDimension(item) ? item : undefined, onCommit);
+  return <label><span>{label}</span><input value={buffer.text} aria-label={ariaLabel} aria-invalid={!positiveDimension(buffer.text) || undefined} inputMode="decimal" spellCheck={false} onChange={event => buffer.setText(event.target.value)} /></label>;
+}
+function NumberParam({ label, ariaLabel, value, minimum, maximum, step, valid, onCommit }: { readonly label: string; readonly ariaLabel: string; readonly value: number; readonly minimum: number; readonly maximum: number; readonly step: number; readonly valid: (value: number) => boolean; readonly onCommit: (next: number) => void }): ReactElement {
+  const buffer = useFieldBuffer(value, item => String(item), item => patternNumber(item, valid), onCommit);
+  return <label><span>{label}</span><input type="number" min={minimum} max={maximum} step={step} value={buffer.text} aria-label={ariaLabel} aria-invalid={patternNumber(buffer.text, valid) === undefined || undefined} onChange={event => buffer.setText(event.target.value)} /></label>;
+}
 function PatternLayerEditor({ id, layer, index, count, onChange, onMove, onDelete }: {
   readonly id: string;
   readonly layer: PatternLayer;
@@ -93,12 +107,12 @@ function PatternLayerEditor({ id, layer, index, count, onChange, onMove, onDelet
       </div>
       {layer.type === "noise" ? <>
         <label><span>Style</span><EditorSelect aria-label={`Pattern layer ${index + 1} noise style`} value={layer.variant} onChange={event => commit({ ...layer, variant: event.target.value as NoiseVariant })}>{noiseVariants.map(variant => <option key={variant} value={variant}>{noiseLabels[variant]}</option>)}</EditorSelect></label>
-        <label><span>Grain size</span><input value={layer.tileSize} aria-label={`Pattern layer ${index + 1} grain size`} aria-invalid={!positiveDimension(layer.tileSize) || undefined} inputMode="decimal" onChange={event => commit({ ...layer, tileSize: event.target.value })} /></label>
-        <label><span>Intensity</span><input type="number" min={0} max={1} step={0.01} value={layer.intensity} aria-label={`Pattern layer ${index + 1} grain intensity`} onChange={event => Number.isFinite(event.currentTarget.valueAsNumber) && commit({ ...layer, intensity: event.currentTarget.valueAsNumber })} /></label>
+        <DimensionParam label="Grain size" ariaLabel={`Pattern layer ${index + 1} grain size`} value={layer.tileSize} onCommit={next => commit({ ...layer, tileSize: next })} />
+        <NumberParam label="Intensity" ariaLabel={`Pattern layer ${index + 1} grain intensity`} value={layer.intensity} minimum={0} maximum={1} step={0.01} valid={validIntensity} onCommit={next => commit({ ...layer, intensity: next })} />
       </> : <>
-        <label><span>{layer.type === "dot" ? "Radius" : layer.type === "stripe" ? "Stripe width" : "Line width"}</span><input value={layer.type === "dot" ? layer.radius : layer.type === "stripe" ? layer.stripeWidth : layer.lineWidth} aria-label={`Pattern layer ${index + 1} width`} aria-invalid={!positiveDimension(layer.type === "dot" ? layer.radius : layer.type === "stripe" ? layer.stripeWidth : layer.lineWidth) || undefined} inputMode="decimal" onChange={event => commit(layer.type === "dot" ? { ...layer, radius: event.target.value } : layer.type === "stripe" ? { ...layer, stripeWidth: event.target.value } : { ...layer, lineWidth: event.target.value })} /></label>
-        <label><span>Spacing</span><input value={layer.spacing} aria-label={`Pattern layer ${index + 1} spacing`} aria-invalid={!positiveDimension(layer.spacing) || undefined} inputMode="decimal" onChange={event => commit({ ...layer, spacing: event.target.value })} /></label>
-        <label><span>Angle</span><input type="number" min={0} max={360} step={1} value={layer.type === "dot" ? layer.angle ?? 0 : layer.angle} aria-label={`Pattern layer ${index + 1} angle`} onChange={event => Number.isFinite(event.currentTarget.valueAsNumber) && commit({ ...layer, angle: event.currentTarget.valueAsNumber })} /></label>
+        <DimensionParam label={layer.type === "dot" ? "Radius" : layer.type === "stripe" ? "Stripe width" : "Line width"} ariaLabel={`Pattern layer ${index + 1} width`} value={layer.type === "dot" ? layer.radius : layer.type === "stripe" ? layer.stripeWidth : layer.lineWidth} onCommit={next => commit(layer.type === "dot" ? { ...layer, radius: next } : layer.type === "stripe" ? { ...layer, stripeWidth: next } : { ...layer, lineWidth: next })} />
+        <DimensionParam label="Spacing" ariaLabel={`Pattern layer ${index + 1} spacing`} value={layer.spacing} onCommit={next => commit({ ...layer, spacing: next })} />
+        <NumberParam label="Angle" ariaLabel={`Pattern layer ${index + 1} angle`} value={layer.type === "dot" ? layer.angle ?? 0 : layer.angle} minimum={0} maximum={360} step={1} valid={validAngle} onCommit={next => commit({ ...layer, angle: next })} />
       </>}
     </div>
   </fieldset>;
