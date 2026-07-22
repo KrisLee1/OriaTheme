@@ -1,5 +1,11 @@
 # @oriatheme/runtime-dom
 
+## 0.1.2
+
+### Patch Changes
+
+- f0b1aa9: Remove the first-paint bootstrap stylesheet after a successful runtime apply so optional gradient and pattern variables from a previous theme cannot remain in the cascade.
+
 ## 0.1.1
 
 ### Patch Changes
