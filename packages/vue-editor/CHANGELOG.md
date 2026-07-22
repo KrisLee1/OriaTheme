@@ -1,5 +1,13 @@
 # @oriatheme/vue-editor
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [f0b1aa9]
+  - @oriatheme/runtime-dom@0.1.2
+  - @oriatheme/editor-core@0.1.3
+
 ## 0.1.2
 
 ### Patch Changes
