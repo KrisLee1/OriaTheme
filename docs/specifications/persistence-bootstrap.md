@@ -74,6 +74,7 @@ bootstrapTheme(options?: BootstrapOptions): void;
 - 变量 value 拒绝 `;{}<>`、任意 `var(` / `expression(` / `url(`；唯一例外是 Core pattern 编译器生成的 `url("data:image/svg+xml,...")` 内联 SVG data URI（必须带引号且前缀完全匹配），其余 `url(` 形式一律拒绝。
 - 失败时静默使用消费应用的静态默认 CSS，不抛出阻塞启动的错误。
 - 不加载 preset 全集，不运行动画。
+- Bootstrap 是首屏的一次性回退；runtime 成功原子应用首份完整快照后必须移除 `style[data-oria-theme-bootstrap]`，使可选的 Pattern / Gradient variables 在新主题未定义时正确回退而不残留旧主题值。
 - Bootstrap 与 runtime 使用相同变量命名和安全规则；可通过共享的精简模块避免规则漂移。
 - `createBootstrapScript()` 只序列化已通过校验的调用方 snapshot；无效输入返回空脚本。
 - `createBootstrapStorageScript()` 生成可内联到 HTML `<head>` 的自包含脚本。它在浏览器中读取 `{storageKey}:active:v1`、以与 `bootstrapTheme()` 等价的规则校验并单次写入 document；不支持自定义 `target`，失败时静默返回。

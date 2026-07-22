@@ -80,8 +80,9 @@ Adapter cleanup 必须在下一次调用和 destroy 时执行。
 2. Runtime 生成完整 CSS 文本。
 3. 优先使用独占 `CSSStyleSheet.replaceSync()` 和 adoptedStyleSheets。
 4. 不支持时回退唯一 `<style data-oria-theme-runtime>`，仅更新一次 textContent。
-5. 更新属性和 snapshot。
-6. 持久化主状态与 active snapshot。
+5. 成功写入后删除同一 target 的一次性 `style[data-oria-theme-bootstrap]`，避免新快照缺失的可选 variables（如 Pattern 或 Gradient）继续从首屏 Bootstrap 样式继承旧值。
+6. 更新属性和 snapshot。
+7. 持久化主状态与 active snapshot。
 
 失败时保留上一份有效 stylesheet，不得清空或部分应用。
 

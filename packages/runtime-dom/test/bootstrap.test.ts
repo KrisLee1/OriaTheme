@@ -73,13 +73,41 @@ describe("bootstrap", () => {
     expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
   });
 
-  it("matches the runtime variable output and permits formal runtime takeover", () => {
+  it("matches the runtime variable output and removes the one-shot bootstrap stylesheet on takeover", () => {
     bootstrapTheme({ snapshot, target: domDocument });
     const runtime = createOriaThemeRuntime({ presets: [oriaDefaultTheme], defaultThemeId: "oria-default", defaultAppearance: "dark", target: domDocument, storage: false });
     runtime.start();
-    const bootstrapCss = domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent;
     const runtimeCss = domDocument.head.querySelector("style[data-oria-theme-runtime]")?.textContent;
-    expect(runtimeCss).toBe(bootstrapCss);
+    expect(runtimeCss).toContain("--oria-color-background:#101418");
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
+    runtime.destroy();
+  });
+
+  it("clears bootstrapped optional patterns and gradients that are absent from the runtime theme", () => {
+    const bootstrappedOptionalMaterial = {
+      ...snapshot,
+      themeId: "oria-optional-material",
+      lightVariables: {
+        ...snapshot.lightVariables,
+        "--oria-pattern-surface": "repeating-linear-gradient(45deg, #123456 0 1px, transparent 1px 8px)",
+        "--oria-gradient-surface": "linear-gradient(135deg, #123456, #abcdef)"
+      },
+      darkVariables: {
+        ...snapshot.darkVariables,
+        "--oria-pattern-surface": "repeating-linear-gradient(45deg, #abcdef 0 1px, transparent 1px 8px)",
+        "--oria-gradient-surface": "linear-gradient(135deg, #abcdef, #123456)"
+      }
+    };
+    bootstrapTheme({ snapshot: bootstrappedOptionalMaterial, target: domDocument });
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain("--oria-pattern-surface");
+
+    const runtime = createOriaThemeRuntime({ presets: [oriaDefaultTheme], defaultThemeId: "oria-default", defaultAppearance: "dark", target: domDocument, storage: false });
+    runtime.start();
+
+    const runtimeCss = domDocument.head.querySelector("style[data-oria-theme-runtime]")?.textContent;
+    expect(runtimeCss).not.toContain("--oria-pattern-surface");
+    expect(runtimeCss).not.toContain("--oria-gradient-surface");
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
     runtime.destroy();
   });
 });

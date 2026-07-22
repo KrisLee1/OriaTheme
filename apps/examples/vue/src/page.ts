@@ -43,7 +43,16 @@ export default defineComponent({
     });
     const editorShown = () => editorVisibility.value !== "closed";
     const editorOpen = () => editorVisibility.value === "open";
-    const closeEditor = (): void => { editorVisibility.value = "closing"; globalThis.setTimeout(() => { if (editorVisibility.value === "closing") editorVisibility.value = "closed"; }, 450); };
+    const closeEditor = (): void => {
+      if (editorVisibility.value === "opening" || globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+        editorVisibility.value = "closed";
+        return;
+      }
+      editorVisibility.value = "closing";
+    };
+    const finishEditorClose = (event: TransitionEvent): void => {
+      if (editorVisibility.value === "closing" && event.target === event.currentTarget && event.propertyName === "transform") editorVisibility.value = "closed";
+    };
     const toggleEditor = (): void => { if (editorVisibility.value === "open" || editorVisibility.value === "opening") { if (editorDirty.value) pendingDiscard.value = { kind: "close" }; else closeEditor(); } else { editorVisibility.value = "opening"; globalThis.requestAnimationFrame(() => globalThis.requestAnimationFrame(() => { editorVisibility.value = "open"; })); } };
     const withOrigin = (event: Event) => ({ animate: true, origin: originFor(event.currentTarget as HTMLElement), preservePreview: editorShown() });
     const modeButton = (mode: AppearanceMode) => h("button", {
@@ -151,7 +160,7 @@ export default defineComponent({
           ])
         ])
       ])
-    ]), editorShown() ? h("aside", { class: "editor-panel editor-sidebar", "data-state": editorVisibility.value, id: "theme-editor-panel" }, [h(ThemeEditor, {
+    ]), editorShown() ? h("aside", { class: "editor-panel", "data-state": editorVisibility.value, id: "theme-editor-panel", onTransitionend: finishEditorClose }, [h(ThemeEditor, {
       key: activeTheme.id,
       options: editorOptions,
       runtime,

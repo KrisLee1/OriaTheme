@@ -34,7 +34,7 @@
 | 示例消费入口 | `apps/examples/react/src/components/oria-theme-editor/`、`apps/examples/next/app/components/oria-theme-editor/`、`apps/examples/vue/src/components/oria-theme-editor/theme-editor.ts` | React/Next 验证已安装副本；Vue 示例直接导出 registry SFC 以持续编译模板源码；均不成为新的模板真相 |
 | Headless 桥接 | `packages/react-editor/`、`packages/vue-editor/` | Provider/hooks 或 provide/composables 与自动预览；无完整可见 UI |
 | 领域与 runtime | `packages/editor-core/`、`packages/runtime-dom/` | 草稿、校验、预览、主题列表与持久化的唯一实现 |
-| Host 页面 | `apps/examples/*` | 只组合 runtime、主题工作台和本地 `ThemeEditor`，不实现 token 字段 |
+| Host 页面 | `apps/examples/*` | 只组合 runtime、主题工作台和本地 `ThemeEditor`，不实现 token 字段；官方示例将已打开编辑器作为右侧固定圆角悬浮面板，桌面端预留面板完整宽度与边距以避免遮挡页面，窄屏不挤压内容；面板以可中断的 opacity / transform 过渡开闭，Tab 横向与内容纵向滚动条复用主题选择器的细圆角滑块 |
 | 示例 Token gallery | `apps/examples/react/src/token-showcase.tsx`、`apps/examples/next/app/token-showcase.tsx`、`apps/examples/vue/src/token-showcase.ts`、`apps/examples/styles.css` | 框架私有展示组件；三端保持同一信息架构，所有随主题变化的视觉值只消费 `--oria-*`，静态基础色库只展示 `@oriatheme/colors` 的稳定值 |
 
 示例页与编辑器中，颜色、字体、字重、字号、行高、字距、控件尺寸、圆角、阴影、模糊、渐变、图案与动效均必须消费主题变量；`pattern.background` 用于页面画布，`pattern.surface` 用于组件表面。仅布局结构尺寸和静态 `@oriatheme/colors` 色值展示可以保持非主题常量。页面选区必须通过 `::selection` 消费 `color.selection` / `color.selectionForeground`，可见状态样例不得只写 token 名而不实际应用变量。

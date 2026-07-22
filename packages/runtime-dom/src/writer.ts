@@ -1,7 +1,7 @@
 import type { ResolvedTheme } from "@oriatheme/core";
 
 interface StyleNode { textContent: string | null; setAttribute(name: string, value: string): void; remove(): void }
-interface RootLike { appendChild(node: StyleNode): unknown; adoptedStyleSheets?: readonly unknown[] }
+interface RootLike { appendChild(node: StyleNode): unknown; querySelector?(selector: string): StyleNode | null; adoptedStyleSheets?: readonly unknown[] }
 interface DocumentLike { documentElement: HTMLElement; head?: RootLike; createElement(name: string): StyleNode }
 type Target = Document | ShadowRoot;
 type Sheet = { replaceSync(value: string): void };
@@ -37,6 +37,11 @@ export function createDomWriter(target: Target): DomWriter {
     transitionStyle = documentLike.createElement("style"); transitionStyle.setAttribute("data-oria-theme-transition", ""); transitionStyle.textContent = transitionCss();
     (documentLike.head ?? documentLike.documentElement as unknown as RootLike).appendChild(transitionStyle);
   };
+  // Bootstrap is deliberately a one-shot, lower-priority fallback. Once the
+  // runtime has atomically applied its complete snapshot, keeping bootstrap's
+  // declarations would make optional variables missing from the new snapshot
+  // (for example patterns and gradients) fall through to the old theme.
+  const clearBootstrapStyles = (): void => { container.querySelector?.("style[data-oria-theme-bootstrap]")?.remove(); };
   const css = (theme: ResolvedTheme): string => {
     const selector = documentTarget ? ":root" : ":host";
     return `${selector}{${Object.entries(theme.variables).map(([name, value]) => `${name}:${value}`).join(";")};color-scheme:${theme.colorScheme}}`;
@@ -57,6 +62,7 @@ export function createDomWriter(target: Target): DomWriter {
       if (!style) { style = documentLike.createElement("style"); style.setAttribute("data-oria-theme-runtime", ""); container.appendChild(style); }
       style.textContent = next;
     }
+    clearBootstrapStyles();
     previous = next;
     return true;
   };
