@@ -6,12 +6,13 @@
 
 | 范围 | 选择 | 证据 |
 |---|---|---|
-| 框架 | React 19 + Vite、React 19 + Next 15、Vue 3 + Vite | `apps/examples/*/package.json` |
+| 框架 | React 19 + Vite、React 19 + Next 15、Vue 3 + Vite；官网为 Next 15 | `apps/examples/*/package.json`、`apps/website/package.json` |
 | 语言 | TypeScript / TSX / Vue SFC | 示例与 `registry/templates/` |
-| 样式与主题 | 普通 CSS、`--oria-*` runtime token、`--oria-editor-*` chrome token | `theme-editor.css`、`docs/design/editor-ui.md` |
+| 样式与主题 | 编辑器模板为普通 CSS；官网为 Tailwind CSS v4；两者消费 `--oria-*` runtime token、编辑器消费 `--oria-editor-*` chrome token | `apps/website/app/globals.css`、`theme-editor.css`、`docs/design/editor-ui.md` |
 | 组件分发 | React/Vue 可见编辑器以 registry 源码组件分发；框架包保持 headless | `docs/specifications/editor-component-registry.md` |
-| 图标 | 组件内统一的 24×24 轮廓 SVG | React/Vue registry toolbar、fields 与 overlays |
-| 动效 | CSS transition/keyframes；直接操作由 Pointer Events / Pointer Capture 驱动 | `theme-editor.css`、React/Vue `LinearSlider` |
+| 组件原语 | 官网使用 source-owned shadcn/ui `Button`、`Badge`、`Card`、`Select`；编辑器保持 registry 源码组件 | `apps/website/components/ui/`、`registry/templates/` |
+| 图标 | registry 编辑器使用 24×24 轮廓 SVG；官网及其本地 ThemeEditor 使用 `lucide-react` | registry toolbar、fields 与 overlays；`apps/website/components/` |
+| 动效 | 编辑器使用 CSS transition/keyframes 与 Pointer Events / Pointer Capture；官网使用 Motion 进行编排入场动效 | `theme-editor.css`、React/Vue `LinearSlider`、`apps/website/components/home/reveal.tsx` |
 | 包管理 | pnpm 10 workspace | 根 `package.json`、`pnpm-workspace.yaml` |
 
 ## 全局约束
@@ -21,7 +22,9 @@
 - 组件不得复制 editor-core 或 runtime 状态机；主题草稿、校验、原子预览、持久化和自定义主题生命周期只经公开 package exports。
 - React 与 Vue 可见 UI 保持同等能力：Themes、类型化字段、Overlay、dirty 保护、受控模式与 appearance-following preview 的变化必须在两个框架同步评估。
 - 使用语义 HTML、清晰焦点、44px 触控目标，并保留 reduced-motion、reduced-transparency 和 increased-contrast 降级。
-- 不引入新的 UI、图标或 motion 依赖，除非现有原生/CSS 组件确有无法覆盖的能力缺口且先记录理由。
+- 官网面向用户的视觉样式必须消费 `--oria-*` 主题变量：颜色、字体族、字重、字号、行高、字距、圆角、边框、表面、阴影、模糊、渐变、图案与动效均不得写死。响应式字号/间距可使用 `clamp()`，但字号端点必须是 `--oria-typography-*`，间距端点必须是 `--oria-spacing-*`；仅纯布局结构尺寸可使用非主题常量。
+- 官网页面根滚动条须消费主题 muted foreground：细圆角滑块、透明轨道、hover 增强，并设置稳定 gutter；编辑器内部滚动容器保留其 feature-owning scrollbar 规则。顶栏的语言和主题 `Select` 保留 Radix 的可访问滚动锁定，同时覆盖其额外的右侧补偿、强制保留 root scrollbar gutter，不能造成页面横跳。
+- 编辑器模板不引入新的 UI、图标或 motion 依赖；官网按明确产品要求使用 shadcn/ui 源码原语、Lucide 与 Motion，并以 Tailwind CSS v4 组合页面。
 - SSR/静态页面必须在首次绘制前提供完整、经 Core 解析的默认主题变量；Storage bootstrap 只负责覆盖已保存偏好，runtime 在 client mount 后接管。默认关闭的源码编辑器及其 CSS 应按用户打开动作动态加载，避免进入首页初始 chunk。
 
 ## UI 架构
@@ -34,7 +37,7 @@
 | 示例消费入口 | `apps/examples/react/src/components/oria-theme-editor/`、`apps/examples/next/app/components/oria-theme-editor/`、`apps/examples/vue/src/components/oria-theme-editor/theme-editor.ts` | React/Next 验证已安装副本；Vue 示例直接导出 registry SFC 以持续编译模板源码；均不成为新的模板真相 |
 | Headless 桥接 | `packages/react-editor/`、`packages/vue-editor/` | Provider/hooks 或 provide/composables 与自动预览；无完整可见 UI |
 | 领域与 runtime | `packages/editor-core/`、`packages/runtime-dom/` | 草稿、校验、预览、主题列表与持久化的唯一实现 |
-| Host 页面 | `apps/examples/*` | 只组合 runtime、主题工作台和本地 `ThemeEditor`，不实现 token 字段；官方示例将已打开编辑器作为右侧固定圆角悬浮面板，桌面端预留面板完整宽度与边距以避免遮挡页面，窄屏不挤压内容；面板以可中断的 opacity / transform 过渡开闭，Tab 横向与内容纵向滚动条复用主题选择器的细圆角滑块 |
+| Host 页面 | `apps/examples/*`、`apps/website` | 只组合 runtime、主题工作台和本地 `ThemeEditor`，不实现 token 字段；官方示例将已打开编辑器作为右侧固定圆角悬浮面板，桌面端预留面板完整宽度与边距以避免遮挡页面，窄屏不挤压内容；面板以可中断的 opacity / transform 过渡开闭，Tab 横向与内容纵向滚动条复用主题选择器的细圆角滑块。官网编辑器路由直接组合 `components/editor-page/` 的 Stage、Workspace 与 Panel，Stage 在进入路由时打开面板；feature 内再按展示区块拆分，页面级翻译上下文读取 `public/locales/*/common.json`，顶栏始终由共享 `SiteHeader` 承载，编辑器工作台不得再渲染第二个 topbar |
 | 示例 Token gallery | `apps/examples/react/src/token-showcase.tsx`、`apps/examples/next/app/token-showcase.tsx`、`apps/examples/vue/src/token-showcase.ts`、`apps/examples/styles.css` | 框架私有展示组件；三端保持同一信息架构，所有随主题变化的视觉值只消费 `--oria-*`，静态基础色库只展示 `@oriatheme/colors` 的稳定值 |
 
 示例页与编辑器中，颜色、字体、字重、字号、行高、字距、控件尺寸、圆角、阴影、模糊、渐变、图案与动效均必须消费主题变量；`pattern.background` 用于页面画布，`pattern.surface` 用于组件表面。仅布局结构尺寸和静态 `@oriatheme/colors` 色值展示可以保持非主题常量。页面选区必须通过 `::selection` 消费 `color.selection` / `color.selectionForeground`，可见状态样例不得只写 token 名而不实际应用变量。
