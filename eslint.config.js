@@ -10,5 +10,5 @@ export default [
       "no-undef": "error"
     }
   },
-  { ignores: ["**/dist/**", "**/node_modules/**"] }
+  { ignores: ["**/dist/**", "**/node_modules/**", "**/.next/**", "**/out/**", "**/next-env.d.ts"] }
 ];

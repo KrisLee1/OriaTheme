@@ -1,6 +1,7 @@
 # macOS and editor metadata
 .DS_Store
 .idea/
+.vscode/
 *.swp
 *.swo
 *~

@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 export default function IndexPage() {
-  redirect("/zh");
+  return <meta httpEquiv="refresh" content="0; url=/zh" />;
 }

@@ -11,6 +11,7 @@
     "test": "pnpm -r --if-present test",
     "typecheck": "pnpm -r --if-present typecheck",
     "build:registry": "node scripts/build-public-registry.mjs",
+    "build:site": "node scripts/build-cloudflare-site.mjs",
     "dev:example:react": "pnpm --filter @oriatheme/example-react dev",
     "dev:example:vue": "pnpm --filter @oriatheme/example-vue dev",
     "dev:example:next": "pnpm --filter @oriatheme/example-next dev --port 5173"

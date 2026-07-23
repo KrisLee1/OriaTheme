@@ -47,6 +47,6 @@
 
 ## 部署状态与待定项
 
-- `TBD-WEB-01`：正式产品域名已确定为 `https://theme.oria.org.cn`，作为 OriaTheme 的独立产品站点；托管平台仍待确定。它影响部署、缓存和监控，并继续阻塞官网部署，但不阻塞本地 CLI/registry 验收。
+- `TBD-WEB-01`：正式产品域名已确定为 `https://theme.oria.org.cn`，托管平台确定为 Cloudflare Pages，与官方 registry 复用同一 Pages 项目的 git 自动部署：Pages 构建命令为 `pnpm build:site`，输出目录为 `dist/site`（官网 Next.js 静态导出位于根路径，registry 位于 `/registry/v1`，两者同源保持 registry 基地址稳定）。
 - `TBD-WEB-02`：是否启用隐私友好的访问分析。默认不启用；启用前必须补充隐私披露和数据边界。
 - 官方组件 registry 基地址为 `https://theme.oria.org.cn/registry/v1`；它已完成 HTTPS 静态部署，并在 Phase 8 的仓库外干净项目完成 `add` / `diff` 验证。后续 registry 变更仍必须由 `pnpm build:registry` 生成部署产物，并重新执行远程验证。

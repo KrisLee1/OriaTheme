@@ -10,6 +10,7 @@ const websiteDirectory = path.dirname(fileURLToPath(import.meta.url));
  * website's published dependency graph, so it has one React context/runtime.
  */
 const nextConfig = {
+  output: "export",
   webpack(config) {
     for (const name of packageNames) {
       config.resolve.alias[`@oriatheme/${name}$`] = path.join(websiteDirectory, "node_modules", "@oriatheme", name, "dist", "index.js");
