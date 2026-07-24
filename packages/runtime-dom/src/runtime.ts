@@ -1,5 +1,5 @@
 import { cloneTheme, exportTheme as serializeTheme, importTheme as parseTheme, OriaThemeError, oriaStandardContract, resolveTheme, validateTheme } from "@oriatheme/core";
-import type { AppearanceMode, CloneIdentity, ResolvedMode, ResolvedTheme, ThemeDefinition, TokenContract } from "@oriatheme/core";
+import type { AppearanceMode, CloneIdentity, ResolvedMode, ResolvedTheme, ThemeDefinition, ThemeMigration, TokenContract } from "@oriatheme/core";
 import { createLocalStorageThemeStorage, writeActiveSnapshot } from "./storage.js";
 import type { CustomThemePatch, ImportOptions, NewCustomTheme, OriaThemeConfig, OriaThemeRuntime, PreviewHandle, ThemeChangeOptions, ThemePreference, ThemeSnapshot, ThemeStorage } from "./types.js";
 import { createDomWriter } from "./writer.js";
@@ -21,6 +21,7 @@ export function createOriaThemeRuntime(config: OriaThemeConfig): OriaThemeRuntim
   const fallbackTheme: ThemeDefinition = defaultTheme;
   const presets = Object.freeze([...config.presets]);
   const variablePrefix = config.variablePrefix ?? "oria";
+  const migrations = Object.freeze([...(config.migrations ?? [])]);
   const storageKey = config.storageKey ?? "oria-theme";
   const listeners = new Set<() => void>();
   let preference: ThemePreference = Object.freeze({ activeThemeId: fallbackTheme.id, appearance: defaultAppearance });
@@ -155,14 +156,19 @@ export function createOriaThemeRuntime(config: OriaThemeConfig): OriaThemeRuntim
     }
     return typeof transitionDocument()?.startViewTransition === "function";
   }
+  let rehydratedMigration = false;
+  function migrate(theme: unknown, source: { readonly name: string; readonly version: number }) {
+    for (const migration of migrations) { const result = migration(theme, source); if (result) return result; }
+    return undefined;
+  }
   function readPersisted(): OriaThemeError | null {
     if (!storage) return null;
     try {
       const raw = storage.read(); if (raw === null) return null;
-      const restored = validatePersisted(raw, contract, presets);
+      const restored = validatePersisted(raw, contract, presets, migrations);
       if (!restored) throw new OriaThemeError("INVALID_THEME", "Persisted theme state is invalid.");
-      preference = restored.preference; customThemes = Object.freeze([...restored.customThemes]); return null;
-    } catch (cause) { preference = Object.freeze({ activeThemeId: fallbackTheme.id, appearance: defaultAppearance }); customThemes = Object.freeze([]); return asOriaError(cause, "STORAGE_READ_FAILED", "Theme state could not be restored."); }
+      preference = restored.preference; customThemes = Object.freeze([...restored.customThemes]); rehydratedMigration = restored.migrated; return null;
+    } catch (cause) { rehydratedMigration = false; preference = Object.freeze({ activeThemeId: fallbackTheme.id, appearance: defaultAppearance }); customThemes = Object.freeze([]); return asOriaError(cause, "STORAGE_READ_FAILED", "Theme state could not be restored."); }
   }
   function clearPreview(): void { if (preview) preview = undefined; }
   function applyOfficialChange(change: () => void, options: ThemeChangeOptions | undefined): void { if (!options?.preservePreview) clearPreview(); change(); commit(started, false, null, options); }
@@ -176,8 +182,8 @@ export function createOriaThemeRuntime(config: OriaThemeConfig): OriaThemeRuntim
       storage = config.storage === false ? false : config.storage ?? createLocalStorageThemeStorage(storageKey);
       usesDefaultStorage = config.storage === undefined;
       const rehydrateError = readPersisted();
-      if (storage && storage.subscribe) stopStorage = storage.subscribe((): void => { const activePreview = preview; const restoreError = readPersisted(); preview = activePreview; commit(false, false, restoreError); });
-      attachMedia(); started = true; commit(false, true, rehydrateError);
+      if (storage && storage.subscribe) stopStorage = storage.subscribe((): void => { const activePreview = preview; const restoreError = readPersisted(); preview = activePreview; commit(rehydratedMigration, false, restoreError); });
+      attachMedia(); started = true; commit(rehydratedMigration, true, rehydrateError);
     },
     destroy(): void {
       if (!started && snapshot.status === "idle") return;
@@ -232,7 +238,8 @@ export function createOriaThemeRuntime(config: OriaThemeConfig): OriaThemeRuntim
     },
     exportTheme(id: string): string { const theme = getTheme(id); if (!theme) throw new OriaThemeError("THEME_NOT_FOUND", `Theme ${id} was not found.`, { path: "id" }); return serializeTheme(theme); },
     importTheme(json: string, options: ImportOptions = {}): ThemeDefinition {
-      const result = parseTheme(json, { contract, existingThemes: [...presets, ...customThemes], ...(options.conflict === undefined ? {} : { conflict: options.conflict }), ...(options.migrate === undefined ? {} : { migrate: options.migrate }) });
+      const migration = options.migrate ?? (migrations.length > 0 ? migrate : undefined);
+      const result = parseTheme(json, { contract, existingThemes: [...presets, ...customThemes], ...(options.conflict === undefined ? {} : { conflict: options.conflict }), ...(migration === undefined ? {} : { migrate: migration }) });
       if (!result.ok) throw new OriaThemeError(result.issues[0]?.code as OriaThemeError["code"] ?? "INVALID_THEME", result.issues[0]?.message ?? "Theme import failed.", { ...(result.issues[0]?.path === undefined ? {} : { path: result.issues[0].path }) });
       customThemes = Object.freeze(result.replaced ? customThemes.map(theme => theme.id === result.theme.id ? result.theme : theme) : [...customThemes, result.theme]); commit(started); return result.theme;
     },
@@ -245,13 +252,26 @@ export function createOriaThemeRuntime(config: OriaThemeConfig): OriaThemeRuntim
 }
 
 function asOriaError(cause: unknown, code: OriaThemeError["code"], message: string): OriaThemeError { return cause instanceof OriaThemeError ? cause : new OriaThemeError(code, message, { details: { cause: String(cause) } }); }
-function validatePersisted(input: unknown, contract: TokenContract, presets: readonly ThemeDefinition[]): { preference: ThemePreference; customThemes: readonly ThemeDefinition[] } | undefined {
+function validatePersisted(input: unknown, contract: TokenContract, presets: readonly ThemeDefinition[], migrations: readonly ThemeMigration[]): { preference: ThemePreference; customThemes: readonly ThemeDefinition[]; migrated: boolean } | undefined {
   if (!object(input) || input.schemaVersion !== 1 || !Array.isArray(input.customThemes) || input.customThemes.length > 50) return undefined;
   const persistedPreference = input.preference;
   if (!object(persistedPreference) || typeof persistedPreference.activeThemeId !== "string" || !isAppearance(persistedPreference.appearance)) return undefined;
   const customThemes: ThemeDefinition[] = [];
-  for (const theme of input.customThemes) { const checked = validateTheme(theme, contract); if (!checked.ok || checked.value.kind !== "custom") return undefined; customThemes.push(checked.value); }
+  let migrated = false;
+  for (const theme of input.customThemes) {
+    let checked = validateTheme(theme, contract);
+    if (!checked.ok) {
+      if (!object(theme) || !object(theme.contract) || typeof theme.contract.name !== "string" || !Number.isInteger(theme.contract.version)) return undefined;
+      let result;
+      const source = { name: theme.contract.name, version: theme.contract.version as number };
+      for (const migration of migrations) { result = migration(theme, source); if (result) break; }
+      if (!result) return undefined;
+      checked = validateTheme(result.theme, contract); migrated = true;
+    }
+    if (!checked.ok || checked.value.kind !== "custom") return undefined;
+    customThemes.push(checked.value);
+  }
   const exists = presets.some(theme => theme.id === persistedPreference.activeThemeId) || customThemes.some(theme => theme.id === persistedPreference.activeThemeId);
   if (!exists) return undefined;
-  return { preference: Object.freeze({ activeThemeId: persistedPreference.activeThemeId, appearance: persistedPreference.appearance }), customThemes: Object.freeze(customThemes) };
+  return { preference: Object.freeze({ activeThemeId: persistedPreference.activeThemeId, appearance: persistedPreference.appearance }), customThemes: Object.freeze(customThemes), migrated };
 }

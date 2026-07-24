@@ -1,5 +1,11 @@
 # @oriatheme/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- Add `oria theme tailwind-bridge --out <file> [--prefix] [--dry-run] [--overwrite]`, which prebuilds a static Tailwind CSS v4 bridge for `oria-standard@2` runtime variables, including custom prefixes. The bundled `theme-editor` registry item moves to `0.2.0`: it renders the v2 contract and requires the v2-capable packages (`@oriatheme/core@^0.3.0`).
+
 ## 0.1.2
 
 ### Patch Changes

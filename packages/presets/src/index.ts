@@ -115,47 +115,47 @@ function feedbackOverrides(colors: PresetSpec["modes"]["light"]["colors"]): Toke
       ? [colors.charts[0]!, colors.charts[1]!, colors.charts[2]!, colors.charts[3]!]
       : isDarkSurface(colors.background) ? darkFeedback : lightFeedback;
   return {
-    "color.destructive": destructive,
-    "color.destructiveForeground": foregroundFor(destructive),
+    "color.danger": destructive,
+    "color.danger.fg": foregroundFor(destructive),
     "color.success": success,
-    "color.successForeground": foregroundFor(success),
+    "color.success.fg": foregroundFor(success),
     "color.warning": warning,
-    "color.warningForeground": foregroundFor(warning),
+    "color.warning.fg": foregroundFor(warning),
     "color.info": info,
-    "color.infoForeground": foregroundFor(info)
+    "color.info.fg": foregroundFor(info)
   };
 }
 
 function colorOverrides(colors: PresetSpec["modes"]["light"]["colors"]): TokenOverrides {
   return {
-    "color.background": colors.background,
-    "color.foreground": colors.foreground,
+    "color.bg": colors.background,
+    "color.fg": colors.foreground,
     "color.surface": colors.surface,
-    "color.surfaceForeground": colors.foreground,
-    "color.surfaceRaised": colors.raised,
-    "color.surfaceRaisedForeground": colors.foreground,
+    "color.surface.fg": colors.foreground,
+    "color.surface.raised": colors.raised,
+    "color.surface.raised.fg": colors.foreground,
     "color.overlay": colors.overlay ?? colors.raised,
-    "color.overlayForeground": colors.foreground,
+    "color.overlay.fg": colors.foreground,
     "color.primary": colors.primary[0],
-    "color.primaryHover": colors.primary[1],
-    "color.primaryActive": colors.primary[2],
-    "color.primaryForeground": colors.primary[3],
+    "color.primary.hover": colors.primary[1],
+    "color.primary.active": colors.primary[2],
+    "color.primary.fg": colors.primary[3],
     "color.secondary": colors.secondary[0],
-    "color.secondaryHover": colors.secondary[1],
-    "color.secondaryActive": colors.secondary[2],
-    "color.secondaryForeground": colors.secondary[3],
+    "color.secondary.hover": colors.secondary[1],
+    "color.secondary.active": colors.secondary[2],
+    "color.secondary.fg": colors.secondary[3],
     "color.muted": colors.muted[0],
-    "color.mutedForeground": colors.muted[1],
+    "color.muted.fg": colors.muted[1],
     "color.accent": colors.accent[0],
-    "color.accentForeground": colors.accent[1],
+    "color.accent.fg": colors.accent[1],
     "color.border": colors.border[0],
-    "color.borderStrong": colors.border[1],
+    "color.border.strong": colors.border[1],
     "color.input": colors.input ?? colors.raised,
     "color.ring": colors.ring,
     "color.selection": colors.selection[0],
-    "color.selectionForeground": colors.selection[1],
+    "color.selection.fg": colors.selection[1],
     "color.scrim": colors.scrim ?? "#00000080",
-    ...Object.fromEntries(chartColors(colors).map((color, index) => [`color.chart${index + 1}`, color])),
+    ...Object.fromEntries(chartColors(colors).map((color, index) => [`color.chart.${index + 1}`, color])),
     ...feedbackOverrides(colors)
   };
 }
@@ -231,7 +231,7 @@ export const oriaRetroTheme = theme("oria-retro");
 export const oriaKawaiiTheme = theme("oria-kawaii");
 export const oriaSunsetTheme = theme("oria-sunset");
 
-/** The complete collection for direct use as runtime presets. */
+/** The complete collection for direct use as runtime presets. All official presets are authored as Contract v2 themes. */
 export const oriaPresetThemes: readonly ThemeDefinition[] = Object.freeze([oriaDefaultTheme, ...themes]);
 
 /** Minimal runtime catalog; descriptive and workflow metadata lives in documentation. */

@@ -1,4 +1,4 @@
-import type { AppearanceMode, CloneIdentity, ImportThemeOptions, OriaThemeError, ResolvedMode, ResolvedTheme, ThemeDefinition, ThemeMetadata, ThemeTokenSet, TokenContract } from "@oriatheme/core";
+import type { AppearanceMode, CloneIdentity, ImportThemeOptions, OriaThemeError, ResolvedMode, ResolvedTheme, ThemeDefinition, ThemeMetadata, ThemeMigration, ThemeTokenSet, TokenContract } from "@oriatheme/core";
 
 export interface ThemePreference { readonly activeThemeId: string; readonly appearance: AppearanceMode }
 export interface PersistedThemeStateV1 { readonly schemaVersion: 1; readonly preference: ThemePreference; readonly customThemes: readonly ThemeDefinition[] }
@@ -28,6 +28,8 @@ export interface OriaThemeConfig {
   readonly defaultThemeId: string;
   readonly defaultAppearance?: AppearanceMode;
   readonly variablePrefix?: string;
+  /** Explicitly registered persisted-theme migrations. No v1 data is accepted without one. */
+  readonly migrations?: readonly ThemeMigration[];
   readonly storage?: ThemeStorage | false;
   readonly storageKey?: string;
   readonly target?: Document | ShadowRoot;

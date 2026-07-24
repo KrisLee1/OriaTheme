@@ -21,6 +21,7 @@ OriaTheme/
 │   ├── react/
 │   ├── vue/
 │   ├── vue-editor/
+│   ├── tailwind/
 │   └── cli/
 ├── registry/                 # 用户持有的 React/Vue 编辑器 UI 源码模板
 └── docs/
@@ -38,6 +39,7 @@ OriaTheme/
 - `@oriatheme/react-editor`
 - `@oriatheme/vue-editor`
 - `@oriatheme/cli`（一次性源码组件安装工具，不是应用 runtime 依赖）
+- `@oriatheme/tailwind`（`oria-standard@2` 的 Tailwind v4 静态 bridge，不进入 Core/Runtime 依赖图）
 
 `apps/website` 始终为 private workspace application，不属于发布包。
 
@@ -45,6 +47,7 @@ OriaTheme/
 
 ```text
 colors       ──standalone static library──> no Oria runtime dependency
+tailwind     ──standalone static bridge──> no Oria runtime dependency; Tailwind only in build/test
 presets      ──depends on──> core
 runtime-dom  ──depends on──> core
 react        ──depends on──> runtime-dom
@@ -57,6 +60,7 @@ registry UI  ──imports──> editor bridge + public runtime/core exports
 ```
 
 - Colors：稳定的完整基础色库、普通 CSS variables 与 Tailwind v4 颜色命名桥接；不依赖 Core、Runtime 或框架。
+- Tailwind：`oria-standard@2` 变量的静态 `@theme inline` bridge 与 custom-prefix 生成器；不依赖 Core、Runtime 或框架，Tailwind 仅用于其 build/test。
 - Core：类型、contract、schema、纯解析、颜色与对比度算法、错误模型。
 - Presets：可选安装的完整官方主题集合；只依赖 Core，不访问 DOM 或 runtime。
 - Runtime DOM：外部 store、DOM stylesheet、Storage、系统模式、bootstrap、transition。
@@ -72,6 +76,7 @@ registry UI  ──imports──> editor bridge + public runtime/core exports
 
 - Core 不得依赖 DOM、React、Vue 或浏览器 API。
 - Colors 不得依赖 runtime 或框架，也不得把 Tailwind 作为消费端 runtime dependency。
+- Tailwind bridge 包不得依赖 Core、Runtime 或框架，也不得把 Tailwind 作为消费端 runtime dependency；Core/Runtime 不得依赖该 bridge 包。
 - Runtime DOM 不得依赖 React/Vue。
 - React/Vue 不得互相依赖。
 - Editor Core 不得依赖 DOM、Storage、React 或 Vue。

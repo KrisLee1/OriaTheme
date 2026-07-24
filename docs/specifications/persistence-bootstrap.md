@@ -75,7 +75,7 @@ bootstrapTheme(options?: BootstrapOptions): void;
 - 失败时静默使用消费应用的静态默认 CSS，不抛出阻塞启动的错误。
 - 不加载 preset 全集，不运行动画。
 - Bootstrap 是首屏的一次性回退；runtime 成功原子应用首份完整快照后必须移除 `style[data-oria-theme-bootstrap]`，使可选的 Pattern / Gradient variables 在新主题未定义时正确回退而不残留旧主题值。
-- Bootstrap 与 runtime 使用相同变量命名和安全规则；可通过共享的精简模块避免规则漂移。
+- Bootstrap 与 runtime 使用相同变量命名和安全规则；可通过共享的精简模块避免规则漂移。`oria-standard@2` 的 prefix 必须非空且以字母开始；v1 snapshot 的 contract ref 与 v2 不匹配时必须拒绝并保留静态 fallback。
 - `createBootstrapScript()` 只序列化已通过校验的调用方 snapshot；无效输入返回空脚本。
 - `createBootstrapStorageScript()` 生成可内联到 HTML `<head>` 的自包含脚本。它在浏览器中读取 `{storageKey}:active:v1`、以与 `bootstrapTheme()` 等价的规则校验并单次写入 document；不支持自定义 `target`，失败时静默返回。
 - 早期脚本不得嵌入预设全集或完整 runtime；其配置序列化必须避免形成可注入的 stylesheet 或 inline script。
@@ -83,14 +83,10 @@ bootstrapTheme(options?: BootstrapOptions): void;
 ## 迁移
 
 ```ts
-type Migration = (input: unknown) => unknown;
-
-const migrations: Record<number, Migration> = {
-  1: migrateToV1,
-};
+type ThemeMigration = (theme: unknown, source: ThemeContractRef) => ThemeMigrationResult | undefined;
 ```
 
-持久化 schema version 与 package major、theme schema、contract version 互相独立。每条迁移必须有 fixture 和失败回退测试。
+持久化 schema version 与 package major、theme schema、contract version 互相独立。Runtime 默认拒绝 contract mismatch；只有 `OriaThemeConfig.migrations` 显式注册的 migration 才可转换 persisted custom themes，转换结果必须完整通过 target contract 校验后原子应用并写回 state/snapshot。每条迁移必须有 fixture 和失败回退测试。
 
 ## 跨标签页
 

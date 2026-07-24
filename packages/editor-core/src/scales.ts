@@ -19,8 +19,11 @@ export type SmartScaleInput =
   | { readonly kind: "typeScale"; readonly base: string; readonly ratio?: number }
   | { readonly kind: "fontWeight"; readonly base: number }
   | { readonly kind: "spacing"; readonly unit: string }
+  | { readonly kind: "v2Space"; readonly unit: string }
   | { readonly kind: "controlSize"; readonly height: string; readonly paddingInline: string }
+  | { readonly kind: "v2ControlMultipliers"; readonly height: { readonly sm: number; readonly md: number; readonly lg: number }; readonly paddingX: { readonly sm: number; readonly md: number; readonly lg: number } }
   | { readonly kind: "radius"; readonly base: string }
+  | { readonly kind: "v2Radius"; readonly base: string }
   | { readonly kind: "elevation"; readonly strength: number; readonly color?: string }
   | { readonly kind: "blur"; readonly base: string }
   | { readonly kind: "duration"; readonly base: string };
@@ -30,6 +33,24 @@ const values = (entries: readonly (readonly [string, ThemeTokenInput])[]): reado
 
 /** Deterministically expands a designer-facing master value into concrete contract token values. */
 export function deriveSmartScale(input: SmartScaleInput): readonly DerivedTokenValue[] {
+  if (input.kind === "v2Space") {
+    const base = unitValue(input.unit);
+    return values([["space", formatted(base.value, base.unit)]]);
+  }
+  if (input.kind === "v2Radius") {
+    const base = unitValue(input.base);
+    return values([["radius", formatted(base.value, base.unit)]]);
+  }
+  if (input.kind === "v2ControlMultipliers") {
+    const multiplier = (value: number, path: string): number => {
+      if (!Number.isInteger(value) || value < 1 || value > 24) throw new Error(`${path} must be an integer from 1 through 24.`);
+      return value;
+    };
+    return values((["sm", "md", "lg"] as const).flatMap(size => [
+      [`control.height.${size}`, multiplier(input.height[size], `control.height.${size}`)] as const,
+      [`control.padding.x.${size}`, multiplier(input.paddingX[size], `control.padding.x.${size}`)] as const
+    ]));
+  }
   if (input.kind === "typeScale") {
     const base = unitValue(input.base); const ratio = input.ratio ?? 1.2;
     if (!(ratio > 1 && ratio <= 2)) throw new Error("Type scale ratio must be greater than 1 and at most 2.");

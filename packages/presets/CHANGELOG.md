@@ -1,5 +1,16 @@
 # @oriatheme/presets
 
+## 0.4.0
+
+### Minor Changes
+
+- Rebuild all 41 official presets as native `oria-standard@2` themes (breaking change). Every export (`oriaPresetThemes`, the named themes, `oriaPresetCatalog`) now targets the v2 contract and requires the v2-capable Core and Runtime; v1 no longer ships official presets. Preset IDs and display names are unchanged. Geometry is normalized to the v2 model — a single `space`/`radius` source, fixed radius multiples, and integer control multipliers — so individual presets can differ visually from their v1 rendering.
+
+### Patch Changes
+
+- Updated dependencies
+  - @oriatheme/core@0.3.0
+
 ## 0.3.0
 
 ### Minor Changes

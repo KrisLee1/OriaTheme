@@ -4,7 +4,7 @@
 
 OriaTheme 是 ESM-only 的多包项目；源码仓库使用 pnpm workspace，但发布包可由 pnpm、npm、Yarn 或 Bun 安装。使用方应用只应从下表的 package root 或明确的 CSS subpath 导入；`src/`、`dist/` 和 workspace 内部路径都不是公开 API。四种工具的命令见[包管理器兼容性](package-managers.md)。
 
-> 十个公开包已发布 `0.1.0`，可从 npm 安装。workspace 或本地 tarball 只用于本仓库开发与后续版本发布验证。
+> 十个公开包已发布到 npm（各包版本独立演进，以 npm latest 为准）；`@oriatheme/tailwind` 是已实现的第十一个公开包，随当前 v2 发布批次首次发布。workspace 或本地 tarball 只用于本仓库开发与后续版本发布验证。
 
 | 包 | 何时安装 | 公开能力 |
 | --- | --- | --- |
@@ -14,10 +14,11 @@ OriaTheme 是 ESM-only 的多包项目；源码仓库使用 pnpm workspace，但
 | `@oriatheme/react` | React 18.2 或 19 应用 | `OriaThemeProvider`、`useOriaTheme()`、`useThemeSnapshot()`；React/React DOM 是 peer dependency |
 | `@oriatheme/vue` | Vue 3.5 应用 | `createOriaTheme()`、`provideOriaTheme()`、`useOriaTheme()`；Vue 是 peer dependency |
 | `@oriatheme/colors` | 需要不随主题变化的基础色或 Tailwind v4 标准颜色名 | JS 色阶、`@oriatheme/colors/styles.css`、`@oriatheme/colors/tailwind.css` |
+| `@oriatheme/tailwind` | 在 Tailwind CSS v4 项目中消费 runtime 主题变量 | 静态 `@theme inline` bridge（`@oriatheme/tailwind/oria.css`）与 `generateOriaTailwindBridge({ prefix })`；Tailwind 仅为构建/测试依赖 |
 | `@oriatheme/editor-core` | 构建主题编辑体验 | 无 DOM/Storage/框架依赖的草稿、字段、诊断和提交状态机 |
 | `@oriatheme/react-editor` | React 源码编辑器需要 headless session bridge | Provider/hooks 与自动预览协调；不包含可见编辑器 UI 或默认 CSS |
 | `@oriatheme/vue-editor` | Vue 源码编辑器需要 headless session bridge | provide/composables 与自动预览协调；不包含可见编辑器 UI 或默认 CSS |
-| `@oriatheme/cli` | 把可见 React/Vue 编辑器 UI 组件复制到应用源码 | `oria add`、`oria diff`、bundled/local/HTTPS registry、SHA-256 与路径安全；开发时工具，不是 runtime 依赖 |
+| `@oriatheme/cli` | 把可见 React/Vue 编辑器 UI 组件复制到应用源码 | `oria add`、`oria diff`、`oria theme tailwind-bridge`、bundled/local/HTTPS registry、SHA-256 与路径安全；开发时工具，不是 runtime 依赖 |
 
 ## 常见组合
 
@@ -49,18 +50,21 @@ const runtime = createOriaThemeRuntime({
 
 ## CSS 入口
 
-`@oriatheme/colors` 是唯一公开 CSS subpath 的包：
+公开 CSS subpath 来自 `@oriatheme/colors` 与 `@oriatheme/tailwind` 两个包：
 
 ```css
 @import "@oriatheme/colors/styles.css";
 ```
 
-若使用 Tailwind CSS v4，再加入：
+若使用 Tailwind CSS v4，再加入基础色映射与 runtime 变量 bridge：
 
 ```css
 @import "tailwindcss";
 @import "@oriatheme/colors/tailwind.css";
+@import "@oriatheme/tailwind/oria.css";
 ```
+
+`@oriatheme/tailwind/oria.css` 是默认 `oria` 前缀的静态 `@theme inline` bridge；custom prefix 必须用 CLI 预构建（`oria theme tailwind-bridge --prefix <name> --out <file>`），运行时不拼接变量名。
 
 Runtime 主题变量不需要导入一份静态 OriaTheme stylesheet；它们由 runtime 原子写入。编辑器 CSS 位于 CLI 安装到应用源码的本地组件目录中，由本地编辑器入口导入。
 

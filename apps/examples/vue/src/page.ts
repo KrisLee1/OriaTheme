@@ -1,6 +1,6 @@
 import { defineAsyncComponent, defineComponent, h, onBeforeUnmount, onMounted, ref } from "vue";
 import { useOriaTheme } from "@oriatheme/vue";
-import { oriaPresetCatalog } from "@oriatheme/presets";
+import { oriaPresetThemes } from "@oriatheme/presets";
 import { oriaColorFamilies, oriaColorSteps, oriaColors } from "@oriatheme/colors";
 import { createThemeEditorIdentity } from "@oriatheme/editor-core";
 import type { AppearanceMode, ResolvedMode, ThemeDefinition, TokenPath } from "@oriatheme/core";
@@ -71,8 +71,8 @@ export default defineComponent({
       if (event.key === "Escape") themePickerOpen.value = false;
     };
     const selectedTheme = (): ThemeDefinition => snapshot.value.customThemes.find(theme => theme.id === snapshot.value.preference.activeThemeId)
-      ?? oriaPresetCatalog.find(({ theme }) => theme.id === snapshot.value.preference.activeThemeId)?.theme
-      ?? oriaPresetCatalog[0]!.theme;
+      ?? oriaPresetThemes.find(theme => theme.id === snapshot.value.preference.activeThemeId)
+      ?? oriaPresetThemes[0]!;
     const themePalette = (theme: ThemeDefinition) => h("span", { class: "theme-picker-palette", "aria-hidden": "true" }, themePalettePaths.map(path => {
       const color = theme.modes[snapshot.value.resolvedMode][path as TokenPath];
       return h("i", { key: path, style: { backgroundColor: typeof color === "string" ? color : "transparent" } });
@@ -96,7 +96,7 @@ export default defineComponent({
       h("nav", { class: "topbar", "aria-label": "Example navigation" }, [
         h("div", { class: "topbar-brand" }, [h("a", { class: "brand", href: "#top", "aria-label": "OriaTheme example home" }, [h("span", ["Oria", h("span", "Theme")])]), h("span", { class: "framework-pill" }, "Vue")]),
         h("div", { class: "topbar-actions" }, [
-          h("div", { class: "theme-picker", "data-open": themePickerOpen.value, ref: themePicker }, [h("span", { class: "theme-picker-label", id: "theme-picker-label" }, "Theme"), h("button", { class: "theme-picker-trigger", type: "button", "aria-label": `Theme: ${activeTheme.name}`, "aria-expanded": themePickerOpen.value, "aria-haspopup": "listbox", "aria-controls": "theme-picker-options", onClick: () => { themePickerOpen.value = !themePickerOpen.value; } }, [themePalette(activeTheme), h("span", activeTheme.name), h("svg", { viewBox: "0 0 20 20", "aria-hidden": "true" }, [h("path", { d: "m5 7.5 5 5 5-5" })])]), themePickerOpen.value ? h("div", { class: "theme-picker-menu", id: "theme-picker-options", role: "listbox", "aria-labelledby": "theme-picker-label" }, [customThemes().length ? h("div", { class: "theme-picker-group" }, [h("span", "My themes"), ...customThemes().map(themeOption)]) : null, h("div", { class: "theme-picker-group" }, [h("span", "Presets"), ...oriaPresetCatalog.map(({ theme }) => themeOption(theme))])]) : null]),
+          h("div", { class: "theme-picker", "data-open": themePickerOpen.value, ref: themePicker }, [h("span", { class: "theme-picker-label", id: "theme-picker-label" }, "Theme"), h("button", { class: "theme-picker-trigger", type: "button", "aria-label": `Theme: ${activeTheme.name}`, "aria-expanded": themePickerOpen.value, "aria-haspopup": "listbox", "aria-controls": "theme-picker-options", onClick: () => { themePickerOpen.value = !themePickerOpen.value; } }, [themePalette(activeTheme), h("span", activeTheme.name), h("svg", { viewBox: "0 0 20 20", "aria-hidden": "true" }, [h("path", { d: "m5 7.5 5 5 5-5" })])]), themePickerOpen.value ? h("div", { class: "theme-picker-menu", id: "theme-picker-options", role: "listbox", "aria-labelledby": "theme-picker-label" }, [customThemes().length ? h("div", { class: "theme-picker-group" }, [h("span", "My themes"), ...customThemes().map(themeOption)]) : null, h("div", { class: "theme-picker-group" }, [h("span", "Presets"), ...oriaPresetThemes.map(theme => themeOption(theme))])]) : null]),
           h("fieldset", { class: "mode-control" }, [h("legend", "Appearance"), h("div", { "data-active": snapshot.value.preference.appearance }, [modeButton("light"), modeButton("dark"), modeButton("system")])]),
           h("button", { class: "editor-trigger", type: "button", "aria-label": editorOpen() ? "Close theme editor" : "Open theme editor", title: editorOpen() ? "Close theme editor" : "Open theme editor", "aria-expanded": editorOpen(), "aria-controls": "theme-editor-panel", onClick: toggleEditor }, [h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, editorOpen() ? [h("path", { d: "M6 6 18 18M18 6 6 18" })] : [h("path", { d: "M4 7h10M18 7h2M4 12h2M10 12h10M4 17h7M15 17h5" }), h("circle", { cx: "16", cy: "7", r: "2" }), h("circle", { cx: "8", cy: "12", r: "2" }), h("circle", { cx: "13", cy: "17", r: "2" })])])
         ])

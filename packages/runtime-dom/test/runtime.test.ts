@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cloneTheme, createThemeFromSeed, oriaDefaultTheme } from "@oriatheme/core";
+import { cloneTheme, createThemeFromSeed, migrateOriaStandardV1ToV2, oriaDefaultTheme, oriaDefaultThemeV1 } from "@oriatheme/core";
 import { createOriaThemeRuntime } from "../src/index.js";
 import type { PersistedThemeStateV1, ThemeStorage } from "../src/index.js";
 
@@ -49,7 +49,7 @@ describe("runtime DOM lifecycle", () => {
     expect(text).toBe(initial); expect(writes).toBe(0);
     runtime.setAppearance("dark"); runtime.setAppearance("light");
     expect(runtime.getSnapshot().resolvedMode).toBe("light");
-    expect(text).toContain("--oria-color-background:#f1f3f4");
+    expect(text).toContain("--oria-color-bg:#f1f3f4");
     expect(writes).toBe(2);
   });
 
@@ -89,7 +89,7 @@ describe("runtime DOM lifecycle", () => {
     expect(transitions[0]?.skipTransition).toHaveBeenCalledTimes(1);
     expect(transitions[1]?.skipTransition).toHaveBeenCalledTimes(1);
     expect(runtime.getSnapshot().resolvedMode).toBe("dark");
-    expect(domDocument.head.querySelector("style[data-oria-theme-runtime]")?.textContent).toContain("--oria-color-background:#101418");
+    expect(domDocument.head.querySelector("style[data-oria-theme-runtime]")?.textContent).toContain("--oria-color-bg:#101418");
   });
 
   it("reveals the new theme from the requested circular origin and clears transient state", async () => {
@@ -157,10 +157,24 @@ describe("persistence, custom themes, and preview", () => {
     expect(error).toHaveBeenCalledWith(expect.objectContaining({ code: "STORAGE_WRITE_FAILED" }));
   });
 
+  it("only rehydrates a v1 custom theme into v2 when its migration is explicitly registered", () => {
+    const v1Custom = cloneTheme(oriaDefaultThemeV1, { id: "legacy-custom", name: "Legacy" }, { now: () => 1 });
+    const state: PersistedThemeStateV1 = { schemaVersion: 1, preference: { activeThemeId: "legacy-custom", appearance: "light" }, customThemes: [v1Custom] };
+    const storage: ThemeStorage = { read: () => state, write: vi.fn(), clear: vi.fn() };
+    const rejected = createOriaThemeRuntime({ presets: [oriaDefaultTheme], defaultThemeId: "oria-default", target: domDocument, storage });
+    rejected.start();
+    expect(rejected.getSnapshot().preference.activeThemeId).toBe("oria-default");
+    const accepted = createOriaThemeRuntime({ presets: [oriaDefaultTheme], defaultThemeId: "oria-default", target: domDocument, storage, migrations: [migrateOriaStandardV1ToV2] });
+    accepted.start();
+    expect(accepted.getSnapshot().preference.activeThemeId).toBe("legacy-custom");
+    expect(accepted.getSnapshot().customThemes[0]?.contract.version).toBe(2);
+    expect(storage.write).toHaveBeenCalled();
+  });
+
   it("persists main state and active snapshot using the default LocalStorage adapter", () => {
     const runtime = createOriaThemeRuntime({ presets: [oriaDefaultTheme], defaultThemeId: "oria-default", target: domDocument, storageKey: "test-oria" }); runtime.start(); runtime.setAppearance("dark");
     expect(JSON.parse(globalThis.localStorage.getItem("test-oria:state:v1") ?? "{}").preference.appearance).toBe("dark");
-    expect(JSON.parse(globalThis.localStorage.getItem("test-oria:active:v1") ?? "{}").darkVariables["--oria-color-background"]).toBe("#101418");
+    expect(JSON.parse(globalThis.localStorage.getItem("test-oria:active:v1") ?? "{}").darkVariables["--oria-color-bg"]).toBe("#101418");
   });
 
   it("accepts external validated state while preserving an active preview", () => {

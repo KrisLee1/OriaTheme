@@ -6,7 +6,7 @@
 
 ## registry 找不到 `@oriatheme/*`
 
-确认包名和版本为已发布的 `@oriatheme/*@0.1.0`，并检查使用方项目配置的 npm registry、网络和 lockfile。公开 package root exports 必须从 npm 安装；本地 workspace link 不能代表实际 registry 消费。
+确认包名与已发布的最新 `@oriatheme/*` 版本，并检查使用方项目配置的 npm registry、网络和 lockfile。公开 package root exports 必须从 npm 安装；本地 workspace link 不能代表实际 registry 消费。
 
 ## 页面没有 `--oria-*` variables
 
@@ -36,7 +36,7 @@ Bootstrap 会在 hydration 前修改 `<html>` 的主题属性。只在该 `<html
 ## 主题切换了，但组件样式不变
 
 - 确认组件引用 `var(--oria-...)`，而不是把旧值复制成静态颜色。
-- Tailwind 语义类需要通过 `@theme inline` 映射到 OriaTheme variables。
+- Tailwind 语义类需要通过 `@theme inline` 映射到 OriaTheme variables；可直接使用 `@oriatheme/tailwind` 的预构建 bridge 或 `oria theme tailwind-bridge` 生成的映射。
 - `@oriatheme/colors/styles.css` 是静态基础色，不会随主题切换；这是预期行为。
 - 不要用运行时主题值拼接 Tailwind class name，构建器无法可靠扫描动态类。
 
@@ -69,7 +69,7 @@ pnpm dlx @oriatheme/cli@latest add theme-editor --framework react --dry-run
 pnpm dlx @oriatheme/cli@latest add theme-editor --framework react --yes
 ```
 
-这些临时 runner 命令可用于已发布的 `@oriatheme/cli@0.1.0`。仓库内调试 CLI 的本地路径见[开发者指南](development.md#cli-与-registry-开发)。
+这些临时 runner 命令可用于已发布的 `@oriatheme/cli`（`@latest` 标签）。仓库内调试 CLI 的本地路径见[开发者指南](development.md#cli-与-registry-开发)。
 
 ## CLI 拒绝覆盖文件
 

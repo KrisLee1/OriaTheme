@@ -12,9 +12,10 @@
 - React Editor/Vue Editor 是可选 headless 框架桥接包，分别以 React/React DOM 与 Vue 为 peer dependency；不得交叉引入另一框架，不将完整可视编辑器或默认 UI CSS 作为默认交付面。
 - Editor Core 生成 ESM、`.d.ts` 和 source map；可以依赖 SSR-safe 的 runtime-dom 公开 API，但不得包含直接 DOM/Storage 访问或框架代码。
 - `@oriatheme/colors` 生成 ESM、`.d.ts`、`styles.css` 与 `tailwind.css`；两个 CSS 子路径必须通过 exports 公开并在 `sideEffects` 中精确保留。Tailwind 只用于开发期编译兼容测试。
+- `@oriatheme/tailwind` 生成 ESM、`.d.ts` 与静态 `oria.css` bridge；CSS 子路径必须通过 exports 公开并在 `sideEffects` 中精确保留；custom-prefix bridge 只由生成器预构建。Tailwind 只用于开发期编译兼容测试。
 - `@oriatheme/cli` 是开发时命令行工具，必须限制写入目标、校验 registry schema/hash，不执行 registry scripts，不作为消费应用 runtime 依赖。
 - 公开包和 CLI 必须使用 pnpm、npm、Yarn、Bun 都能消费的标准 ESM exports、semver dependencies/peerDependencies 与 `bin`；发布产物不得泄漏 `workspace:*`。CLI 只修改标准 `package.json`，不得执行包管理器或创建 lockfile。
-- 首发 scoped npm 包和 Changesets 配置均必须显式使用 `access: public`；十个公开包的 `homepage` 统一为 `https://theme.oria.org.cn`。`repository` 和 `bugs` 只能在 GitHub 组织/仓库 URL 确定后填写，不得猜测。
+- 首发 scoped npm 包和 Changesets 配置均必须显式使用 `access: public`；十一个公开包的 `homepage` 统一为 `https://theme.oria.org.cn`。`repository` 和 `bugs` 只能在 GitHub 组织/仓库 URL 确定后填写，不得猜测。
 - `registry/templates` 不打入 editor 框架包；它通过带 SHA-256 的静态 manifest 分发，复制到用户项目后由用户持有。
 - npm 包不包含 apps、测试快照和开发垃圾文件。
 - 每个公开 tarball 必须包含包级 `README.md`，并由 pack 验收确认；README 必须描述该包的真实公开入口、依赖边界和用户文档链接。
@@ -46,6 +47,7 @@
 - lint、typecheck、unit、browser integration 全部通过。
 - 所有发布包成功 build/pack。
 - Colors tarball 包含 291 个基础色变量与 Tailwind v4 映射，真实 CLI 编译标准颜色 utility 通过。
+- Tailwind bridge tarball 包含默认 prefix 的静态 `@theme inline` bridge，真实 Tailwind CLI 编译语义颜色、排版、spacing、radius、shadow、blur 与显式 Oria utility 通过；custom-prefix 生成器输出经真实 CLI 验证。
 - React、Vue、Next tarball smoke test 通过。
 - Editor Core 与 React/Vue headless bridge 均成功 pack，产物不包含默认黑盒 UI。
 - CLI 从本地与 HTTPS registry 的 dry-run、安装、diff、冲突、hash 和路径安全测试通过。

@@ -4,7 +4,7 @@
 
 This guide initializes OriaTheme in an existing React, Vue, or framework-free web app, restores the first paint, switches themes, and consumes CSS Variables. It uses package-root exports only.
 
-> `@oriatheme/*@0.1.0` is published. The installation commands below are for consumer projects; for work inside this repository, start with the [developer guide](development.md).
+> The public `@oriatheme/*` packages are published on npm (versions evolve independently; see npm latest). The installation commands below are for consumer projects; for work inside this repository, start with the [developer guide](development.md).
 
 ## 1. Install the relevant packages
 
@@ -148,16 +148,16 @@ The runtime atomically writes `--oria-*` variables to the target root and mainta
 
 ```css
 :root {
-  color: var(--oria-color-foreground);
-  background: var(--oria-color-background);
+  color: var(--oria-color-fg);
+  background: var(--oria-color-bg);
 }
 
 .card {
-  color: var(--oria-color-surfaceForeground);
+  color: var(--oria-color-surface-fg);
   background: var(--oria-color-surface);
-  border: var(--oria-shape-borderWidth-default) solid var(--oria-color-border);
-  border-radius: var(--oria-shape-radius-lg);
-  box-shadow: var(--oria-elevation-shadow-md);
+  border: var(--oria-border-width-default) solid var(--oria-color-border);
+  border-radius: var(--oria-radius-lg);
+  box-shadow: var(--oria-shadow-md);
 }
 ```
 
@@ -188,12 +188,14 @@ After the initialization above, continue with the guide that matches the result 
 
 ## 6. Run a complete example, or start development from one
 
-The repository provides three private, runnable single-page examples. All use public package-root imports and demonstrate preset switching, `light` / `dark` / `system`, product components driven by theme variables, the complete token showcase, and a local theme editor that is closed and code-split by default. First [bootstrap the workspace](development.md#bootstrap-the-workspace), then choose one root-level command:
+The repository provides five private, runnable examples. All use public package-root imports. The React, Vue, and Next single-page workbenches demonstrate preset switching, `light` / `dark` / `system`, product components driven by theme variables, the complete token showcase, and a local theme editor that is closed and code-split by default; the minimal `editor-next` and `editor-vue` projects mount only a local editor source copy to verify standalone editor consumption. First [bootstrap the workspace](development.md#bootstrap-the-workspace), then choose one root-level command:
 
 | Example | Stack and best starting point | Start command |
 | --- | --- | --- |
 | `apps/examples/react` | React + Vite; a React client application | `pnpm dev:example:react` |
 | `apps/examples/vue` | Vue 3 + Vite; a Vue 3 application | `pnpm dev:example:vue` |
 | `apps/examples/next` | Next.js; SSR/SSG, static default-theme, and Bootstrap integration | `pnpm dev:example:next` |
+
+The two minimal editor examples have no root-level shortcut; start them with `pnpm --filter @oriatheme/example-editor-next dev` and `pnpm --filter @oriatheme/example-editor-vue dev`.
 
 Continue development by changing the page, components, and local `components/oria-theme-editor/` in the selected example. These examples use workspace dependencies and cannot be copied outside the repository as standalone projects. To integrate into your own project, follow this guide's published-package installation steps. See the [apps/examples README](../../../apps/examples/README.md) and the [developer guide](development.md#run-examples) for the full feature list and production-build commands.

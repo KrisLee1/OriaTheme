@@ -13,10 +13,12 @@
 ```ts
 import { bootstrapTheme } from "@oriatheme/runtime-dom";
 
-bootstrapTheme();
+bootstrapTheme({ contract: { name: "oria-standard", version: 2 } });
 ```
 
 默认读取 `localStorage` 的 `oria-theme:active:v1`。首次访问、快照不存在、快照损坏、contract 或变量格式不匹配时会静默返回，应用继续使用自己的静态默认 CSS；不要为这种正常回退显示错误提示。
+
+建议始终像上面一样显式声明 contract ref：声明后 Bootstrap 只恢复与该 contract 完全匹配的 snapshot。从 0.1.x 升级的应用尤其需要它——v1 运行期写入的旧 snapshot（camelCase 变量、`contract.version: 1`）会被安全拒绝，页面保持静态默认 CSS，直到 runtime 首次成功应用 v2 主题并写入新 snapshot；第二次访问起首屏恢复生效。未声明 contract 时不执行这项检查，v1 旧变量可能被写入首屏。完整升级步骤见[迁移指南](migrations.md)。
 
 ## React / Vite
 
@@ -29,7 +31,7 @@ import { OriaThemeProvider } from "@oriatheme/react";
 import { oriaPresetThemes } from "@oriatheme/presets";
 import { App } from "./App";
 
-bootstrapTheme();
+bootstrapTheme({ contract: { name: "oria-standard", version: 2 } });
 
 createRoot(document.querySelector("#root")!).render(
   <OriaThemeProvider config={{
@@ -52,7 +54,7 @@ import { createOriaTheme } from "@oriatheme/vue";
 import { oriaPresetThemes } from "@oriatheme/presets";
 import App from "./App.vue";
 
-bootstrapTheme();
+bootstrapTheme({ contract: { name: "oria-standard", version: 2 } });
 
 createApp(App)
   .use(createOriaTheme({
@@ -73,7 +75,7 @@ import { Providers } from "./providers";
 
 import type { ReactNode } from "react";
 
-const bootstrapScript = createBootstrapStorageScript();
+const bootstrapScript = createBootstrapStorageScript({ contract: { name: "oria-standard", version: 2 } });
 const bootstrapScriptProps = {
   dangerouslySetInnerHTML: { __html: bootstrapScript },
 };

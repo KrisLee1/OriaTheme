@@ -89,13 +89,13 @@
 | 大圆角 | Default、Ocean、Forest、Aurora、Bento UI、AI Native、Spatial UI、Glass、Neumorphism、Soft UI、Calm、Organic、Sunset | 卡片和材质层明显圆润，控件仍保持可辨识的层级差 |
 | 夸张圆角 | Y2K、Playful、Kawaii、Soft Clay、Golden Bazaar | 从小控件开始放大曲率，`xl` / `2xl` 用于塑料感、趣味感和可爱感；Soft Clay 以高光、阴影和大体积感表达软陶，不复用 Neumorphism 的蓝灰软影；Golden Bazaar 以超大圆角和柔光橱窗层级表达轻盈零售感。 |
 
-`shape.radius.full` 只用于明确的胶囊、圆点、头像或图表柱等语义元素；普通卡片不得无条件使用 full radius。示例应用的卡片、面板、输入框与按钮必须消费对应 shape token，不能写死圆角值。
+v2 的 full radius 是 CSS 常量（不是主题 token），只用于明确的胶囊、圆点、头像或图表柱等语义元素；普通卡片不得无条件使用 full radius。示例应用的卡片、面板、输入框与按钮必须消费对应 shape token，不能写死圆角值。
 
 质量要求补充：每款主题必须拥有独立的浅色/深色色彩系统和独立视觉签名；`primary`/`secondary` 的 default、hover、active 不得使用同一颜色。除下述 Glass 例外外，语义表面仍须使用可静态计算对比度的实色，透明感由结构化 gradient、backdrop、透明边缘与多层 highlight shadow 表达；无法稳定保证正文对比度的透明背景/前景组合不直接照搬。Glass 自 2026-07-21 起是有意的文档化例外：raised 表面使用带 alpha 的半透明值（light `#f8f8f880`、dark `#101010a0`），dark selection 使用亮青 `#5bd0ff`；`surfaceRaised` 前景对比度因此不再静态可计算（light/dark 各一条警告），dark selection 对比度 1.68 低于 AA 正文建议（一条警告）。这三条警告是维护者确认的取舍，透明材质观感优先；其余 40 款预设继续满足零警告要求。
 
-除单色主题外，所有预设使用相同且清晰的反馈语义：`destructive` 是纯红、`success` 是中等明度绿、`warning` 是橙色、`info` 是明亮 sky blue；不得以紫红、深红、棕色或过深蓝色替代这些含义。浅色模式使用适合实色状态表面的 500 阶，深色模式使用更明亮的 300/400 阶；对应 foreground 仍必须在实色表面达到 WCAG AA。Mono、Monochrome Deploy、Minimalism 与 Line Art 按定位保留有明确明度顺序的灰阶反馈色，但界面不得只以颜色传达状态。
+除单色主题外，所有预设使用相同且清晰的反馈语义：`danger` 是纯红、`success` 是中等明度绿、`warning` 是橙色、`info` 是明亮 sky blue；不得以紫红、深红、棕色或过深蓝色替代这些含义。浅色模式使用适合实色状态表面的 500 阶，深色模式使用更明亮的 300/400 阶；对应 foreground 仍必须在实色表面达到 WCAG AA。Mono、Monochrome Deploy、Minimalism 与 Line Art 按定位保留有明确明度顺序的灰阶反馈色，但界面不得只以颜色传达状态。
 
-彩色主题的 `chart1` 保留各自的主色以维持主题身份；`chart2`–`chart8` 必须按 primary 色相匹配相邻且易区分的数据色谱：冷蓝主题使用 cyan / teal / sky / blue / indigo，绿色主题使用 emerald / teal / sky / olive，紫系主题使用 indigo / violet / purple / fuchsia，暖橙主题使用 orange / amber / yellow / rose，玫红主题使用 rose / pink / fuchsia / violet。每条色谱都补足对比色，确保多序列数据可读。Feedback 继续独立使用红、绿、橙、sky blue 的明确语义，不能被图表风格色替代。Aurora、Glass、Cyberpunk 等特殊风格仍由主色、表面、渐变、材质、排版与形状表达个性，不得因图表或反馈色偏离明确的数据与状态语义。预设包物化最终 HEX，不在运行时依赖或导入整套基础色库。
+彩色主题的 `chart.1` 保留各自的主色以维持主题身份；`chart.2`–`chart.8` 必须按 primary 色相匹配相邻且易区分的数据色谱：冷蓝主题使用 cyan / teal / sky / blue / indigo，绿色主题使用 emerald / teal / sky / olive，紫系主题使用 indigo / violet / purple / fuchsia，暖橙主题使用 orange / amber / yellow / rose，玫红主题使用 rose / pink / fuchsia / violet。每条色谱都补足对比色，确保多序列数据可读。Feedback 继续独立使用红、绿、橙、sky blue 的明确语义，不能被图表风格色替代。Aurora、Glass、Cyberpunk 等特殊风格仍由主色、表面、渐变、材质、排版与形状表达个性，不得因图表或反馈色偏离明确的数据与状态语义。预设包物化最终 HEX，不在运行时依赖或导入整套基础色库。
 
 稳定基础色库由 `@oriatheme/colors` 独立维护，不属于任何预设 ThemeDefinition。每款主题只负责自己的双模式语义颜色；主色和其余视觉 token 保持独立签名，但不得复制完整基础色库到主题或 runtime 输出。
 

@@ -1,4 +1,6 @@
-# Token Contract 与完整设计语言
+# Token Contract 与完整设计语言（Legacy v1）
+
+> 状态：Legacy。自 [ADR-0019](../decisions/ADR-0019-default-to-contract-v2.md) 起，`oria-standard@2`（见 [Token Contract v2](token-contract-v2.md)）是默认且唯一的标准 Contract；本文件仅作为 v1 主题格式与迁移输入（`oriaStandardContractV1`、`oriaDefaultThemeV1`、`migrateOriaStandardV1ToV2()`）的参考保留。
 
 ## 目标
 

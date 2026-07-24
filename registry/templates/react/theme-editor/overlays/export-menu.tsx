@@ -23,7 +23,7 @@ export function ExportMenu({ session, disabled }: { readonly session: ThemeEdito
     URL.revokeObjectURL(url);
   };
   return <details ref={menu} data-oria-editor-menu>
-    <summary aria-disabled={disabled} aria-label={copied ? "Theme JSON copied" : "Export theme JSON"} title={copied ? "Copied" : "Export"}><svg data-oria-editor-action-icon viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-4 4 4-4 4 4M5 20h14" /></svg><span data-oria-editor-action-label>{copied ? "Copied" : "Export"}</span></summary>
+    <summary aria-disabled={disabled} aria-label={copied ? "Theme JSON copied" : "Export theme JSON"} title={copied ? "Copied" : "Export"}><svg data-oria-editor-action-icon viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 19h14" /></svg><span data-oria-editor-action-label>{copied ? "Copied" : "Export"}</span></summary>
     <div role="menu"><button role="menuitem" type="button" disabled={disabled} onClick={() => void copy()}>Copy JSON</button><button role="menuitem" type="button" disabled={disabled} onClick={download}>Download JSON</button></div>
   </details>;
 }

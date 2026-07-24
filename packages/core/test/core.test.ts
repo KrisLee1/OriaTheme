@@ -1,41 +1,44 @@
 import { describe, expect, it } from "vitest";
-import { analyzeTheme, cloneTheme, colorToken, createThemeFromSeed, defineTokenContract, exportTheme, importTheme, oriaDefaultTheme, oriaStandardContract, resolveTheme, validateTheme } from "../src/index.js";
+import { analyzeTheme, cloneTheme, colorToken, createThemeFromSeed, defineTokenContract, exportTheme, importTheme, migrateOriaStandardV1ToV2, oriaDefaultTheme, oriaDefaultThemeV1, oriaStandardContract, oriaStandardContractV1, resolveTheme, validateTheme } from "../src/index.js";
 import type { DotPatternDefinition, GradientDefinition, GridPatternDefinition, NoisePatternDefinition, StripePatternDefinition, ThemeDefinition, TokenPath } from "../src/index.js";
 
 describe("standard contract and preset", () => {
   it("covers the required design-language categories and resolves in Node", () => {
     expect(Object.keys(oriaStandardContract.tokens)).toContain("gradient.accent");
-    expect(Object.keys(oriaStandardContract.tokens)).toContain("pattern.background");
+    expect(Object.keys(oriaStandardContract.tokens)).toContain("pattern.bg");
     expect(Object.keys(oriaStandardContract.tokens)).toContain("pattern.surface");
-    expect(Object.keys(oriaStandardContract.tokens)).toContain("motion.easing.emphasized");
-    expect(Object.keys(oriaStandardContract.tokens)).toContain("color.chart8");
-    expect(oriaStandardContract.version).toBe(1);
-    expect(Object.keys(oriaStandardContract.tokens)).toHaveLength(154);
+    expect(Object.keys(oriaStandardContract.tokens)).toContain("ease.emphasized");
+    expect(Object.keys(oriaStandardContract.tokens)).toContain("color.chart.8");
+    expect(oriaStandardContract.version).toBe(2);
+    expect(Object.keys(oriaStandardContract.tokens)).toHaveLength(134);
+    expect(oriaStandardContract.tokens["control.height.md" as TokenPath]?.output).toBe(false);
     expect(Object.keys(oriaStandardContract.tokens).some(path => path.startsWith("palette."))).toBe(false);
     const result = resolveTheme(oriaDefaultTheme, "light");
-    expect(result.variables["--oria-color-background"]).toBe("#f1f3f4");
+    expect(result.variables["--oria-color-bg"]).toBe("#f1f3f4");
     expect(result.variables["--oria-color-primary"]).toBe("#35bff0");
-    expect(result.variables["--oria-shape-radius-2xl"]).toBe("2rem");
-    expect(result.variables["--oria-shape-radius-4xl"]).toBe("4rem");
-    expect(result.variables["--oria-typography-size-9xl"]).toBe("8rem");
-    expect(result.variables["--oria-typography-lineHeight-loose"]).toBe("2");
-    expect(result.variables["--oria-typography-letterSpacing-widest"]).toBe("0.1em");
-    expect(result.variables["--oria-typography-weight-thin"]).toBe("100");
-    expect(result.variables["--oria-typography-weight-black"]).toBe("900");
-    expect(result.variables["--oria-effect-backdropBlur-sm"]).toBe("8px");
-    expect(result.variables["--oria-effect-backdropBlur-lg"]).toBe("20px");
-    expect(result.variables["--oria-effect-backdropBlur-xl"]).toBe("28px");
-    expect(result.variables["--oria-effect-blur-xs"]).toBe("2px");
-    expect(result.variables["--oria-effect-blur-3xl"]).toBe("64px");
-    expect(result.variables["--oria-effect-backdropBlur-xs"]).toBe("4px");
-    expect(result.variables["--oria-effect-backdropBlur-3xl"]).toBe("64px");
-    expect(result.variables["--oria-elevation-shadow-2xs"]).toContain("0 1px 2px -1px");
-    expect(result.variables["--oria-elevation-shadow-md"]).toContain("0 14px 34px");
-    expect(result.variables["--oria-elevation-shadow-md"]!.split(",")).toHaveLength(1);
-    expect(result.variables["--oria-elevation-shadow-highlight"]!.split(",")).toHaveLength(4);
+    expect(result.variables["--oria-radius-2xl"]).toBe("1rem");
+    expect(result.variables["--oria-radius-4xl"]).toBe("2rem");
+    expect(result.variables["--oria-text-9xl"]).toBe("8rem");
+    expect(result.variables["--oria-leading-loose"]).toBe("2");
+    expect(result.variables["--oria-tracking-widest"]).toBe("0.1em");
+    expect(result.variables["--oria-font-weight-thin"]).toBe("100");
+    expect(result.variables["--oria-font-weight-black"]).toBe("900");
+    expect(result.variables["--oria-backdrop-blur-sm"]).toBe("8px");
+    expect(result.variables["--oria-backdrop-blur-lg"]).toBe("20px");
+    expect(result.variables["--oria-backdrop-blur-xl"]).toBe("28px");
+    expect(result.variables["--oria-blur-xs"]).toBe("4px");
+    expect(result.variables["--oria-blur-3xl"]).toBe("64px");
+    expect(result.variables["--oria-backdrop-blur-xs"]).toBe("4px");
+    expect(result.variables["--oria-backdrop-blur-3xl"]).toBe("64px");
+    expect(result.variables["--oria-shadow-2xs"]).toContain("0 1px 2px -1px");
+    expect(result.variables["--oria-shadow-md"]).toContain("0 14px 34px");
+    expect(result.variables["--oria-shadow-md"]!.split(",")).toHaveLength(1);
+    expect(result.variables["--oria-shadow-highlight"]!.split(",")).toHaveLength(4);
+    expect(result.variables["--oria-space"]).toBe("0.25rem");
+    expect(result.variables["--oria-control-height-md"]).toBe("2.75rem");
     expect(Object.keys(result.variables).some(variable => variable.startsWith("--oria-palette-"))).toBe(false);
     expect(result.variables["--oria-pattern-surface"]).toBeUndefined();
-    expect(result.variables["--oria-pattern-background"]).toBeUndefined();
+    expect(result.variables["--oria-pattern-bg"]).toBeUndefined();
   });
 
   it("has no blocking validation errors or AA body-text warnings", () => {
@@ -45,8 +48,8 @@ describe("standard contract and preset", () => {
   });
 
   it("uses a coordinated Oria color-library palette for default feedback and charts", () => {
-    const feedbackKeys = ["destructive", "success", "warning", "info"] as const;
-    const chartKeys = Array.from({ length: 8 }, (_, index) => `--oria-color-chart${index + 1}` as `--${string}`);
+    const feedbackKeys = ["danger", "success", "warning", "info"] as const;
+    const chartKeys = Array.from({ length: 8 }, (_, index) => `--oria-color-chart-${index + 1}` as `--${string}`);
     const light = resolveTheme(oriaDefaultTheme, "light").variables;
     const dark = resolveTheme(oriaDefaultTheme, "dark").variables;
 
@@ -80,8 +83,8 @@ describe("standard contract and preset", () => {
   });
 
   it("compiles a validated dot layer as a repeatable CSS background layer", () => {
-    const patternPath = "pattern.background" as TokenPath;
-    const pattern: DotPatternDefinition = { type: "dot", color: { $ref: "color.borderStrong" as TokenPath }, radius: "0.9px", spacing: "1rem" };
+    const patternPath = "pattern.bg" as TokenPath;
+    const pattern: DotPatternDefinition = { type: "dot", color: { $ref: "color.border.strong" as TokenPath }, radius: "0.9px", spacing: "1rem" };
     const theme: ThemeDefinition = {
       ...oriaDefaultTheme,
       modes: {
@@ -89,7 +92,7 @@ describe("standard contract and preset", () => {
         dark: { ...oriaDefaultTheme.modes.dark, [patternPath]: [pattern] }
       }
     };
-    expect(resolveTheme(theme, "light").variables["--oria-pattern-background"]).toBe("radial-gradient(circle at center, #cbd2d7 0 0.9px, transparent 0.9px) 0 0 / 1rem 1rem repeat");
+    expect(resolveTheme(theme, "light").variables["--oria-pattern-bg"]).toBe("radial-gradient(circle at center, #cbd2d7 0 0.9px, transparent 0.9px) 0 0 / 1rem 1rem repeat");
   });
 
   it("compiles ordered angled dot, stripe, and grid pattern layers", () => {
@@ -125,6 +128,65 @@ describe("standard contract and preset", () => {
     expect(surface).toContain("baseFrequency%3D%220.92%22");
     expect(surface).toContain("baseFrequency%3D%220.38%22");
     expect(surface).toContain('") 0 0 / 48px 48px repeat');
+  });
+});
+
+describe("legacy v1 contract and migration", () => {
+  it("keeps the published v1 contract available for migration inputs", () => {
+    expect(oriaStandardContractV1.version).toBe(1);
+    expect(Object.keys(oriaStandardContractV1.tokens)).toHaveLength(154);
+    expect(oriaDefaultThemeV1.contract).toEqual({ name: "oria-standard", version: 1 });
+    const variables = resolveTheme(oriaDefaultThemeV1, "light", { contract: oriaStandardContractV1 }).variables;
+    expect(variables["--oria-color-background"]).toBe("#f1f3f4");
+    expect(variables["--oria-shape-radius-2xl"]).toBe("2rem");
+  });
+
+  it("requires explicit migration before a v1 export imports as v2", () => {
+    const v1 = { ...oriaDefaultThemeV1, id: "v1-custom", kind: "custom" as const };
+    expect(importTheme(exportTheme(v1), { contract: oriaStandardContract }).ok).toBe(false);
+    const result = importTheme(exportTheme(v1), { contract: oriaStandardContract, migrate: migrateOriaStandardV1ToV2 });
+    expect(result.ok).toBe(true);
+    if (result.ok) { expect(result.theme.contract.version).toBe(2); expect(result.requiresReview).toBe(true); }
+  });
+
+  it("migrates a v1 theme into a valid v2 theme without partial output", () => {
+    const result = migrateOriaStandardV1ToV2(oriaDefaultThemeV1);
+    expect(result.theme.contract).toEqual({ name: "oria-standard", version: 2 });
+    expect(validateTheme(result.theme, oriaStandardContract).ok).toBe(true);
+    expect(result.requiresReview).toBe(true);
+    const variables = resolveTheme(result.theme, "light", { contract: oriaStandardContract }).variables;
+    expect(variables["--oria-color-bg"]).toBe("#f1f3f4");
+    expect(variables["--oria-text-md"]).toBe("1rem");
+    expect(variables["--oria-radius-lg"]).toBeDefined();
+  });
+
+  it("persists only source tokens in theme JSON, with integer control multipliers", () => {
+    const exported = JSON.parse(exportTheme(oriaDefaultTheme)) as ThemeDefinition;
+    const sourcePaths = new Set(Object.keys(oriaStandardContract.tokens));
+    for (const mode of ["light", "dark"] as const) {
+      const tokens = exported.modes[mode];
+      expect(Object.keys(tokens).every(path => sourcePaths.has(path)), mode).toBe(true);
+      for (const size of ["sm", "md", "lg"] as const) {
+        expect(Number.isInteger(tokens[`control.height.${size}` as TokenPath]), `${mode} control.height.${size}`).toBe(true);
+        expect(Number.isInteger(tokens[`control.padding.x.${size}` as TokenPath]), `${mode} control.padding.x.${size}`).toBe(true);
+      }
+    }
+  });
+
+  it("rejects non-integer control multipliers and never emits partial variables", () => {
+    const invalid: ThemeDefinition = { ...oriaDefaultTheme, modes: { ...oriaDefaultTheme.modes, light: { ...oriaDefaultTheme.modes.light, ["control.height.md" as TokenPath]: 2.5 } } };
+    const checked = validateTheme(invalid, oriaStandardContract);
+    expect(checked.ok).toBe(false);
+    if (!checked.ok) expect(checked.issues.some(problem => problem.path === "modes.light.control.height.md")).toBe(true);
+    expect(() => resolveTheme(invalid, "light")).toThrow(expect.objectContaining({ code: "INVALID_TOKEN_VALUE", message: "Expected an integer value." }));
+  });
+
+  it("analyzes v2 contrast pairs with kebab-case variables", () => {
+    const poorContrast = { ...oriaDefaultTheme, modes: { ...oriaDefaultTheme.modes, light: { ...oriaDefaultTheme.modes.light, "color.fg": oriaDefaultTheme.modes.light["color.bg" as TokenPath] } } };
+    const diagnostics = analyzeTheme(poorContrast, oriaStandardContract);
+    expect(diagnostics.errors).toHaveLength(0);
+    expect(diagnostics.warnings.some(warning => warning.pair === "color.bg/color.fg (light)" && warning.ratio === 1)).toBe(true);
+    expect(diagnostics.warnings.every(warning => Number.isFinite(warning.ratio))).toBe(true);
   });
 });
 
@@ -253,6 +315,6 @@ describe("theme lifecycle", () => {
     const resolved = resolveTheme(seeded, "light").variables;
     expect(resolved["--oria-color-primary"]).toBe("#b91c1c");
     expect(resolved["--oria-color-border"]).toBe("#ffffffa8");
-    expect(resolved["--oria-elevation-shadow-md"]!.split(",")).toHaveLength(1);
+    expect(resolved["--oria-shadow-md"]!.split(",")).toHaveLength(1);
   });
 });

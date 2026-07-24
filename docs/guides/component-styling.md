@@ -12,35 +12,35 @@ OriaTheme runtime 负责校验、解析和写入动态 `--oria-*` 语义 CSS var
 
 ```css
 :root {
-  background: var(--oria-color-background);
-  color: var(--oria-color-foreground);
+  background: var(--oria-color-bg);
+  color: var(--oria-color-fg);
 }
 
 .card {
   padding: 1.5rem;
-  background: var(--oria-color-surfaceRaised);
-  border: var(--oria-shape-borderWidth-default) solid var(--oria-color-border);
-  border-radius: var(--oria-shape-radius-lg);
-  box-shadow: var(--oria-elevation-shadow-md);
+  background: var(--oria-color-surface-raised);
+  border: var(--oria-border-width-default) solid var(--oria-color-border);
+  border-radius: var(--oria-radius-lg);
+  box-shadow: var(--oria-shadow-md);
 }
 
 .primary-button {
-  color: var(--oria-color-primaryForeground);
+  color: var(--oria-color-primary-fg);
   background: var(--oria-color-primary);
 }
 
 .textured-page {
   /* Background pattern 位于可选背景渐变和基础背景色上方。 */
   background:
-    var(--oria-pattern-background, none),
-    var(--oria-gradient-background, var(--oria-color-background));
+    var(--oria-pattern-bg, none),
+    var(--oria-gradient-bg, var(--oria-color-bg));
 }
 
 .patterned-card {
   /* 可选 pattern 缺失时保持普通表面。 */
   background:
     var(--oria-pattern-surface, none),
-    var(--oria-color-surfaceRaised);
+    var(--oria-color-surface-raised);
 }
 ```
 
@@ -78,24 +78,24 @@ bun add @oriatheme/colors
 
 ## 方式三：Tailwind CSS 使用 OriaTheme 语义 variables
 
-Tailwind 适合应用层的布局、间距和组件组合。以 Tailwind CSS v4 为例，在全局 CSS 中将 OriaTheme 的语义变量注册为 Tailwind theme variables：
+Tailwind 适合应用层的布局、间距和组件组合。以 Tailwind CSS v4 为例，在全局 CSS 中将 OriaTheme 的语义变量注册为 Tailwind theme variables。也可以跳过手写映射，直接使用 `@oriatheme/tailwind` 的预构建静态 bridge（`@oriatheme/tailwind/oria.css`，覆盖颜色、排版、半径、阴影、模糊与动效；custom prefix 用 `oria theme tailwind-bridge` 生成）：
 
 ```css
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: var(--oria-color-background);
-  --color-foreground: var(--oria-color-foreground);
+  --color-background: var(--oria-color-bg);
+  --color-foreground: var(--oria-color-fg);
   --color-surface: var(--oria-color-surface);
-  --color-surface-raised: var(--oria-color-surfaceRaised);
+  --color-surface-raised: var(--oria-color-surface-raised);
   --color-primary: var(--oria-color-primary);
-  --color-primary-foreground: var(--oria-color-primaryForeground);
+  --color-primary-foreground: var(--oria-color-primary-fg);
   --color-border: var(--oria-color-border);
-  --color-muted: var(--oria-color-mutedForeground);
+  --color-muted: var(--oria-color-muted-fg);
 
-  --radius-sm: var(--oria-shape-radius-sm);
-  --radius-lg: var(--oria-shape-radius-lg);
-  --shadow-md: var(--oria-elevation-shadow-md);
+  --radius-sm: var(--oria-radius-sm);
+  --radius-lg: var(--oria-radius-lg);
+  --shadow-md: var(--oria-shadow-md);
 }
 ```
 

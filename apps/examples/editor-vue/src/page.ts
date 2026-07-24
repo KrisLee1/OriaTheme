@@ -1,5 +1,5 @@
 import { defineComponent, h } from "vue";
-import { oriaDefaultTheme } from "@oriatheme/presets";
+import { oriaDefaultTheme } from "@oriatheme/core";
 import { useOriaTheme } from "@oriatheme/vue";
 import { ThemeEditor } from "./components/oria-theme-editor";
 

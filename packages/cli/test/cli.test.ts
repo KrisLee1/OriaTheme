@@ -3,6 +3,7 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
+import { generateOriaTailwindBridge } from "@oriatheme/tailwind";
 import { runCli } from "../src/cli.js";
 
 const temporaryRoots: string[] = [];
@@ -159,5 +160,56 @@ describe("oria CLI", () => {
     expect(result.exitCode).toBe(0);
     expect(result.lines).toContain("both-modified: editor.ts");
     await expect(readFile(join(root, "components", "oria-theme-editor", "editor.ts"), "utf8")).resolves.toBe("local change\n");
+  });
+
+  it("writes a custom-prefix Tailwind bridge identical to the generator output", async () => {
+    const root = await temporaryProject();
+
+    const result = await runCli(["theme", "tailwind-bridge", "--prefix", "acme", "--out", "src/oria-tailwind.css"], root);
+
+    expect(result.exitCode).toBe(0);
+    await expect(readFile(join(root, "src", "oria-tailwind.css"), "utf8")).resolves.toBe(generateOriaTailwindBridge({ prefix: "acme" }));
+    const packageJson = JSON.parse(await readFile(join(root, "package.json"), "utf8")) as { readonly dependencies?: Record<string, string> };
+    expect(packageJson.dependencies).toBeUndefined();
+  });
+
+  it("writes the default-prefix bridge and requires --overwrite for existing files", async () => {
+    const root = await temporaryProject();
+
+    const first = await runCli(["theme", "tailwind-bridge", "--out", "oria.css"], root);
+    expect(first.exitCode).toBe(0);
+    const css = await readFile(join(root, "oria.css"), "utf8");
+    expect(css).toContain("--color-background: var(--oria-color-bg);");
+    expect(css).toContain("--text-base: var(--oria-text-md);");
+    expect(css).toContain("@utility backdrop-oria-lg");
+
+    const conflict = await runCli(["theme", "tailwind-bridge", "--out", "oria.css"], root);
+    expect(conflict.exitCode).toBe(1);
+    expect(conflict.lines[0]).toContain("Refusing to overwrite");
+
+    const overwrite = await runCli(["theme", "tailwind-bridge", "--out", "oria.css", "--overwrite"], root);
+    expect(overwrite.exitCode).toBe(0);
+    expect(overwrite.lines.join("\n")).toContain("Overwrite: oria.css");
+  });
+
+  it("previews the bridge with --dry-run and rejects invalid prefixes, traversal, and missing --out", async () => {
+    const root = await temporaryProject();
+
+    const dry = await runCli(["theme", "tailwind-bridge", "--prefix", "acme", "--out", "bridge.css", "--dry-run"], root);
+    expect(dry.exitCode).toBe(0);
+    expect(dry.lines.join("\n")).toContain("Dry run: no files were written.");
+    await expect(readFile(join(root, "bridge.css"), "utf8")).rejects.toThrow();
+
+    const invalidPrefix = await runCli(["theme", "tailwind-bridge", "--prefix", "1bad", "--out", "bridge.css"], root);
+    expect(invalidPrefix.exitCode).toBe(1);
+    expect(invalidPrefix.lines[0]).toContain("Invalid Oria CSS variable prefix");
+
+    const traversal = await runCli(["theme", "tailwind-bridge", "--out", "../escape.css"], root);
+    expect(traversal.exitCode).toBe(1);
+    expect(traversal.lines[0]).toContain("normalized relative path");
+
+    const missingOut = await runCli(["theme", "tailwind-bridge"], root);
+    expect(missingOut.exitCode).toBe(1);
+    expect(missingOut.lines[0]).toContain("--out is required");
   });
 });

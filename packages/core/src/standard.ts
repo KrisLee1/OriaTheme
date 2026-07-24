@@ -31,7 +31,8 @@ for (const path of ["instant", "fast", "normal", "slow"]) required("duration", `
 for (const path of ["standard", "entrance", "exit", "emphasized"]) required("cubicBezier", `motion.easing.${path}|Motion easing.`);
 
 /** Standard v1 design-language contract. Stable base colors live in @oriatheme/colors. */
-export const oriaStandardContract = defineTokenContract({ name: "oria-standard", version: 1, tokens: definitions });
+/** Legacy v1 contract, retained for explicit migration of previously published themes. */
+export const oriaStandardContractV1 = defineTokenContract({ name: "oria-standard", version: 1, tokens: definitions });
 
 const shared: Record<string, ThemeTokenInput> = {
   "typography.font.sans": ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Inter", "sans-serif"], "typography.font.serif": ["Iowan Old Style", "Palatino Linotype", "Georgia", "serif"], "typography.font.mono": ["SFMono-Regular", "Cascadia Code", "Consolas", "monospace"], "typography.font.display": ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Inter", "sans-serif"],
@@ -65,4 +66,5 @@ const colors = (dark: boolean): Record<string, ThemeTokenInput> => ({
 });
 const tokensFor = (dark: boolean): Readonly<Record<TokenPath, ThemeTokenInput>> => Object.freeze({ ...shared, ...colors(dark) } as Record<TokenPath, ThemeTokenInput>);
 /** Complete built-in preset with AA body text combinations in both modes. */
-export const oriaDefaultTheme: ThemeDefinition = Object.freeze({ schemaVersion: 1, contract: { name: "oria-standard", version: 1 }, id: "oria-default", name: "Default", kind: "preset", modes: Object.freeze({ light: tokensFor(false), dark: tokensFor(true) }) });
+/** Legacy v1 default theme; the canonical visual baseline for the v2 default. */
+export const oriaDefaultThemeV1: ThemeDefinition = Object.freeze({ schemaVersion: 1, contract: { name: "oria-standard", version: 1 }, id: "oria-default", name: "Default", kind: "preset", modes: Object.freeze({ light: tokensFor(false), dark: tokensFor(true) }) });

@@ -2,7 +2,7 @@
 
 [English](en/theme-editors.md) · [指南首页](README.md)
 
-> 状态：React/Vue registry 模板、hash manifest、headless bridge 和 CLI 已随 `0.1.0` 发布；`https://theme.oria.org.cn/registry/v1` 已完成 HTTPS 与干净使用方验证。以下命令可用于公共 registry 安装。
+> 状态：React/Vue registry 模板、hash manifest、headless bridge 和 CLI 已随 `0.1.0` 发布；`https://theme.oria.org.cn/registry/v1` 已完成 HTTPS 与干净使用方验证。registry item 当前为 `0.2.0`，按 `oria-standard@2` contract 渲染，要求 `@oriatheme/core@^0.3.0`。以下命令可用于公共 registry 安装。
 
 OriaTheme 的可见编辑器 UI 使用源码组件模式。组件模板位于 `packages/cli/registry/templates/`；React、Vue 与 shared layout 已拆成多文件模板并由 manifest 记录 SHA-256。安装后，Toolbar、Tabs、搜索、token 字段、阶梯、阴影、浮层、预览和 CSS 都位于用户项目的 `components/oria-theme-editor/` 目录，可直接修改和提交到 Git。
 

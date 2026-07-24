@@ -1,8 +1,8 @@
 import { issue, OriaThemeError } from "./errors.js";
 import type { OriaThemeErrorCode } from "./errors.js";
 import { isTokenPath } from "./contract.js";
-import { oriaDefaultTheme, oriaStandardContract } from "./standard.js";
-import type { Clock, CloneIdentity, CreateThemeOptions, GradientDefinition, GradientPosition, GradientStop, ImportResult, ImportThemeOptions, NoisePatternVariant, PatternLayer, PatternLayers, ResolveOptions, ResolvedMode, ResolvedTheme, ShadowLayer, ThemeDefinition, ThemeSeed, ThemeTokenInput, TokenContract, TokenDefinition, TokenPath, TokenReference, TokenType, TokenValue, ValidationIssue, ValidationResult } from "./types.js";
+import { oriaDefaultTheme, oriaStandardContract } from "./standard-v2.js";
+import type { Clock, CloneIdentity, CreateThemeOptions, CssNameStyle, GradientDefinition, GradientPosition, GradientStop, ImportResult, ImportThemeOptions, NoisePatternVariant, PatternLayer, PatternLayers, ResolveOptions, ResolvedMode, ResolvedTheme, ShadowLayer, ThemeDefinition, ThemeMigrationResult, ThemeSeed, ThemeTokenInput, TokenContract, TokenDefinition, TokenPath, TokenReference, TokenType, TokenValue, ValidationIssue, ValidationResult } from "./types.js";
 
 const ID = /^[a-z][a-z0-9-]{1,63}$/;
 const UNSAFE = /[;{}<>]/;
@@ -66,7 +66,8 @@ export function resolveThemeWithContract(theme: ThemeDefinition, contract: Token
     throw new OriaThemeError(first.code as OriaThemeErrorCode, first.message, { ...(first.path === undefined ? {} : { path: first.path }), ...(first.details === undefined ? {} : { details: first.details }) });
   }
   const prefix = options.variablePrefix === undefined ? "oria" : options.variablePrefix;
-  if (!/^[a-zA-Z0-9-]*$/.test(prefix)) throw new OriaThemeError("INVALID_CONTRACT", "Variable prefix may only contain letters, numbers, and hyphens.");
+  const prefixPattern = contract.cssNameStyle === "kebab" ? /^[a-zA-Z][a-zA-Z0-9-]*$/ : /^[a-zA-Z0-9-]*$/;
+  if (!prefixPattern.test(prefix)) throw new OriaThemeError("INVALID_CONTRACT", contract.cssNameStyle === "kebab" ? "A v2 variable prefix must start with a letter and contain only letters, numbers, and hyphens." : "Variable prefix may only contain letters, numbers, and hyphens.");
   const tokens = checked.value.modes[mode];
   const resolved = new Map<TokenPath, TokenValue>();
   const visiting: TokenPath[] = [];
@@ -92,7 +93,13 @@ export function resolveThemeWithContract(theme: ThemeDefinition, contract: Token
     const definition = contract.tokens[path]!;
     const hasValue = tokens[path] !== undefined || definition.default !== undefined;
     if (!hasValue) { if (definition.required) throw new OriaThemeError("INVALID_THEME", `Required token ${path} is missing.`, { path }); continue; }
-    variables[toCssVariable(path, prefix)] = compileValue(get(path), definition.type, get);
+    if (definition.output !== false) variables[toCssVariable(path, prefix, contract.cssNameStyle)] = compileValue(get(path), definition.type, get);
+  }
+  for (const variable of contract.derivedVariables) {
+    const derived = variable.derive.kind === "scale"
+      ? scaleDimension(get(variable.derive.source), variable.derive.factor)
+      : scaleDimension(get(variable.derive.dimension), numberValue(get(variable.derive.factor), variable.derive.factor));
+    variables[`--${prefix}-${variable.name}`] = derived;
   }
   return Object.freeze({ themeId: checked.value.id, contract: checked.value.contract, mode, variables: Object.freeze(variables), colorScheme: mode });
 }
@@ -109,7 +116,7 @@ export function createThemeFromSeed(seed: ThemeSeed, options: CreateThemeOptions
   if (!validColor(seed.color) || !ID.test(options.id) || options.name.trim().length === 0) throw new OriaThemeError("INVALID_THEME", "Seed color, id, or name is invalid.");
   const cloned = cloneTheme(oriaDefaultTheme, { id: options.id, name: options.name }, options.clock);
   const primaryForeground = preferredForeground(seed.color);
-  const update = (set: ThemeDefinition["modes"]["light"]): ThemeDefinition["modes"]["light"] => Object.freeze({ ...set, "color.primary": seed.color, "color.primaryHover": shiftHex(seed.color, -0.12), "color.primaryActive": shiftHex(seed.color, -0.22), "color.primaryForeground": primaryForeground, "color.ring": seed.color } as Record<TokenPath, ThemeTokenInput>);
+  const update = (set: ThemeDefinition["modes"]["light"]): ThemeDefinition["modes"]["light"] => Object.freeze({ ...set, "color.primary": seed.color, "color.primary.hover": shiftHex(seed.color, -0.12), "color.primary.active": shiftHex(seed.color, -0.22), "color.primary.fg": primaryForeground, "color.ring": seed.color } as Record<TokenPath, ThemeTokenInput>);
   return freezeTheme({ ...cloned, modes: { light: update(cloned.modes.light), dark: update(cloned.modes.dark) } });
 }
 
@@ -122,22 +129,29 @@ export function importTheme(json: string, options: ImportThemeOptions): ImportRe
   if (new TextEncoder().encode(json).byteLength > maxBytes) return { ok: false, issues: [issue("INVALID_JSON", "Theme file exceeds the maximum size.")] };
   let raw: unknown; try { raw = JSON.parse(json); } catch { return { ok: false, issues: [issue("INVALID_JSON", "Theme file is not valid JSON.")] }; }
   let candidate = raw;
+  let migration: ThemeMigrationResult | undefined;
   if (object(raw) && object(raw.contract) && (raw.contract.name !== options.contract.name || raw.contract.version !== options.contract.version)) {
     if (!options.migrate) return { ok: false, issues: [issue("UNSUPPORTED_CONTRACT", "Theme contract does not match the target contract.", "contract")] };
-    candidate = options.migrate(raw, raw.contract as unknown as { name: string; version: number });
+    const migrated = options.migrate(raw, raw.contract as unknown as { name: string; version: number });
+    candidate = isMigrationResult(migrated) ? migrated.theme : migrated;
+    if (isMigrationResult(migrated)) migration = migrated;
   }
   if (object(candidate)) candidate = { ...candidate, kind: "custom" };
   const checked = validateTheme(candidate, options.contract);
   if (!checked.ok) return checked;
   const same = (options.existingThemes ?? []).find(theme => theme.id === checked.value.id);
-  if (!same) return { ok: true, theme: checked.value, replaced: false };
+  if (!same) return { ok: true, theme: checked.value, replaced: false, ...(migration === undefined ? {} : { warnings: migration.warnings, requiresReview: migration.requiresReview }) };
   if (same.kind === "preset") return { ok: false, issues: [issue("PRESET_IMMUTABLE", "Imported themes cannot replace a preset.", "id")] };
-  if (options.conflict === "replace") return { ok: true, theme: checked.value, replaced: true };
+  if (options.conflict === "replace") return { ok: true, theme: checked.value, replaced: true, ...(migration === undefined ? {} : { warnings: migration.warnings, requiresReview: migration.requiresReview }) };
   const newId = uniqueId(checked.value.id, options.existingThemes ?? []);
-  return { ok: true, theme: freezeTheme({ ...checked.value, id: newId }), replaced: false };
+  return { ok: true, theme: freezeTheme({ ...checked.value, id: newId }), replaced: false, ...(migration === undefined ? {} : { warnings: migration.warnings, requiresReview: migration.requiresReview }) };
 }
 
-export function toCssVariable(path: TokenPath, prefix = "oria"): `--${string}` { return `--${prefix ? `${prefix}-` : ""}${path.replace(/\./g, "-")}`; }
+/** Converts a contract token path to its CSS custom-property name. Legacy remains source-compatible. */
+export function toCssVariable(path: TokenPath, prefix = "oria", cssNameStyle: CssNameStyle = "legacy"): `--${string}` {
+  const name = cssNameStyle === "kebab" ? path.replace(/\./g, "-") : path.replace(/\./g, "-");
+  return `--${prefix ? `${prefix}-` : ""}${name}`;
+}
 
 function validateTokenSet(value: unknown, mode: string, contract: TokenContract, issues: ValidationIssue[]): void {
   if (!object(value)) { issues.push(issue("INVALID_THEME", "Token set must be an object.", `modes.${mode}`)); return; }
@@ -154,7 +168,11 @@ function validateTokenSet(value: unknown, mode: string, contract: TokenContract,
   for (const [path, definition] of Object.entries(contract.tokens)) if (definition.required && value[path] === undefined && definition.default === undefined) issues.push(issue("INVALID_THEME", "Required token is missing.", `modes.${mode}.${path}`));
 }
 function valueError(value: unknown, definition: TokenDefinition): string | undefined {
-  if (definition.type === "number") return typeof value !== "number" || !Number.isFinite(value) || (definition.minimum !== undefined && value < definition.minimum) || (definition.maximum !== undefined && value > definition.maximum) ? "Expected a finite number within its configured range." : undefined;
+  if (definition.type === "number") {
+    if (typeof value !== "number" || !Number.isFinite(value) || (definition.minimum !== undefined && value < definition.minimum) || (definition.maximum !== undefined && value > definition.maximum)) return "Expected a finite number within its configured range.";
+    if (definition.integer === true && !Number.isInteger(value)) return "Expected an integer value.";
+    return undefined;
+  }
   if (definition.type === "fontFamily") return !Array.isArray(value) || value.length === 0 || value.some(item => typeof item !== "string" || !safeString(item)) ? "Expected a non-empty safe font family list." : undefined;
   if (definition.type === "cubicBezier") return !Array.isArray(value) || value.length !== 4 || value.some(item => typeof item !== "number" || !Number.isFinite(item)) ? "Expected a four-number cubic bezier tuple." : undefined;
   if (definition.type === "shadow") return !Array.isArray(value) || value.some(layer => !validShadow(layer)) ? "Expected structured shadow layers." : undefined;
@@ -228,6 +246,20 @@ function compileValue(value: TokenValue, type: TokenType, get: (path: TokenPath)
   }
   return String(value);
 }
+function numberValue(value: TokenValue, path: TokenPath): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) throw new OriaThemeError("INVALID_THEME", `Derived variable factor ${path} must resolve to a finite number.`, { path });
+  return value;
+}
+function scaleDimension(value: TokenValue, factor: number): string {
+  if (typeof value !== "string") throw new OriaThemeError("INVALID_THEME", "Derived variable source must resolve to a dimension.");
+  if (value === "0") return "0";
+  const match = /^([-+]?(?:\d+|\d*\.\d+))(px|rem|em|%|vw|vh|vmin|vmax|ch|ex|cm|mm|in|pt|pc)$/.exec(value);
+  if (!match) throw new OriaThemeError("INVALID_THEME", "Derived variable source must resolve to a static dimension.");
+  const number = Number(match[1]) * factor;
+  if (!Number.isFinite(number)) throw new OriaThemeError("INVALID_THEME", "Derived variable calculation is not finite.");
+  return `${Number(number.toFixed(6))}${match[2]!}`;
+}
+function isMigrationResult(value: unknown): value is ThemeMigrationResult { return object(value) && object(value.theme) && Array.isArray(value.warnings) && typeof value.requiresReview === "boolean"; }
 function compilePatternLayer(pattern: PatternLayer, get: (path: TokenPath) => TokenValue): string {
   const color = typeof pattern.color === "string" ? pattern.color : String(get(pattern.color.$ref));
   if (pattern.type === "dot") {

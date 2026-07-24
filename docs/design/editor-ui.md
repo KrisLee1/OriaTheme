@@ -43,10 +43,10 @@
 |---|---|---|
 | 主题 Themes | Runtime presets / custom themes | My themes、Presets |
 | 颜色 Colors | Semantic Color | Canvas & Surfaces、Primary、Secondary、Muted & Accent、Feedback、Borders & Selection、Charts |
-| 排版 Typography | Typography | Font Families、Font Weights、Type Scale、Line Height、Letter Spacing |
-| 布局与形状 Layout & Shape | Spacing & Density、Control、Shape & Border | Spacing & Density、Control Size、Radius Scale、Borders & Focus Ring |
-| 层次与材质 Depth & Material | Elevation、Effects、Gradient、Pattern | Elevation Scale、Inner Shadows & Highlights、Opacity、Blur、Backdrop、Gradients、Patterns |
-| 动效 Motion | Motion | Duration Scale、Easing Curves |
+| 排版 Typography | Typography | Font Families、Font Weights、Type Size、Line Height、Letter Spacing |
+| 布局与形状 Layout & Shape | Geometry | Spacing、Control Size、Radius、Borders、Focus Ring |
+| 层次与材质 Depth & Material | Shadow、Effects、Gradient、Pattern | Shadow、Inner Shadows & Highlights、Opacity、Blur、Backdrop、Gradients、Patterns |
+| 动效 Motion | Motion | Duration、Easing Curves |
 
 中文界面使用中文标题，Token Path 作为次级技术信息保留。公开稳定的 `data-oria-editor-*` hook 和文档中的分组 ID 使用英文，不依赖可见文案。
 

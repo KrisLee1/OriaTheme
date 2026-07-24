@@ -13,10 +13,12 @@ For applications using default LocalStorage persistence, call Bootstrap before f
 ```ts
 import { bootstrapTheme } from "@oriatheme/runtime-dom";
 
-bootstrapTheme();
+bootstrapTheme({ contract: { name: "oria-standard", version: 2 } });
 ```
 
 The default key is `oria-theme:active:v1`. A first visit, missing/corrupt snapshot, contract mismatch, or invalid variable silently falls back to the application's static default CSS. Do not present that normal fallback as an error.
+
+Always declare the contract ref as above: Bootstrap then restores only snapshots that match it exactly. Applications upgraded from 0.1.x rely on this — snapshots written by the v1 runtime (camelCase variables, `contract.version: 1`) are rejected safely and the page keeps its static default CSS until the runtime applies a v2 theme and writes a fresh snapshot; first-paint restore works again from the next visit. Without the declaration no such check runs, and stale v1 variables can be painted at first screen. See the [migration guide](migrations.md) for the full upgrade path.
 
 ## React / Vite
 
@@ -27,7 +29,7 @@ import { OriaThemeProvider } from "@oriatheme/react";
 import { oriaPresetThemes } from "@oriatheme/presets";
 import { App } from "./App";
 
-bootstrapTheme();
+bootstrapTheme({ contract: { name: "oria-standard", version: 2 } });
 
 createRoot(document.querySelector("#root")!).render(
   <OriaThemeProvider config={{
@@ -48,7 +50,7 @@ import { createOriaTheme } from "@oriatheme/vue";
 import { oriaPresetThemes } from "@oriatheme/presets";
 import App from "./App.vue";
 
-bootstrapTheme();
+bootstrapTheme({ contract: { name: "oria-standard", version: 2 } });
 
 createApp(App)
   .use(createOriaTheme({
@@ -68,7 +70,7 @@ import type { ReactNode } from "react";
 import { createBootstrapStorageScript } from "@oriatheme/runtime-dom";
 import { Providers } from "./providers";
 
-const bootstrapScript = createBootstrapStorageScript();
+const bootstrapScript = createBootstrapStorageScript({ contract: { name: "oria-standard", version: 2 } });
 const bootstrapScriptProps = {
   dangerouslySetInnerHTML: { __html: bootstrapScript },
 };

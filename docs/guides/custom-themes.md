@@ -32,6 +32,6 @@ runtime.setTheme(copied.id);
 
 使用 `previewTheme()` 展示草稿不会修改 preference 或 storage。调用 `dispose()` 后，它恢复最新正式状态，而不是预览开始时的旧状态。
 
-外部主题导入使用 `runtime.importTheme(json)`。导入内容会强制转为 custom；不能覆盖 preset。应用应展示 `OriaThemeError.code` 或 validation issues，而不要依赖错误文案。
+外部主题导入使用 `runtime.importTheme(json)`。导入内容会强制转为 custom；不能覆盖 preset。应用应展示 `OriaThemeError.code` 或 validation issues，而不要依赖错误文案。导入 v1（`oria-standard@1`）主题的 JSON 需要显式迁移：在 runtime config 注册 `migrations: [migrateOriaStandardV1ToV2]`，或使用 Core `importTheme()` 的 `migrate` 选项以取得 `warnings` / `requiresReview` 复核结果；未注册迁移时 v1 数据会被安全拒绝。详见[迁移指南](migrations.md)。
 
 删除当前 custom 主题时，runtime 自动回退到配置的 default theme。Preset 不可修改或删除；先复制再编辑。

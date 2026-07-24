@@ -20,3 +20,6 @@
 - [ADR-0014：结构化表面图案](ADR-0014-structured-surface-patterns.md)
 - [ADR-0015：背景图案 Token](ADR-0015-background-pattern-token.md)
 - [ADR-0016：Manuscript 预设 ID 与具名导出更名](ADR-0016-manuscript-preset-id-rename.md)
+- [ADR-0017：Contract v2 的简洁 Token 命名与 Tailwind Bridge](ADR-0017-contract-v2-token-naming-and-tailwind-bridge.md)
+- [ADR-0018：将 Contract v2 实现拆分至 Phase 10](ADR-0018-contract-v2-in-phase-10.md)
+- [ADR-0019：以 Contract v2 为默认且唯一的标准设计](ADR-0019-default-to-contract-v2.md)

@@ -36,7 +36,7 @@ Bootstrap 的持久化语义与其他框架入口见[首屏主题 Bootstrap](boo
 import { createRoot } from "react-dom/client";
 import { bootstrapTheme } from "@oriatheme/runtime-dom";
 
-bootstrapTheme();
+bootstrapTheme({ contract: { name: "oria-standard", version: 2 } });
 
 createRoot(document.querySelector("#root")!).render(/* Provider + App */);
 ```
@@ -83,9 +83,10 @@ Vue 同样在 `createApp()` 前 Bootstrap：
 ```ts
 import { createApp } from "vue";
 import { bootstrapTheme } from "@oriatheme/runtime-dom";
+import { createOriaTheme } from "@oriatheme/vue";
 
-bootstrapTheme();
-createApp(App).use(oriaThemePlugin).mount("#app");
+bootstrapTheme({ contract: { name: "oria-standard", version: 2 } });
+createApp(App).use(createOriaTheme({ presets, defaultThemeId })).mount("#app");
 ```
 
 Host 使用 `defineAsyncComponent()`。以下片段同样假设现有 Host 已提供 `runtime` 与 `editorOptions`，只展示异步组件和条件挂载：
@@ -170,7 +171,7 @@ import { createBootstrapStorageScript } from "@oriatheme/runtime-dom";
 import { defaultThemeCss } from "./default-theme-style";
 import { Providers } from "./providers";
 
-const bootstrapScript = createBootstrapStorageScript();
+const bootstrapScript = createBootstrapStorageScript({ contract: { name: "oria-standard", version: 2 } });
 const bootstrapScriptProps = {
   dangerouslySetInnerHTML: { __html: bootstrapScript },
 };
@@ -255,9 +256,9 @@ describe("Next default theme SSR style", () => {
     const light = resolveTheme(oriaDefaultTheme, "light").variables;
     const dark = resolveTheme(oriaDefaultTheme, "dark").variables;
 
-    expect(defaultThemeCss).toContain(`--oria-color-background:${light["--oria-color-background"]}`);
+    expect(defaultThemeCss).toContain(`--oria-color-bg:${light["--oria-color-bg"]}`);
     expect(defaultThemeCss).toContain("@media(prefers-color-scheme:dark)");
-    expect(defaultThemeCss).toContain(`--oria-color-background:${dark["--oria-color-background"]}`);
+    expect(defaultThemeCss).toContain(`--oria-color-bg:${dark["--oria-color-bg"]}`);
     expect(defaultThemeCss.match(/--oria-[a-zA-Z0-9-]+:/g))
       .toHaveLength(Object.keys(light).length + Object.keys(dark).length);
   });
@@ -321,3 +322,4 @@ React/Vite 优化后的单次移动端 Lighthouse 12.8.2 production 复测为 Pe
 - 组件已动态加载，但页面初始状态仍挂载隐藏的编辑器，提前创建 session 并执行渲染。
 - 为消除闪烁而隐藏整个页面直到 JavaScript 启动；这会牺牲 FCP，也不能替代稳定的 SSR 默认样式。
 - 将未经 Core 验证的用户输入直接写进 `<style>`。
+- 对开发服务器跑 Lighthouse 并把分数当作生产回退：`next dev` 的按需编译与 dev 模式框架会让 TBT 膨胀到秒级（实测 TBT 单项 0.03），而同一代码 `next build` + `next start` 后 TBT 接近 0。测量前始终使用 production build（Vite 示例用 `vite preview` 或静态服务 `dist/`），并停止本机常驻 dev/prod 服务器，避免 CPU 竞争放大模拟节流结果。

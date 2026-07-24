@@ -32,6 +32,6 @@ runtime.setTheme(copied.id);
 
 `previewTheme()` does not change preference or Storage. Disposing its handle restores the latest official state, not a stale copy from preview start.
 
-Use `runtime.importTheme(json)` for external JSON. Imports are forced to custom themes and cannot overwrite presets. Present `OriaThemeError.code` or validation issues rather than relying on error-message text.
+Use `runtime.importTheme(json)` for external JSON. Imports are forced to custom themes and cannot overwrite presets. Present `OriaThemeError.code` or validation issues rather than relying on error-message text. Importing JSON from a v1 (`oria-standard@1`) theme requires an explicit migration: register `migrations: [migrateOriaStandardV1ToV2]` in the runtime config, or use Core `importTheme()` with the `migrate` option to receive `warnings` / `requiresReview` for review; without a registered migration, v1 data is rejected safely. See the [migration guide](migrations.md).
 
 Removing the active custom theme automatically falls back to the configured default theme. A preset cannot be modified or deleted; duplicate it first.

@@ -2,31 +2,31 @@
   "schemaVersion": 1,
   "name": "theme-editor",
   "framework": "react",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "compatiblePackages": {
     "@oriatheme/colors": "^0.1.0",
-    "@oriatheme/core": "^0.1.0",
-    "@oriatheme/editor-core": "^0.1.0",
-    "@oriatheme/react-editor": "^0.1.0",
-    "@oriatheme/runtime-dom": "^0.1.0"
+    "@oriatheme/core": "^0.3.0",
+    "@oriatheme/editor-core": "^0.2.0",
+    "@oriatheme/react-editor": "^0.1.4",
+    "@oriatheme/runtime-dom": "^0.2.0"
   },
   "dependencies": [
     "@oriatheme/colors@^0.1.0",
-    "@oriatheme/core@^0.1.0",
-    "@oriatheme/editor-core@^0.1.0",
-    "@oriatheme/react-editor@^0.1.0",
-    "@oriatheme/runtime-dom@^0.1.0",
+    "@oriatheme/core@^0.3.0",
+    "@oriatheme/editor-core@^0.2.0",
+    "@oriatheme/react-editor@^0.1.4",
+    "@oriatheme/runtime-dom@^0.2.0",
     "react@^18.2.0 || ^19.0.0",
     "react-dom@^18.2.0 || ^19.0.0"
   ],
   "files": [
     {
-      "sha256": "81b92e0655280c3e11d9d392d575e2ee2ced64a9b5788b6627e7ca6bf20ad6d9",
+      "sha256": "135e040e5fecbf1f7aa603f6a3ab120c693bed6aa48414fcba89945e092462bf",
       "source": "templates/react/theme-editor/editor-layout.ts",
       "target": "editor-layout.ts"
     },
     {
-      "sha256": "f61edd9d3f86d1a7f58180df49aecf5e3fe9f4cb605783dc3e24dd01831c18c2",
+      "sha256": "61763dea1175bb2b992e6572ad73ab95f86a2ee72a29bdfa352f8ea4f84ead02",
       "source": "templates/react/theme-editor/theme-editor.css",
       "target": "theme-editor.css"
     },
@@ -61,7 +61,7 @@
       "target": "overlays/confirmation-dialog.tsx"
     },
     {
-      "sha256": "d3e28dc4001c9c9c1e1e0d14120bd9d2908eefff883516e9f0e1a5c8940e8c8a",
+      "sha256": "473599a6bd68789f93d7a69e306834b5bdb3ae7d5a4ed4e8826fc4677bb983d6",
       "source": "templates/react/theme-editor/overlays/import-dialog.tsx",
       "target": "overlays/import-dialog.tsx"
     },
@@ -71,7 +71,7 @@
       "target": "overlays/issues-popover.tsx"
     },
     {
-      "sha256": "f3f4e20392a5475171ee0549c2e558ba0c4dbe0c7057bf0ef0df1e1286740d58",
+      "sha256": "fd57a262ada8a0944e6741bf84ad074b86fa63aaac747b5e04dcf1bdea896537",
       "source": "templates/react/theme-editor/overlays/export-menu.tsx",
       "target": "overlays/export-menu.tsx"
     },
@@ -141,7 +141,7 @@
       "target": "hooks/use-details-dismiss.ts"
     },
     {
-      "sha256": "6f546ee32c7a704b2b29e839957335bfa8276baeee43258f7f7d8a1aaf85d330",
+      "sha256": "c53afbf7811f21f806edc1e7713e1a893296b8e5f941300079607566a5655ea4",
       "source": "templates/react/theme-editor/editor-preview.tsx",
       "target": "editor-preview.tsx"
     },
@@ -206,7 +206,7 @@
       "target": "fields/linear-slider.tsx"
     },
     {
-      "sha256": "3df15c266ea1a93003f6f5a1042cfb97cf8418297a9b61df5adf716d8c314de9",
+      "sha256": "50a44ac8c66d05b0349a448c7a5afea28104266b454feec0f108b0fe0dd6a761",
       "source": "templates/react/theme-editor/fields/slider-ranges.ts",
       "target": "fields/slider-ranges.ts"
     },

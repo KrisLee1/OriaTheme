@@ -1,5 +1,11 @@
 # @oriatheme/core
 
+## 0.3.0
+
+### Minor Changes
+
+- Make `oria-standard@2` the default and only standard contract (breaking change, ADR-0019). `oriaStandardContract` and `oriaDefaultTheme` now refer to v2: 134 source tokens with lowercase dot paths, kebab-case CSS output, and declared derived variables (`--oria-radius-*`, `--oria-control-height-*`, `--oria-control-padding-x-*`). v1 remains available as explicit migration input through the legacy exports `oriaStandardContractV1`, `oriaDefaultThemeV1`, and `migrateOriaStandardV1ToV2()`. Contract validation now enforces the v2 integer control-multiplier rule. See the v1→v2 migration guide.
+
 ## 0.2.0
 
 ### Minor Changes

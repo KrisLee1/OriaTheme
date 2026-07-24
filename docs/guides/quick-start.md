@@ -4,7 +4,7 @@
 
 本指南让一个现有 React、Vue 或原生 Web 应用完成 OriaTheme 初始化、首屏恢复、主题切换和 CSS Variables 使用。只使用公开 package root exports。
 
-> `@oriatheme/*@0.1.0` 已发布。下面的安装命令适用于使用方项目；在本仓库开发请先阅读[开发者指南](development.md)。
+> 公开 `@oriatheme/*` 包已发布到 npm（各包版本独立演进，以 npm latest 为准）。下面的安装命令适用于使用方项目；在本仓库开发请先阅读[开发者指南](development.md)。
 
 ## 1. 选择并安装
 
@@ -148,16 +148,16 @@ Runtime 在目标根节点原子写入 `--oria-*` variables，并维护 `data-or
 
 ```css
 :root {
-  color: var(--oria-color-foreground);
-  background: var(--oria-color-background);
+  color: var(--oria-color-fg);
+  background: var(--oria-color-bg);
 }
 
 .card {
-  color: var(--oria-color-surfaceForeground);
+  color: var(--oria-color-surface-fg);
   background: var(--oria-color-surface);
-  border: var(--oria-shape-borderWidth-default) solid var(--oria-color-border);
-  border-radius: var(--oria-shape-radius-lg);
-  box-shadow: var(--oria-elevation-shadow-md);
+  border: var(--oria-border-width-default) solid var(--oria-color-border);
+  border-radius: var(--oria-radius-lg);
+  box-shadow: var(--oria-shadow-md);
 }
 ```
 
@@ -188,12 +188,14 @@ Runtime 在目标根节点原子写入 `--oria-*` variables，并维护 `data-or
 
 ## 6. 运行完整示例，或以它为起点开发
 
-仓库提供三个私有、可运行的单页示例，均使用公开 package root imports。它们展示预设主题切换、`light` / `dark` / `system`、主题 variables 驱动的产品组件、完整 Token 标本，以及默认关闭并按需加载的本地主题编辑器。先按[开发者指南](development.md#初始化工作区)初始化本仓库，再从根目录选择一个命令：
+仓库提供五个私有、可运行的示例，均使用公开 package root imports。React、Vue、Next 三个单页工作台展示预设主题切换、`light` / `dark` / `system`、主题 variables 驱动的产品组件、完整 Token 标本，以及默认关闭并按需加载的本地主题编辑器；`editor-next` 与 `editor-vue` 两个最小项目只挂载本地编辑器源码副本，用于验证编辑器的独立消费。先按[开发者指南](development.md#初始化工作区)初始化本仓库，再从根目录选择一个命令：
 
 | 示例 | 技术栈与适合的起点 | 启动命令 |
 | --- | --- | --- |
 | `apps/examples/react` | React + Vite；用于 React 客户端应用 | `pnpm dev:example:react` |
 | `apps/examples/vue` | Vue 3 + Vite；用于 Vue 3 应用 | `pnpm dev:example:vue` |
 | `apps/examples/next` | Next.js；用于 SSR/SSG、静态默认主题和 Bootstrap 集成 | `pnpm dev:example:next` |
+
+两个最小编辑器示例没有根级快捷命令，分别用 `pnpm --filter @oriatheme/example-editor-next dev` 与 `pnpm --filter @oriatheme/example-editor-vue dev` 启动。
 
 可以在对应示例目录中修改页面、组件和本地 `components/oria-theme-editor/` 后继续开发；这些示例使用 workspace 依赖，不能直接复制到仓库外作为独立项目。若要在自己的项目中接入，请按本指南的安装步骤使用已发布包。示例功能与生产构建命令见 [apps/examples README](../../apps/examples/README.md) 和[开发者指南](development.md#运行示例)。

@@ -43,7 +43,7 @@ export function ImportDialog({ session }: { readonly session: ThemeEditorSession
 
   return <>
     <button type="button" aria-label="Import theme JSON" title="Import" onClick={() => setOpen(true)}>
-      <svg data-oria-editor-action-icon viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 19h14" /></svg>
+      <svg data-oria-editor-action-icon viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-4 4 4-4 4 4M5 20h14" /></svg>
       <span data-oria-editor-action-label>Import</span>
     </button>
     <dialog ref={dialog} data-oria-editor-dialog data-oria-editor-import onCancel={() => setMessage("")} onClose={() => setOpen(false)}>

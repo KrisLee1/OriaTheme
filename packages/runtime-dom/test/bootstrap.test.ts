@@ -20,18 +20,24 @@ describe("bootstrap", () => {
   it("applies a validated active snapshot without loading a preset collection", () => {
     bootstrapTheme({ snapshot, target: domDocument, contract: oriaDefaultTheme.contract });
     const style = domDocument.head.querySelector("style[data-oria-theme-bootstrap]");
-    expect(style?.textContent).toContain("--oria-color-background:#101418");
+    expect(style?.textContent).toContain("--oria-color-bg:#101418");
     expect(domDocument.documentElement.dataset.oriaMode).toBe("dark");
     const script = createBootstrapScript({ snapshot });
     expect(script).not.toContain("oriaStandardContract");
     expect(script).not.toContain("createOriaThemeRuntime");
     domDocument.head.innerHTML = "";
     Function(script)();
-    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain("--oria-color-background:#101418");
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain("--oria-color-bg:#101418");
   });
 
   it("silently retains static fallback when active snapshot validation fails", () => {
     bootstrapTheme({ snapshot: { ...snapshot, lightVariables: { "--oria-color-background": "#fff; color:red" } }, target: domDocument });
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
+    expect(domDocument.documentElement.dataset.oriaTheme).toBeUndefined();
+  });
+
+  it("rejects a v1 snapshot when the v2 contract is declared, keeping the static fallback", () => {
+    bootstrapTheme({ snapshot: { ...snapshot, contract: { name: "oria-standard", version: 1 } }, target: domDocument, contract: { name: "oria-standard", version: 2 } });
     expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
     expect(domDocument.documentElement.dataset.oriaTheme).toBeUndefined();
   });
@@ -63,7 +69,7 @@ describe("bootstrap", () => {
     expect(script).not.toContain("oriaPresetThemes");
     expect(script).not.toContain("createOriaThemeRuntime");
     Function(script)();
-    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain("--oria-color-background:#101418");
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain("--oria-color-bg:#101418");
     expect(domDocument.documentElement.dataset.oriaTheme).toBe("oria-default");
   });
 
@@ -78,7 +84,7 @@ describe("bootstrap", () => {
     const runtime = createOriaThemeRuntime({ presets: [oriaDefaultTheme], defaultThemeId: "oria-default", defaultAppearance: "dark", target: domDocument, storage: false });
     runtime.start();
     const runtimeCss = domDocument.head.querySelector("style[data-oria-theme-runtime]")?.textContent;
-    expect(runtimeCss).toContain("--oria-color-background:#101418");
+    expect(runtimeCss).toContain("--oria-color-bg:#101418");
     expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
     runtime.destroy();
   });

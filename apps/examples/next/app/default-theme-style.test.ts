@@ -8,9 +8,9 @@ describe("Next default theme SSR style", () => {
     const dark = resolveTheme(oriaDefaultTheme, "dark").variables;
 
     expect(defaultThemeCss).toContain(":root{");
-    expect(defaultThemeCss).toContain(`--oria-color-background:${light["--oria-color-background"]}`);
+    expect(defaultThemeCss).toContain(`--oria-color-bg:${light["--oria-color-bg"]}`);
     expect(defaultThemeCss).toContain("@media(prefers-color-scheme:dark)");
-    expect(defaultThemeCss).toContain(`--oria-color-background:${dark["--oria-color-background"]}`);
+    expect(defaultThemeCss).toContain(`--oria-color-bg:${dark["--oria-color-bg"]}`);
     expect(defaultThemeCss.match(/--oria-[a-zA-Z0-9-]+:/g)).toHaveLength(Object.keys(light).length + Object.keys(dark).length);
   });
 

@@ -8,7 +8,7 @@ This guide is for contributors modifying the OriaTheme monorepo. The public impl
 
 - Node.js: the repository needs Node.js for pnpm, TypeScript, Vitest, tsup, Vite, and Next.js. It currently has no `engines`, `.nvmrc`, or `.node-version`, so no supported Node range has been declared.
 - pnpm: the root `packageManager` pins `pnpm@10.10.0`.
-- Git: Changesets baseline comparison and a real release require accessible `main` history. This delivery directory has no `.git`, so those steps cannot be verified here.
+- Git: Changesets baseline comparison and a real release require accessible `main` history, which a repository clone provides.
 
 Do not turn a developer's local Node version into a compatibility promise.
 
@@ -37,7 +37,9 @@ Skip the first two lines when Corepack already provides the pinned pnpm. `pnpm-l
 | `packages/editor-core` | Environment-independent editor state machine |
 | `packages/react-editor` / `packages/vue-editor` | Headless editor bridges |
 | `packages/cli` | Source-editor registry, manifests, and installer CLI |
+| `packages/tailwind` | Static Tailwind CSS v4 bridge and custom-prefix generator |
 | `apps/examples` | React, Vue, Next, and minimal editor consumer verification; never published to npm |
+| `apps/website` | The private website (home, documentation, online editor); never published to npm |
 | `docs` | Public architecture, design, specifications, engineering rules, user guides, and ADRs |
 
 See [package boundaries](../../architecture/package-boundaries.md) for dependency direction. Do not bypass the environment restrictions of Core and Editor Core, Runtime's atomic-application requirement, or the rule against framework adapters duplicating state machines.

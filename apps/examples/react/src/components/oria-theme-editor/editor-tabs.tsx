@@ -12,4 +12,3 @@ export function EditorTabs({ tabs, active, onChange, issues }: { readonly tabs: 
     return <button type="button" role="tab" id={`oria-tab-${tab.id}`} aria-selected={active === tab.id} tabIndex={active === tab.id ? 0 : -1} key={tab.id} onClick={() => onChange(tab.id)} onKeyDown={event => move(event, index)}>{tab.title}{count ? <span aria-label={`${count} issues`}>{count}</span> : null}</button>;
   })}</nav>;
 }
-

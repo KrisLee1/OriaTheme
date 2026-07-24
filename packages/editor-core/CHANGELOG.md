@@ -1,5 +1,18 @@
 # @oriatheme/editor-core
 
+## 0.2.0
+
+### Minor Changes
+
+- Render the `oria-standard@2` contract by default (breaking change). Field layout, labels, and slider ranges cover the 134 v2 source tokens; derived variables are presented as read-only previews; control multipliers edit as 1–24 integer steps.
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @oriatheme/runtime-dom@0.2.0
+  - @oriatheme/core@0.3.0
+
 ## 0.1.3
 
 ### Patch Changes

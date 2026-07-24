@@ -16,12 +16,12 @@ describe("theme editor registry", () => {
     const result = JSON.parse(execFileSync(process.execPath, ["--experimental-strip-types", "--input-type=module", "-e", script], { cwd: resolve(root, "packages/editor-core"), encoding: "utf8" })) as { readonly tabs: number; readonly fields: number; readonly assigned: number; readonly unique: number };
     expect(result).toEqual({
       tabs: 6,
-      fields: 154,
-      assigned: 154,
-      unique: 154,
-      blur: ["effect.blur.xs", "effect.blur.sm", "effect.blur.md", "effect.blur.lg", "effect.blur.xl", "effect.blur.2xl", "effect.blur.3xl"],
-      backdrop: ["effect.backdropBlur.xs", "effect.backdropBlur.sm", "effect.backdropBlur.md", "effect.backdropBlur.lg", "effect.backdropBlur.xl", "effect.backdropBlur.2xl", "effect.backdropBlur.3xl", "effect.backdropSaturation"],
-      patterns: ["pattern.background", "pattern.surface"]
+      fields: 134,
+      assigned: 134,
+      unique: 134,
+      blur: ["blur.xs", "blur.sm", "blur.md", "blur.lg", "blur.xl", "blur.2xl", "blur.3xl"],
+      backdrop: ["backdrop.blur.xs", "backdrop.blur.sm", "backdrop.blur.md", "backdrop.blur.lg", "backdrop.blur.xl", "backdrop.blur.2xl", "backdrop.blur.3xl", "backdrop.saturate"],
+      patterns: ["pattern.bg", "pattern.surface"]
     });
   });
 
@@ -130,8 +130,8 @@ describe("theme editor registry", () => {
       expect(toolbarStyles).toContain("[data-oria-editor-file-picker]");
       expect(toolbarStyles).toContain("[data-oria-editor-root][data-tab=themes] [data-oria-editor-split] { padding-top: 1rem; }");
       expect(toolbarStyles).toContain("[data-oria-editor-health=ready]");
-      expect(toolbarStyles).toContain("--oria-editor-motion-theme: var(--oria-motion-duration-slow)");
-      expect(toolbarStyles).toContain("var(--oria-typography-font-sans)");
+      expect(toolbarStyles).toContain("--oria-editor-motion-theme: var(--oria-duration-slow)");
+      expect(toolbarStyles).toContain("var(--oria-font-sans)");
       expect(toolbarStyles).not.toMatch(/#[0-9a-f]{3,8}\b|rgb\(|cubic-bezier\(|system-ui|Segoe UI/i);
       expect(toolbarStyles).not.toMatch(/font-size:\s*[0-9.]|line-height:\s*[0-9.]|letter-spacing:\s*-?[0-9.]/);
       expect(toolbarStyles).toContain("[data-oria-editor-health=warning]");
@@ -139,17 +139,17 @@ describe("theme editor registry", () => {
       expect(toolbarStyles).toContain("[data-oria-editor-palette-popover]");
       expect(toolbarStyles).toContain("[data-oria-editor-palette-view]::before");
       expect(toolbarStyles).toContain("[data-oria-editor-palette-view][data-view=compact]::before");
-      expect(toolbarStyles).toContain("[data-oria-editor-palette-popover] { --oria-editor-motion-normal: var(--oria-motion-duration-normal); }");
-      expect(toolbarStyles).toContain("--oria-editor-overlay: color-mix(in srgb, var(--oria-color-overlay) calc(var(--oria-effect-opacity-overlay) * 100%), transparent)");
+      expect(toolbarStyles).toContain("[data-oria-editor-palette-popover] { --oria-editor-motion-normal: var(--oria-duration-normal); }");
+      expect(toolbarStyles).toContain("--oria-editor-overlay: color-mix(in srgb, var(--oria-color-overlay) calc(var(--oria-opacity-overlay) * 100%), transparent)");
       expect(toolbarStyles).toContain("[data-oria-editor-palette-popover] { --oria-editor-surface: var(--oria-color-surface)");
-      expect(toolbarStyles).toContain("--oria-editor-backdrop-lg: var(--oria-effect-backdropBlur-lg)");
-      expect(toolbarStyles.match(/--oria-editor-backdrop-lg: var\(--oria-effect-backdropBlur-lg\)/g)).toHaveLength(2);
+      expect(toolbarStyles).toContain("--oria-editor-backdrop-lg: var(--oria-backdrop-blur-lg)");
+      expect(toolbarStyles.match(/--oria-editor-backdrop-lg: var\(--oria-backdrop-blur-lg\)/g)).toHaveLength(2);
       expect(toolbarStyles.match(/background: var\(--oria-editor-overlay\)/g)).toHaveLength(5);
       expect(toolbarStyles).toContain("[data-oria-editor-toolbar]:has([data-oria-editor-menu][open])");
-      expect(toolbarStyles).toContain("--oria-editor-backdrop-lg: var(--oria-effect-backdropBlur-lg)");
+      expect(toolbarStyles).toContain("--oria-editor-backdrop-lg: var(--oria-backdrop-blur-lg)");
       expect(toolbarStyles).toContain("blur(var(--oria-editor-backdrop-lg))");
       expect(toolbarStyles).toContain("[data-oria-editor-dialog][data-oria-editor-import]");
-      expect(toolbarStyles).toContain("--oria-editor-backdrop-xl: var(--oria-effect-backdropBlur-xl)");
+      expect(toolbarStyles).toContain("--oria-editor-backdrop-xl: var(--oria-backdrop-blur-xl)");
       expect(toolbarStyles).toContain("blur(var(--oria-editor-backdrop-xl))");
       expect(toolbarStyles).toContain("font-weight: var(--oria-editor-weight-semibold)");
       expect(toolbarStyles).not.toMatch(/font-weight:\s*(?:620|650|680|760)/);
@@ -267,10 +267,10 @@ describe("theme editor registry", () => {
       expect(vuePattern).toContain("session.removeToken");
       expect(vuePalette).toContain("oriaColorFamilies");
       expect(vuePalette).toContain('<Teleport to="body">');
-      expect(vueStyles).toContain("--oria-editor-weight-semibold: var(--oria-typography-weight-semibold)");
-      expect(vueStyles).toContain("--oria-editor-overlay: color-mix(in srgb, var(--oria-color-overlay) calc(var(--oria-effect-opacity-overlay) * 100%), transparent)");
+      expect(vueStyles).toContain("--oria-editor-weight-semibold: var(--oria-font-weight-semibold)");
+      expect(vueStyles).toContain("--oria-editor-overlay: color-mix(in srgb, var(--oria-color-overlay) calc(var(--oria-opacity-overlay) * 100%), transparent)");
       expect(vueStyles.match(/background: var\(--oria-editor-overlay\)/g)?.length ?? 0).toBeGreaterThanOrEqual(3);
-      expect(vueStyles).toContain("--oria-editor-backdrop-lg: var(--oria-effect-backdropBlur-lg)");
+      expect(vueStyles).toContain("--oria-editor-backdrop-lg: var(--oria-backdrop-blur-lg)");
       expect(vueStyles).toContain("blur(var(--oria-editor-backdrop-xl))");
       expect(vueStyles).not.toMatch(/font-weight:\s*(?:620|650|680|760)/);
       expect(vueStyles).not.toMatch(/#[0-9a-f]{3,8}\b|rgb\(|cubic-bezier\(|system-ui|Segoe UI/i);
@@ -323,11 +323,11 @@ describe("theme editor registry", () => {
     const vueShowcase = readFileSync(resolve(root, "apps/examples/vue/src/token-showcase.ts"), "utf8");
     for (const source of [reactShowcase, nextShowcase, vueShowcase]) {
       expect(source).toContain("Font Families, Weight & Type Scale");
-      expect(source).toContain("effect.backdropBlur");
-      expect(source).toContain("motion.easing");
-      expect(source).toContain("elevation.shadow");
-      expect(source).toContain("gradient.background");
-      expect(source).toContain("pattern.background");
+      expect(source).toContain("backdrop.blur");
+      expect(source).toContain("ease.");
+      expect(source).toContain("shadow.");
+      expect(source).toContain("gradient.bg");
+      expect(source).toContain("pattern.bg");
       expect(source).toContain("pattern.surface");
       expect(source).toContain("pattern-preview-samples");
       expect(source).toContain("data-pattern");
@@ -335,32 +335,32 @@ describe("theme editor registry", () => {
       expect(source).toContain("grid");
       expect(source).toContain("noise");
       expect(source).toContain("Semantic & Feedback Color");
-      expect(source).toContain("color.secondaryHover");
-      expect(source).toContain("color.selectionForeground");
-      expect(source).toContain("color.chart1");
+      expect(source).toContain("color.secondary.hover");
+      expect(source).toContain("color.selection.fg");
+      expect(source).toContain("color.chart.1");
       expect(source).toContain("chart-donut");
       expect(source).toContain("ORIA THEME");
       expect(source).not.toContain("ORiA THEME");
       expect(source).toContain("easing-curve-preview");
     }
     expect(styles).toContain("::selection");
-    expect(styles).toContain("var(--oria-color-selectionForeground)");
+    expect(styles).toContain("var(--oria-color-selection-fg)");
     expect(styles).toContain(".backdrop-scale b");
-    expect(styles).toContain("var(--oria-effect-backdropSaturation)");
+    expect(styles).toContain("var(--oria-backdrop-saturate)");
     expect(styles).toContain(".pattern-preview-samples");
     expect(styles).toContain("var(--oria-pattern-surface, none)");
-    expect(styles).toContain("var(--oria-pattern-background, none)");
-    expect(styles).toContain("var(--oria-motion-duration-slow)");
+    expect(styles).toContain("var(--oria-pattern-bg, none)");
+    expect(styles).toContain("var(--oria-duration-slow)");
     expect(styles).toContain(".color-pair-ring i");
     expect(styles).toContain(".chart-swatch:nth-child(8) i");
-    expect(styles).toContain("conic-gradient(var(--oria-color-chart1)");
-    expect(styles).toContain("var(--oria-pattern-surface, none), var(--oria-color-surfaceRaised)");
+    expect(styles).toContain("conic-gradient(var(--oria-color-chart-1)");
+    expect(styles).toContain("var(--oria-pattern-surface, none), var(--oria-color-surface-raised)");
     expect(styles).toContain(".project-card { grid-column: span 7; display: flex; min-height: 21rem; flex-direction: column; justify-content: space-between; background: var(--oria-pattern-surface, none), var(--oria-gradient-surface");
-    expect(styles).toContain("var(--oria-gradient-background, var(--oria-color-background))");
-    expect(styles).toContain(".actions button { padding: 0 var(--oria-control-paddingInline-md); border: 0; color: var(--oria-color-primaryForeground); background: var(--oria-gradient-accent, var(--oria-color-primary)); }");
+    expect(styles).toContain("var(--oria-gradient-bg, var(--oria-color-bg))");
+    expect(styles).toContain(".actions button { padding: 0 var(--oria-control-padding-x-md); border: 0; color: var(--oria-color-primary-fg); background: var(--oria-gradient-accent, var(--oria-color-primary)); }");
     expect(styles).toContain(".font-size-scale > div:nth-child(13)");
     expect(styles).toContain("@keyframes token-easing-value");
-    expect(styles).toContain(".people-card .search-control input { padding-inline-start: calc(var(--oria-spacing-3) + var(--oria-typography-size-xl) + var(--oria-spacing-2)); }");
+    expect(styles).toContain(".people-card .search-control input { padding-inline-start: calc(calc(var(--oria-space) * 3) + var(--oria-text-xl) + calc(var(--oria-space) * 2)); }");
     expect(styles).toContain('.topbar:has(.theme-picker[data-open="true"])');
     expect(styles).toContain('.controls:has(.theme-picker[data-open="true"])');
     expect(styles).toContain("pointer-events: none");
@@ -368,17 +368,17 @@ describe("theme editor registry", () => {
   });
 
   it("keeps slider ranges stable, semantic, and contract-valid", () => {
-    const script = 'import { dimensionSliderRange, durationSliderRange, fontWeightSliderRange, numberSliderRange } from "../../registry/templates/react/theme-editor/fields/slider-ranges.ts"; console.log(JSON.stringify({lineHeight:numberSliderRange("typography.lineHeight.normal"),density:numberSliderRange("spacing.density",.75,1.25),spacing:dimensionSliderRange("spacing.16","rem"),typeSize:dimensionSliderRange("typography.size.9xl","rem"),letterSpacing:dimensionSliderRange("typography.letterSpacing.tight","em"),radius:dimensionSliderRange("shape.radius.4xl","rem"),blur:dimensionSliderRange("effect.blur.3xl","px"),fullRadius:dimensionSliderRange("shape.radius.full","px") ?? null,duration:durationSliderRange,fontWeight:fontWeightSliderRange}));';
+    const script = 'import { dimensionSliderRange, durationSliderRange, fontWeightSliderRange, numberSliderRange } from "../../registry/templates/react/theme-editor/fields/slider-ranges.ts"; console.log(JSON.stringify({lineHeight:numberSliderRange("leading.normal"),control:numberSliderRange("control.height.md",1,24),spacing:dimensionSliderRange("space","rem"),typeSize:dimensionSliderRange("text.9xl","rem"),letterSpacing:dimensionSliderRange("tracking.tight","em"),radius:dimensionSliderRange("radius","rem"),blur:dimensionSliderRange("blur.3xl","px"),nonDimension:dimensionSliderRange("opacity.muted","rem") ?? null,duration:durationSliderRange,fontWeight:fontWeightSliderRange}));';
     const ranges = JSON.parse(execFileSync(process.execPath, ["--experimental-strip-types", "--input-type=module", "-e", script], { cwd: resolve(root, "packages/editor-core"), encoding: "utf8" })) as Record<string, unknown>;
     expect(ranges).toEqual({
       lineHeight: { minimum: .8, maximum: 2.4, step: .01 },
-      density: { minimum: .75, maximum: 1.25, step: .01 },
-      spacing: { minimum: 0, maximum: 8, step: .025 },
+      control: { minimum: 1, maximum: 24, step: 1 },
+      spacing: { minimum: 0, maximum: 1, step: .025 },
       typeSize: { minimum: .5, maximum: 10, step: .025 },
       letterSpacing: { minimum: -.12, maximum: .2, step: .005 },
-      radius: { minimum: 0, maximum: 8, step: .025 },
+      radius: { minimum: 0, maximum: 1, step: .025 },
       blur: { minimum: 0, maximum: 128, step: .5 },
-      fullRadius: null,
+      nonDimension: null,
       duration: { minimum: 0, maximum: 1000, step: 10 },
       fontWeight: { minimum: 100, maximum: 900, step: 100 }
     });

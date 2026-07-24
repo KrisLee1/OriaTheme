@@ -105,11 +105,12 @@ export function createThemeEditorIdentity(
 
 ### Contract 字段描述与智能阶梯
 
-- `describeTokenContract(contract?)` 返回稳定顺序、只读的 `TokenFieldDescriptor[]`，包含 path、type、required、description、minimum/maximum、segments、用户可读 label 与 `modeScope: "shared" | "mode"`；React/Vue 不得各自复制 contract 类型或作用域判断。
+- `describeTokenContract(contract?)` 返回稳定顺序、只读的 `TokenFieldDescriptor[]`，包含 path、type、required、description、minimum/maximum、segments、用户可读 label、`modeScope: "shared" | "mode"` 和稳定 `group`；React/Vue 不得各自复制 contract 类型或作用域判断。
 - 标准 Control Size 字段的 label 必须包含尺寸用途：`control.height.{sm,md,lg}` 使用 `Height Sm/Md/Lg`，`control.paddingInline.{sm,md,lg}` 使用 `Horizontal padding Sm/Md/Lg`，不得只显示无法区分宽向留白与高度的末级尺寸名。
 - `oria-standard@1` 的 `color.*`、`gradient.*`、`pattern.*` 与 `elevation.shadow.*` 为 `mode`；`typography.*`、`shape.*`、`spacing.*`、`control.*`、`effect.*` 与 `motion.*` 为 `shared`。非标准扩展 token 默认是 `mode`。
+- `oria-standard@2` 的 `color.*`、`shadow.*`、`gradient.*`、`pattern.*` 为 `mode`，其余 source token 为 `shared`；`radius.*`、control CSS lengths 等派生 variable 不是 fields，不能编辑或保存。
 - 载入、重载或导入的合法旧主题若含有不一致的 shared 物化值，session 以 Light 值归一；仅当 Light 缺失可选值时使用 Dark。该步骤只建立内存草稿，不修改传入对象或持久化内容，显式保存后才提交归一结果。
-- `deriveSmartScale(input)` 是确定性纯函数，输入覆盖 typeScale、fontWeight、spacing、controlSize、radius、elevation、blur 与 duration，输出物化到具体 Token Path 的 `DerivedTokenValue[]`。
+- `deriveSmartScale(input)` 是确定性纯函数。除 v1 的 typeScale、fontWeight、spacing、controlSize、radius、elevation、blur、duration 外，v2 提供 `v2Space`、`v2Radius` 与 `v2ControlMultipliers`，且只输出 source token；CSS 派生长度由 Core Resolver 生成。
 - `preserveScaleOverrides(derived, current, customized)` 在重新派生主值时保留调用方传入的已标记单项覆写叶子；覆写集合只属于 UI 会话交互状态，不进入 `ThemeDefinition`。
 - 官方 registry UI 将 contract 中的全部字段逐项直接编辑，不显示基础色阶主值、派生预览或单项覆写操作。稳定色库由 `@oriatheme/colors` 提供给取色界面使用，但不是可编辑主题字段。
 - React/Vue registry 的颜色字段在原生颜色选择与颜色值输入之后提供独立基础色卡选择器；触发控件使用浅色中性底与多个独立彩色样卡，不使用深色连续渐变。选择器以该按钮为锚点打开受视口约束的非模态 popover，不得退化为带遮罩的全页/全高面板。popover 必须在圆形色块视图与“每个颜色家族一行、无可见家族/阶梯文字”的紧凑圆角色阶视图间切换；紧凑视图仍保留每个颜色按钮的可访问名称。选择器可按颜色家族、阶梯、组合名称或 HEX 搜索 `@oriatheme/colors`，选择结果必须回到既有字段缓冲与 `setToken()` 管线，不得直接修改 stylesheet 或保存色库副本。

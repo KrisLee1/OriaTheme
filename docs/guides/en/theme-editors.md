@@ -2,7 +2,7 @@
 
 [中文](../theme-editors.md) · [Guide index](README.md)
 
-> Status: React/Vue registry templates, hash manifests, headless bridges, and the CLI ship in `0.1.0`. `https://theme.oria.org.cn/registry/v1` has completed HTTPS and clean-consumer verification, so the commands below can install from the public registry.
+> Status: React/Vue registry templates, hash manifests, headless bridges, and the CLI ship in `0.1.0`. `https://theme.oria.org.cn/registry/v1` has completed HTTPS and clean-consumer verification, so the commands below can install from the public registry. The registry item is currently `0.2.0`, renders the `oria-standard@2` contract, and requires `@oriatheme/core@^0.3.0`.
 
 OriaTheme distributes its visible editor as source-owned components. The editor component templates live in `packages/cli/registry/templates/`; React, Vue, and shared layout files are split by responsibility and recorded with SHA-256 hashes. After installation, the toolbar, tabs, search, token fields, scales, shadows, overlays, preview, and CSS live in the consumer's `components/oria-theme-editor/` directory and can be edited and committed.
 

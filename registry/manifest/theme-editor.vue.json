@@ -2,30 +2,30 @@
   "schemaVersion": 1,
   "name": "theme-editor",
   "framework": "vue",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "compatiblePackages": {
-    "@oriatheme/core": "^0.1.0",
+    "@oriatheme/core": "^0.3.0",
     "@oriatheme/colors": "^0.1.0",
-    "@oriatheme/editor-core": "^0.1.0",
-    "@oriatheme/vue-editor": "^0.1.0",
-    "@oriatheme/runtime-dom": "^0.1.0"
+    "@oriatheme/editor-core": "^0.2.0",
+    "@oriatheme/vue-editor": "^0.1.4",
+    "@oriatheme/runtime-dom": "^0.2.0"
   },
   "dependencies": [
-    "@oriatheme/core@^0.1.0",
+    "@oriatheme/core@^0.3.0",
     "@oriatheme/colors@^0.1.0",
-    "@oriatheme/editor-core@^0.1.0",
-    "@oriatheme/vue-editor@^0.1.0",
-    "@oriatheme/runtime-dom@^0.1.0",
+    "@oriatheme/editor-core@^0.2.0",
+    "@oriatheme/vue-editor@^0.1.4",
+    "@oriatheme/runtime-dom@^0.2.0",
     "vue@^3.5.0"
   ],
   "files": [
     {
-      "sha256": "81b92e0655280c3e11d9d392d575e2ee2ced64a9b5788b6627e7ca6bf20ad6d9",
+      "sha256": "135e040e5fecbf1f7aa603f6a3ab120c693bed6aa48414fcba89945e092462bf",
       "source": "templates/shared/theme-editor/editor-layout.ts",
       "target": "editor-layout.ts"
     },
     {
-      "sha256": "f61edd9d3f86d1a7f58180df49aecf5e3fe9f4cb605783dc3e24dd01831c18c2",
+      "sha256": "61763dea1175bb2b992e6572ad73ab95f86a2ee72a29bdfa352f8ea4f84ead02",
       "source": "templates/vue/theme-editor/theme-editor.css",
       "target": "theme-editor.css"
     },
@@ -50,7 +50,7 @@
       "target": "composables/useTokenSearch.ts"
     },
     {
-      "sha256": "a7024563309b44eb9c71b6462a2180f4c4c04d69adbfdde69cf70a35134634b7",
+      "sha256": "ea5870a88ff1ce4aecfeafc8cdb427c7a4db037c55e8b43267d0dd083c612c6c",
       "source": "templates/vue/theme-editor/EditorPreview.vue",
       "target": "EditorPreview.vue"
     },
@@ -80,12 +80,12 @@
       "target": "overlays/IssuesPopover.vue"
     },
     {
-      "sha256": "6589edfbfd5fb5c6ad10c3a25f7adc9a048098b23c3726639456cb1abac4608b",
+      "sha256": "baec93c0c2dd0e41e9b6d258caf7318613195970897d73c17ca5f2f7a5e3f95b",
       "source": "templates/vue/theme-editor/overlays/ImportDialog.vue",
       "target": "overlays/ImportDialog.vue"
     },
     {
-      "sha256": "43d8e7351197a0a8756d3b9cf1a8f5d9501e7f60bd3fa0703ba72868b52f8499",
+      "sha256": "33db3df87879748ab0d1ed568fc01851b917a7d293fcd289d602755ce8ffa5b4",
       "source": "templates/vue/theme-editor/overlays/ExportMenu.vue",
       "target": "overlays/ExportMenu.vue"
     },
@@ -205,7 +205,7 @@
       "target": "fields/color-utils.ts"
     },
     {
-      "sha256": "2fa9fc5bb147e3bd6ad897b4ed095603c9bcf0050e8db10febe033d2e54d2718",
+      "sha256": "9f3c78822a38a27be7ce778e51370b7d49859efb59b43b36a199200c4bc7e533",
       "source": "templates/vue/theme-editor/fields/slider-ranges.ts",
       "target": "fields/slider-ranges.ts"
     },

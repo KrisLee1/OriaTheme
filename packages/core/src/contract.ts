@@ -1,7 +1,9 @@
 import { OriaThemeError } from "./errors.js";
-import type { TokenContract, TokenContractInput, TokenDefinition, TokenPath, TokenType } from "./types.js";
+import type { DerivedVariableDefinition, TokenContract, TokenContractInput, TokenDefinition, TokenPath, TokenType } from "./types.js";
 
-const PATH = /^[a-z][a-zA-Z0-9]*(\.(?:[a-z][a-zA-Z0-9]*|[0-9]+(?:[a-z][a-zA-Z0-9]*)?))+$/;
+const PATH = /^[a-z][a-zA-Z0-9]*(\.(?:[a-z][a-zA-Z0-9]*|[0-9]+(?:[a-z][a-zA-Z0-9]*)?))*$/;
+const KEBAB_PATH = /^[a-z][a-z0-9]*(\.(?:[a-z][a-z0-9]*|[0-9]+(?:[a-z][a-z0-9]*)?))*$/;
+const DERIVED_NAME = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const TYPES: ReadonlySet<string> = new Set(["color", "dimension", "number", "fontFamily", "fontWeight", "duration", "cubicBezier", "shadow", "gradient", "pattern"]);
 
 export function isTokenPath(value: string): value is TokenPath { return PATH.test(value); }
@@ -11,12 +13,14 @@ export function defineTokenContract(input: TokenContractInput): TokenContract {
   if (!/^[a-z][a-z0-9-]{1,63}$/.test(input.name) || !Number.isInteger(input.version) || input.version < 1) {
     throw new OriaThemeError("INVALID_CONTRACT", "Contract name must be a valid slug and version must be a positive integer.");
   }
+  const cssNameStyle = input.cssNameStyle ?? "legacy";
+  if (cssNameStyle !== "legacy" && cssNameStyle !== "kebab") throw new OriaThemeError("INVALID_CONTRACT", "CSS name style must be legacy or kebab.");
   const tokens: Record<string, TokenDefinition> = {};
   for (const base of input.extends ?? []) {
     for (const [path, definition] of Object.entries(base.tokens)) tokens[path] = definition;
   }
   for (const [path, definition] of Object.entries(input.tokens)) {
-    if (!isTokenPath(path)) throw new OriaThemeError("INVALID_TOKEN_PATH", `Invalid token path: ${path}`, { path });
+    if (!isTokenPath(path) || (cssNameStyle === "kebab" && !KEBAB_PATH.test(path))) throw new OriaThemeError("INVALID_TOKEN_PATH", `Invalid token path: ${path}`, { path });
     if (!TYPES.has(definition.type)) throw new OriaThemeError("INVALID_CONTRACT", `Unknown token type for ${path}.`, { path });
     const existing = tokens[path];
     if (existing && existing.type !== definition.type) {
@@ -30,7 +34,13 @@ export function defineTokenContract(input: TokenContractInput): TokenContract {
     }
     tokens[path] = freezeDefinition(definition);
   }
-  return Object.freeze({ name: input.name, version: input.version, tokens: Object.freeze(tokens as Record<TokenPath, TokenDefinition>) });
+  const derivedVariables = (input.derivedVariables ?? []).map(variable => validateDerivedVariable(variable, tokens));
+  const duplicate = new Set<string>();
+  for (const variable of derivedVariables) {
+    if (duplicate.has(variable.name)) throw new OriaThemeError("INVALID_CONTRACT", `Duplicate derived variable: ${variable.name}.`, { path: variable.name });
+    duplicate.add(variable.name);
+  }
+  return Object.freeze({ name: input.name, version: input.version, cssNameStyle, tokens: Object.freeze(tokens as Record<TokenPath, TokenDefinition>), derivedVariables: Object.freeze(derivedVariables) });
 }
 
 /** Extends a contract while retaining all base token definitions. */
@@ -45,6 +55,17 @@ function freezeDefinition(definition: TokenDefinition): TokenDefinition {
   const result = { ...definition } as TokenDefinition;
   if (definition.default !== undefined) Object.assign(result, { default: freezeValue(definition.default) });
   return Object.freeze(result);
+}
+function validateDerivedVariable(input: DerivedVariableDefinition, tokens: Record<string, TokenDefinition>): DerivedVariableDefinition {
+  if (!DERIVED_NAME.test(input.name) || input.type !== "dimension") throw new OriaThemeError("INVALID_CONTRACT", `Invalid derived variable: ${input.name}.`, { path: input.name });
+  if (input.derive.kind === "scale") {
+    const source = tokens[input.derive.source];
+    if (!source || source.type !== "dimension" || !Number.isFinite(input.derive.factor) || input.derive.factor < 0) throw new OriaThemeError("INVALID_CONTRACT", `Derived variable ${input.name} must scale a dimension by a non-negative finite factor.`, { path: input.name });
+  } else if (input.derive.kind === "product") {
+    const dimension = tokens[input.derive.dimension]; const factor = tokens[input.derive.factor];
+    if (!dimension || dimension.type !== "dimension" || !factor || factor.type !== "number") throw new OriaThemeError("INVALID_CONTRACT", `Derived variable ${input.name} must multiply a dimension by a number token.`, { path: input.name });
+  } else throw new OriaThemeError("INVALID_CONTRACT", `Unknown derived rule for ${input.name}.`, { path: input.name });
+  return Object.freeze({ ...input, derive: Object.freeze({ ...input.derive }) }) as DerivedVariableDefinition;
 }
 function freezeValue(value: unknown): unknown {
   if (Array.isArray(value)) return Object.freeze(value.map(freezeValue));

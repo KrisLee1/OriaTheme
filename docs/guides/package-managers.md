@@ -2,9 +2,9 @@
 
 [English](en/package-managers.md) · [指南首页](README.md)
 
-OriaTheme 的公开包和 `@oriatheme/cli` 面向 pnpm、npm、Yarn 与 Bun 使用方项目。公开包使用标准 ESM、`exports`、`peerDependencies` 和普通 semver；CLI 只修改标准 `package.json` 并复制源码，不调用包管理器，也不创建或改写 lockfile。
+OriaTheme 的公开包和 `@oriatheme/cli` 面向 pnpm、npm、Yarn 与 Bun 使用方项目。公开包使用标准 ESM、`exports`、`peerDependencies` 和普通 semver；CLI 的 `add`/`diff` 只修改标准 `package.json` 并复制源码，`theme tailwind-bridge` 只把生成的 CSS 写入 `--out` 指定文件；CLI 不调用包管理器，也不创建或改写 lockfile。
 
-> 十个公开 `@oriatheme/*` 包已发布 `0.1.0`，下面是使用方项目的正式命令。workspace、本地 tarball 和本地 registry 路径只用于仓库开发或后续版本发布验证。
+> 十个公开 `@oriatheme/*` 包已发布到 npm（各包版本独立演进，以 npm latest 为准），下面是使用方项目的正式命令。workspace、本地 tarball 和本地 registry 路径只用于仓库开发或后续版本发布验证。
 
 ## 安装公开包
 
@@ -78,7 +78,7 @@ pnpm install
 每个公开版本发布前必须在互相隔离的干净项目验证：
 
 1. pnpm、npm、Yarn 与 Bun 都能从 tarball 安装 package-root exports；实际发布后再分别从 registry 复验。
-2. 每种工具都能运行 `oria add --dry-run`、`oria add --yes` 和 `oria diff`。
+2. 每种工具都能运行 `oria add --dry-run`、`oria add --yes`、`oria diff`，以及 `oria theme tailwind-bridge` 的 dry-run 与写入路径。
 3. CLI 保留项目 `packageManager` 与既有 scripts，不创建其他工具的 lockfile。
 4. React、Vue 与 Next 的 production build 至少覆盖四种工具；Yarn 同时覆盖默认 node-modules linker 与 Plug'n'Play。
 5. 任一工具未实际执行时必须标记“未验证”，不能仅凭命令语法宣称通过。

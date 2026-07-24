@@ -14,6 +14,8 @@ export type TokenType =
   | "shadow"
   | "gradient"
   | "pattern";
+/** CSS variable segment convention used by a contract. */
+export type CssNameStyle = "legacy" | "kebab";
 
 /** A dotted token path validated by a TokenContract. */
 export type TokenPath = string & { readonly __tokenPath: unique symbol };
@@ -99,9 +101,31 @@ export interface TokenDefinition<T extends TokenType = TokenType> {
   readonly default?: TokenValueFor<T>;
   readonly minimum?: number;
   readonly maximum?: number;
+  /** Whether values must be integers (e.g. control multipliers). Defaults to false. */
+  readonly integer?: boolean;
+  /** Whether this source token is emitted as a CSS custom property. Defaults to true. */
+  readonly output?: boolean;
 }
-export interface TokenContract { readonly name: string; readonly version: number; readonly tokens: Readonly<Record<TokenPath, TokenDefinition>> }
-export interface TokenContractInput { readonly name: string; readonly version: number; readonly extends?: readonly TokenContract[]; readonly tokens: Readonly<Record<string, TokenDefinition>> }
+export type DerivedVariableRule =
+  | { readonly kind: "scale"; readonly source: TokenPath; readonly factor: number }
+  | { readonly kind: "product"; readonly dimension: TokenPath; readonly factor: TokenPath };
+/** A constrained, non-persistent CSS variable derived after all source tokens validate. */
+export interface DerivedVariableDefinition { readonly name: string; readonly type: "dimension"; readonly derive: DerivedVariableRule }
+export interface TokenContract {
+  readonly name: string;
+  readonly version: number;
+  readonly cssNameStyle: CssNameStyle;
+  readonly tokens: Readonly<Record<TokenPath, TokenDefinition>>;
+  readonly derivedVariables: readonly DerivedVariableDefinition[];
+}
+export interface TokenContractInput {
+  readonly name: string;
+  readonly version: number;
+  readonly cssNameStyle?: CssNameStyle;
+  readonly extends?: readonly TokenContract[];
+  readonly tokens: Readonly<Record<string, TokenDefinition>>;
+  readonly derivedVariables?: readonly DerivedVariableDefinition[];
+}
 export interface ThemeContractRef { readonly name: string; readonly version: number }
 export type ThemeTokenSet = Readonly<Record<TokenPath, ThemeTokenInput>>;
 export interface ThemeMetadata { readonly [key: string]: string | number | boolean | null }
@@ -136,8 +160,12 @@ export interface ImportThemeOptions {
   readonly existingThemes?: readonly ThemeDefinition[];
   readonly conflict?: "rename" | "replace";
   readonly maxBytes?: number;
-  readonly migrate?: (theme: unknown, source: ThemeContractRef) => unknown;
+  readonly migrate?: (theme: unknown, source: ThemeContractRef) => unknown | ThemeMigrationResult;
 }
-export type ImportResult = { readonly ok: true; readonly theme: ThemeDefinition; readonly replaced: boolean } | { readonly ok: false; readonly issues: readonly ValidationIssue[] };
+export interface MigrationWarning { readonly path?: string; readonly message: string }
+export interface ThemeMigrationResult { readonly theme: ThemeDefinition; readonly warnings: readonly MigrationWarning[]; readonly requiresReview: boolean }
+/** A deliberately registered transformation between persisted theme contracts. */
+export type ThemeMigration = (theme: unknown, source: ThemeContractRef) => ThemeMigrationResult | undefined;
+export type ImportResult = { readonly ok: true; readonly theme: ThemeDefinition; readonly replaced: boolean; readonly warnings?: readonly MigrationWarning[]; readonly requiresReview?: boolean } | { readonly ok: false; readonly issues: readonly ValidationIssue[] };
 export interface ContrastDiagnostic { readonly pair: string; readonly ratio: number; readonly level: "warning" | "error"; readonly message: string }
 export interface ThemeDiagnostics { readonly errors: readonly ValidationIssue[]; readonly warnings: readonly ContrastDiagnostic[] }

@@ -1,3 +1,3 @@
-:root { color: var(--oria-color-foreground); background: var(--oria-color-background); }
+:root { color: var(--oria-color-fg); background: var(--oria-color-bg); }
 body { min-width: 320px; min-height: 100vh; margin: 0; }
 button, input, select, textarea { font: inherit; }

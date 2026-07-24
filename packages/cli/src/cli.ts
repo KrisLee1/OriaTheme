@@ -4,6 +4,7 @@ import { access, lstat, mkdir, readFile, realpath, stat, writeFile } from "node:
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import process from "node:process";
 import { fileURLToPath, URL } from "node:url";
+import { generateOriaTailwindBridge, oriaTailwindBridgeDefaultPrefix } from "@oriatheme/tailwind";
 
 export type Framework = "react" | "vue";
 
@@ -37,7 +38,7 @@ interface ComponentRecord {
   readonly components: readonly InstalledComponent[];
 }
 
-interface Options {
+interface EditorOptions {
   readonly command: "add" | "diff";
   readonly name: "theme-editor";
   readonly framework: Framework;
@@ -47,6 +48,17 @@ interface Options {
   readonly overwrite: boolean;
   readonly yes: boolean;
 }
+
+interface BridgeOptions {
+  readonly command: "theme";
+  readonly name: "tailwind-bridge";
+  readonly prefix: string;
+  readonly out: string;
+  readonly dryRun: boolean;
+  readonly overwrite: boolean;
+}
+
+type Options = EditorOptions | BridgeOptions;
 
 interface RegistryReader {
   readonly display: string;
@@ -256,9 +268,29 @@ async function readComponentRecord(root: string): Promise<ComponentRecord> {
   return { schemaVersion: 1, components };
 }
 
+const USAGE = "Usage: oria <add|diff> theme-editor --framework <react|vue> [--path <relative-path>] [--registry <url-or-path>] [--dry-run] [--yes] [--overwrite], or oria theme tailwind-bridge --out <relative-path> [--prefix <name>] [--dry-run] [--overwrite].";
+
+function parseBridgeArguments(args: readonly string[]): BridgeOptions {
+  let prefix = oriaTailwindBridgeDefaultPrefix;
+  let out: string | undefined;
+  let dryRun = false;
+  let overwrite = false;
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index];
+    if (argument === "--prefix") { const value = args[++index]; if (!value) throw new CliError("--prefix requires a CSS variable prefix."); prefix = value; }
+    else if (argument === "--out") { const value = args[++index]; if (!value) throw new CliError("--out requires a relative path."); assertSafeRelative(value, "--out"); out = value; }
+    else if (argument === "--dry-run") dryRun = true;
+    else if (argument === "--overwrite") overwrite = true;
+    else throw new CliError(`Unknown argument '${argument}'.`);
+  }
+  if (!out) throw new CliError(`--out is required. ${USAGE}`);
+  return { command: "theme", name: "tailwind-bridge", prefix, out, dryRun, overwrite };
+}
+
 function parseArguments(args: readonly string[]): Options {
   const [command, name, ...rest] = args;
-  if ((command !== "add" && command !== "diff") || name !== "theme-editor") throw new CliError("Usage: oria <add|diff> theme-editor --framework <react|vue> [--path <relative-path>] [--registry <url-or-path>].");
+  if (command === "theme" && name === "tailwind-bridge") return parseBridgeArguments(rest);
+  if ((command !== "add" && command !== "diff") || name !== "theme-editor") throw new CliError(USAGE);
   let framework: Framework | undefined;
   let path: string | undefined;
   let registry: string | undefined;
@@ -297,7 +329,7 @@ function planLines(manifest: RegistryManifest, targetPath: string, reader: Regis
   ];
 }
 
-async function install(options: Options, cwd: string): Promise<CliResult> {
+async function install(options: EditorOptions, cwd: string): Promise<CliResult> {
   const root = await projectRoot(cwd);
   const reader = await registryReader(options.registry, cwd);
   const manifest = await reader.loadManifest(options.framework);
@@ -351,7 +383,7 @@ async function install(options: Options, cwd: string): Promise<CliResult> {
   return { exitCode: 0, lines: [...lines, `Installed ${files.length} verified files. Dependencies were added to package.json; run your package manager install to update its lockfile.`] };
 }
 
-async function diff(options: Options, cwd: string): Promise<CliResult> {
+async function diff(options: EditorOptions, cwd: string): Promise<CliResult> {
   const root = await projectRoot(cwd);
   const record = await readComponentRecord(root);
   const installed = record.components.find(component => component.name === options.name && component.framework === options.framework);
@@ -375,9 +407,30 @@ async function diff(options: Options, cwd: string): Promise<CliResult> {
   return { exitCode: 0, lines };
 }
 
+async function themeBridge(options: BridgeOptions, cwd: string): Promise<CliResult> {
+  const root = await projectRoot(cwd);
+  let css: string;
+  try {
+    css = generateOriaTailwindBridge({ prefix: options.prefix });
+  } catch (error) {
+    throw new CliError(error instanceof Error ? error.message : "Invalid --prefix value.");
+  }
+  const destination = resolve(root, options.out);
+  await assertNoSymlinkPath(root, destination);
+  const exists = await pathExists(destination);
+  if (exists && !options.overwrite) throw new CliError(`Refusing to overwrite existing file: ${options.out}. Re-run with --overwrite after reviewing it.`);
+  const lines = [`Plan: write Tailwind v4 bridge for prefix '${options.prefix}' to ${options.out} (${Buffer.byteLength(css, "utf8")} bytes).`];
+  if (exists) lines.push(`Overwrite: ${options.out}.`);
+  if (options.dryRun) return { exitCode: 0, lines: [...lines, "Dry run: no files were written."] };
+  await mkdir(dirname(destination), { recursive: true });
+  await writeFile(destination, css);
+  return { exitCode: 0, lines: [...lines, `Wrote ${options.out}. Import it after tailwindcss and the Oria color bridge.`] };
+}
+
 export async function runCli(args: readonly string[], cwd = process.cwd()): Promise<CliResult> {
   try {
     const options = parseArguments(args);
+    if (options.command === "theme") return await themeBridge(options, cwd);
     return options.command === "add" ? await install(options, cwd) : await diff(options, cwd);
   } catch (error) {
     return { exitCode: 1, lines: [error instanceof Error ? error.message : "Unknown CLI failure."] };

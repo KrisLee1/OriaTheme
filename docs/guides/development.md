@@ -8,7 +8,7 @@
 
 - Node.js：仓库需要 Node.js 运行 pnpm、TypeScript、Vitest、tsup、Vite 和 Next.js，但当前没有 `engines`、`.nvmrc` 或 `.node-version`，因此尚未声明正式 Node 版本范围。
 - pnpm：根 `packageManager` 固定为 `pnpm@10.10.0`。
-- Git：Changesets 基线比较和正式发布需要可访问的 `main` 历史；当前交付目录没有 `.git`，这些步骤不能在此环境验证。
+- Git：Changesets 基线比较和正式发布需要可访问的 `main` 历史；克隆仓库后即具备该基线。
 
 不要在发布文档中把未固化的本机 Node 版本写成兼容承诺。
 
@@ -37,7 +37,9 @@ pnpm install --frozen-lockfile
 | `packages/editor-core` | 环境无关的编辑状态机 |
 | `packages/react-editor` / `packages/vue-editor` | Headless editor bridge |
 | `packages/cli` | 源码编辑器 registry、manifest 与安装 CLI |
+| `packages/tailwind` | Tailwind CSS v4 静态 bridge 与 custom-prefix 生成器 |
 | `apps/examples` | React、Vue、Next 及最小编辑器使用验证，不发布到 npm |
+| `apps/website` | private 官网（首页、文档、在线编辑器），不发布到 npm |
 | `docs` | 公开架构、设计、规范、工程规则、用户指南和 ADR |
 
 依赖方向见[包边界](../architecture/package-boundaries.md)。Core 和 Editor Core 的环境限制、Runtime 原子应用规则以及框架层禁止复制状态机的要求不可绕过。

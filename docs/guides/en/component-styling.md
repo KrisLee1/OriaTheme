@@ -10,35 +10,35 @@ Do not create a static stylesheet or Tailwind configuration for every preset, an
 
 ```css
 :root {
-  background: var(--oria-color-background);
-  color: var(--oria-color-foreground);
+  background: var(--oria-color-bg);
+  color: var(--oria-color-fg);
 }
 
 .card {
   padding: 1.5rem;
-  background: var(--oria-color-surfaceRaised);
-  border: var(--oria-shape-borderWidth-default) solid var(--oria-color-border);
-  border-radius: var(--oria-shape-radius-lg);
-  box-shadow: var(--oria-elevation-shadow-md);
+  background: var(--oria-color-surface-raised);
+  border: var(--oria-border-width-default) solid var(--oria-color-border);
+  border-radius: var(--oria-radius-lg);
+  box-shadow: var(--oria-shadow-md);
 }
 
 .primary-button {
-  color: var(--oria-color-primaryForeground);
+  color: var(--oria-color-primary-fg);
   background: var(--oria-color-primary);
 }
 
 .textured-page {
   /* The background pattern sits over the optional gradient and base color. */
   background:
-    var(--oria-pattern-background, none),
-    var(--oria-gradient-background, var(--oria-color-background));
+    var(--oria-pattern-bg, none),
+    var(--oria-gradient-bg, var(--oria-color-bg));
 }
 
 .patterned-card {
   /* A missing optional pattern leaves a normal surface. */
   background:
     var(--oria-pattern-surface, none),
-    var(--oria-color-surfaceRaised);
+    var(--oria-color-surface-raised);
 }
 ```
 
@@ -76,23 +76,23 @@ The names and utility topology are Tailwind-compatible; OriaTheme independently 
 
 ## Tailwind semantic utilities
 
-Map OriaTheme variables into a Tailwind CSS v4 inline theme:
+Map OriaTheme variables into a Tailwind CSS v4 inline theme. To skip the hand-written mapping, use the prebuilt static bridge from `@oriatheme/tailwind` instead (`@oriatheme/tailwind/oria.css`, covering color, typography, radius, shadow, blur, and motion; generate a custom-prefix bridge with `oria theme tailwind-bridge`):
 
 ```css
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: var(--oria-color-background);
-  --color-foreground: var(--oria-color-foreground);
+  --color-background: var(--oria-color-bg);
+  --color-foreground: var(--oria-color-fg);
   --color-surface: var(--oria-color-surface);
-  --color-surface-raised: var(--oria-color-surfaceRaised);
+  --color-surface-raised: var(--oria-color-surface-raised);
   --color-primary: var(--oria-color-primary);
-  --color-primary-foreground: var(--oria-color-primaryForeground);
+  --color-primary-foreground: var(--oria-color-primary-fg);
   --color-border: var(--oria-color-border);
-  --color-muted: var(--oria-color-mutedForeground);
-  --radius-sm: var(--oria-shape-radius-sm);
-  --radius-lg: var(--oria-shape-radius-lg);
-  --shadow-md: var(--oria-elevation-shadow-md);
+  --color-muted: var(--oria-color-muted-fg);
+  --radius-sm: var(--oria-radius-sm);
+  --radius-lg: var(--oria-radius-lg);
+  --shadow-md: var(--oria-shadow-md);
 }
 ```
 

@@ -48,7 +48,7 @@ describe("ThemeEditorSession", () => {
 
   it("resets fields and modes without discarding the other mode", () => {
     const session = createThemeEditorSession({ source: oriaDefaultTheme, identity: { id: "reset-copy", name: "Reset copy" } });
-    const radiusPath = "shape.radius.md" as TokenPath;
+    const radiusPath = "radius" as TokenPath;
     session.setToken("light", primaryPath, "#7c3aed");
     session.setToken("dark", primaryPath, "#f59e0b");
     session.setToken("dark", radiusPath, "2rem");
@@ -141,16 +141,33 @@ describe("ThemeEditorSession", () => {
     expect(fields).toHaveLength(new Set(fields.map(field => field.path)).size);
     expect(fields.find(field => field.path === primaryPath)).toMatchObject({ type: "color", label: "Primary", modeScope: "mode" });
     expect(fields.find(field => field.path === "control.height.sm")).toMatchObject({ label: "Height Sm", modeScope: "shared" });
-    expect(fields.find(field => field.path === "control.paddingInline.sm")).toMatchObject({ label: "Horizontal padding Sm", modeScope: "shared" });
-    expect(fields.find(field => field.path === "typography.lineHeight.normal")).toMatchObject({ modeScope: "shared" });
-    expect(fields.find(field => field.path === "elevation.shadow.md")).toMatchObject({ modeScope: "mode" });
-    expect(fields.find(field => field.path === "pattern.background")).toMatchObject({ label: "Background", modeScope: "mode" });
+    expect(fields.find(field => field.path === "control.padding.x.sm")).toMatchObject({ label: "Horizontal padding Sm", modeScope: "shared" });
+    expect(fields.find(field => field.path === "leading.normal")).toMatchObject({ modeScope: "shared" });
+    expect(fields.find(field => field.path === "shadow.md")).toMatchObject({ modeScope: "mode" });
+    expect(fields.find(field => field.path === "pattern.bg")).toMatchObject({ label: "Background", modeScope: "mode" });
     expect(getTokenModeScope("app.custom" as TokenPath)).toBe("mode");
     expect(fields.some(field => field.type === "gradient")).toBe(true);
   });
 
+  it("groups v2 source fields and smart scales only write v2 sources", () => {
+    const fields = describeTokenContract();
+    expect(fields.find(field => field.path === "radius")?.group).toBe("geometry");
+    expect(fields.find(field => field.path === "shadow.md")?.modeScope).toBe("mode");
+    expect(fields.find(field => field.path === "control.padding.x.md")?.label).toBe("Horizontal padding Md");
+    expect(fields.find(field => field.path === "color.bg")?.label).toBe("Background");
+    expect(fields.find(field => field.path === "color.fg")?.label).toBe("Foreground");
+    expect(fields.find(field => field.path === "color.primary.fg")?.label).toBe("Primary Foreground");
+    expect(fields.find(field => field.path === "color.surface.raised.fg")?.label).toBe("Surface Raised Foreground");
+    expect(fields.find(field => field.path === "color.chart.8")?.label).toBe("Chart 8");
+    expect(fields.find(field => field.path === "gradient.bg")?.label).toBe("Background");
+    expect(fields.some(field => field.path === "radius.lg" as TokenPath)).toBe(false);
+    expect(deriveSmartScale({ kind: "v2Space", unit: "0.25rem" })).toEqual([{ path: "space", value: "0.25rem" }]);
+    expect(deriveSmartScale({ kind: "v2Radius", base: "0.5rem" })).toEqual([{ path: "radius", value: "0.5rem" }]);
+    expect(deriveSmartScale({ kind: "v2ControlMultipliers", height: { sm: 8, md: 10, lg: 12 }, paddingX: { sm: 2, md: 3, lg: 4 } }).map(entry => entry.path)).toEqual(["control.height.sm", "control.padding.x.sm", "control.height.md", "control.padding.x.md", "control.height.lg", "control.padding.x.lg"]);
+  });
+
   it("materializes one canonical value when a legacy draft has divergent shared tokens", () => {
-    const radiusPath = "shape.radius.md" as TokenPath;
+    const radiusPath = "radius" as TokenPath;
     const legacy = {
       ...cloneTheme(oriaDefaultTheme, { id: "legacy-copy", name: "Legacy copy" }),
       modes: {
@@ -166,13 +183,11 @@ describe("ThemeEditorSession", () => {
 
   it("derives deterministic scales and applies all leaves in one revision", () => {
     const session = createThemeEditorSession({ source: oriaDefaultTheme, identity: { id: "scale-copy", name: "Scale copy" } });
-    const scale = deriveSmartScale({ kind: "radius", base: "1rem" });
+    const scale = deriveSmartScale({ kind: "v2Radius", base: "1rem" });
     session.setTokens("light", scale);
     expect(session.getSnapshot().revision).toBe(1);
-    expect(session.getSnapshot().draft.modes.light["shape.radius.2xl" as TokenPath]).toBe("3rem");
-    expect(session.getSnapshot().draft.modes.dark["shape.radius.2xl" as TokenPath]).toBe("3rem");
-    expect(session.getSnapshot().draft.modes.light["shape.radius.4xl" as TokenPath]).toBe("5rem");
-    expect(session.getSnapshot().draft.modes.light["shape.radius.full" as TokenPath]).toBe("9999px");
+    expect(session.getSnapshot().draft.modes.light["radius" as TokenPath]).toBe("1rem");
+    expect(session.getSnapshot().draft.modes.dark["radius" as TokenPath]).toBe("1rem");
 
     const weights = deriveSmartScale({ kind: "fontWeight", base: 400 });
     expect(weights).toHaveLength(9);

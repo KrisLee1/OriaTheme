@@ -129,7 +129,7 @@ import { createBootstrapStorageScript } from "@oriatheme/runtime-dom";
 import { defaultThemeCss } from "./default-theme-style";
 import { Providers } from "./providers";
 
-const bootstrapScript = createBootstrapStorageScript();
+const bootstrapScript = createBootstrapStorageScript({ contract: { name: "oria-standard", version: 2 } });
 const bootstrapScriptProps = {
   dangerouslySetInnerHTML: { __html: bootstrapScript },
 };
@@ -200,3 +200,4 @@ The Chinese guide records the current reproducible local bundle and Lighthouse m
 - Mounting a hidden editor session in the initial render.
 - Hiding the entire page until JavaScript starts.
 - Writing unvalidated user input into `<style>`.
+- Running Lighthouse against a dev server and reading it as a production regression: `next dev` on-demand compilation and dev-mode framework code inflate TBT to seconds (measured TBT score 0.03), while the same code after `next build` + `next start` has near-zero TBT. Always measure production builds (serve Vite examples with `vite preview` or a static server over `dist/`), and stop long-running local dev/prod servers first so CPU contention does not amplify simulated throttling.

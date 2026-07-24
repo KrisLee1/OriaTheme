@@ -12,6 +12,8 @@ getTokenDefinition(contract: TokenContract, path: TokenPath): TokenDefinition | 
 
 Contract 创建时立即校验；无效 contract 抛出结构化 `OriaThemeError`。
 
+`TokenContract` 可以声明 `cssNameStyle: "legacy" | "kebab"` 与受限的 `derivedVariables`。v2 仅允许 dimension 的固定倍数或 dimension × number token；Resolver 在全部 source token 校验后再生成派生 CSS variables，派生值不进入 `ThemeTokenSet`。`number` token 可声明 `minimum`/`maximum` 与 `integer: true`（v2 control multiplier 即如此声明）；校验在范围之外同时强制整数值。
+
 ## Theme API
 
 ```ts
@@ -56,7 +58,7 @@ importTheme(json: string, options: ImportThemeOptions): ImportResult;
 - ID 冲突默认生成新 ID；只有显式 `conflict: "replace"` 才覆盖 custom。
 - 永远不能覆盖 preset。
 - 外部输入一律转换为 custom。
-- Contract 不匹配时返回错误或使用显式迁移器。
+- Contract 不匹配时返回错误或使用显式迁移器。`ThemeMigration` 返回完整校验后的 `ThemeMigrationResult`（theme、warnings、requiresReview）；`importTheme()` 只有调用者传入 `migrate` 时才会调用它，且结果仍必须完整通过目标 contract 校验。
 
 ## 错误模型
 

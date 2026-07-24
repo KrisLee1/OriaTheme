@@ -2,9 +2,9 @@
 
 [中文](../package-managers.md) · [Guide index](README.md)
 
-OriaTheme public packages and `@oriatheme/cli` target pnpm, npm, Yarn, and Bun consumer projects. Packages use standard ESM, `exports`, `peerDependencies`, and normal semver. The CLI edits standard `package.json` data and copies source; it does not invoke a package manager or create/update a lockfile.
+OriaTheme public packages and `@oriatheme/cli` target pnpm, npm, Yarn, and Bun consumer projects. Packages use standard ESM, `exports`, `peerDependencies`, and normal semver. The CLI's `add`/`diff` commands only edit standard `package.json` data and copy source, while `theme tailwind-bridge` only writes the generated CSS to the `--out` file; the CLI never invokes a package manager or creates/updates a lockfile.
 
-> All ten public `@oriatheme/*` packages are published at `0.1.0`. The commands below are the supported consumer-project forms; workspace, local-tarball, and local-registry paths are only for repository development or future-release verification.
+> Ten public `@oriatheme/*` packages are published on npm (versions evolve independently; see npm latest). The commands below are the supported consumer-project forms; workspace, local-tarball, and local-registry paths are only for repository development or future-release verification.
 
 ## Install public packages
 
@@ -78,7 +78,7 @@ Supporting four consumer tools does not mean maintaining four lockfiles in the O
 Before every public release, isolated clean projects must verify that:
 
 1. pnpm, npm, Yarn, and Bun can install package-root exports from tarballs; repeat from the registry after publication.
-2. Every tool can run `oria add --dry-run`, `oria add --yes`, and `oria diff`.
+2. Every tool can run `oria add --dry-run`, `oria add --yes`, `oria diff`, and the dry-run and write paths of `oria theme tailwind-bridge`.
 3. The CLI preserves `packageManager` and existing scripts without creating another tool's lockfile.
 4. React, Vue, and Next production builds cover all four tools; Yarn covers both its default node-modules linker and Plug'n'Play.
 5. Any tool that was not actually executed is reported as unverified rather than inferred from command syntax.
