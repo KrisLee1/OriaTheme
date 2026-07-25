@@ -26,7 +26,7 @@ export function ExportMenu({ session, disabled }: { readonly session: ThemeEdito
     URL.revokeObjectURL(url);
   };
   return <details ref={menu} data-oria-editor-menu>
-    <summary aria-disabled={disabled} aria-label={copyText.export} title={copyText.export}><Download data-oria-editor-action-icon aria-hidden="true" /><span data-oria-editor-action-label>{copied ? copyText.exportCopied : copyText.export}</span></summary>
+    <summary aria-disabled={disabled} aria-label={copied ? copyText.exportCopied : copyText.export} title={copied ? copyText.exportCopied : copyText.export}><Download data-oria-editor-action-icon aria-hidden="true" /><span data-oria-editor-action-label>{copied ? copyText.exportCopied : copyText.export}</span></summary>
     <div role="menu"><button role="menuitem" type="button" disabled={disabled} onClick={() => void copy()}>{copyText.copyJson}</button><button role="menuitem" type="button" disabled={disabled} onClick={download}>{copyText.downloadJson}</button></div>
   </details>;
 }

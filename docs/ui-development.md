@@ -8,7 +8,7 @@
 |---|---|---|
 | 框架 | React 19 + Vite、React 19 + Next 15、Vue 3 + Vite；官网为 Next 15 | `apps/examples/*/package.json`、`apps/website/package.json` |
 | 语言 | TypeScript / TSX / Vue SFC | 示例与 `registry/templates/` |
-| 样式与主题 | 编辑器模板为普通 CSS；官网为 Tailwind CSS v4；两者消费 `--oria-*` runtime token、编辑器消费 `--oria-editor-*` chrome token | `apps/website/app/globals.css`、`theme-editor.css`、`docs/design/editor-ui.md` |
+| 样式与主题 | 编辑器模板为普通 CSS；官网为 Tailwind CSS v4；两者消费 `--oria-*` runtime token、编辑器消费 `--oria-editor-*` chrome token | `apps/website/app/globals.css`、`apps/website/app/showcase.css`、`theme-editor.css`、`docs/design/editor-ui.md` |
 | 组件分发 | React/Vue 可见编辑器以 registry 源码组件分发；框架包保持 headless | `docs/specifications/editor-component-registry.md` |
 | 组件原语 | 官网使用 source-owned shadcn/ui `Button`、`Badge`、`Card`、`Select`；编辑器保持 registry 源码组件 | `apps/website/components/ui/`、`registry/templates/` |
 | 图标 | registry 编辑器使用 24×24 轮廓 SVG；官网及其本地 ThemeEditor 使用 `lucide-react` | registry toolbar、fields 与 overlays；`apps/website/components/` |
@@ -24,6 +24,7 @@
 - 使用语义 HTML、清晰焦点、44px 触控目标，并保留 reduced-motion、reduced-transparency 和 increased-contrast 降级。
 - 官网面向用户的视觉样式必须消费 `--oria-*` 主题变量：颜色、字体族、字重、字号、行高、字距、圆角、边框、表面、阴影、模糊、渐变、图案与动效均不得写死。响应式字号/间距可使用 `clamp()`，但字号端点必须是 `--oria-typography-*`，间距端点必须是 `--oria-spacing-*`；仅纯布局结构尺寸可使用非主题常量。
 - 官网页面根滚动条须消费主题 muted foreground：细圆角滑块、透明轨道、hover 增强，并设置稳定 gutter；编辑器内部滚动容器保留其 feature-owning scrollbar 规则。顶栏的语言和主题 `Select` 保留 Radix 的可访问滚动锁定，同时覆盖其额外的右侧补偿、强制保留 root scrollbar gutter，不能造成页面横跳。
+- 官网样式自维护：官网不得再 `@import` `apps/examples/styles.css` 等示例应用文件；官网自有基础样式为 `apps/website/app/showcase.css`（派生自示例共享样式，已剔除官网未使用的示例专属规则），与示例样式各自独立演进。
 - 编辑器模板不引入新的 UI、图标或 motion 依赖；官网按明确产品要求使用 shadcn/ui 源码原语、Lucide 与 Motion，并以 Tailwind CSS v4 组合页面。
 - SSR/静态页面必须在首次绘制前提供完整、经 Core 解析的默认主题变量；Storage bootstrap 只负责覆盖已保存偏好，runtime 在 client mount 后接管。默认关闭的源码编辑器及其 CSS 应按用户打开动作动态加载，避免进入首页初始 chunk。
 

@@ -6,7 +6,7 @@ import "./globals.css";
 import { defaultThemeCss } from "./default-theme-style";
 import { Providers } from "./providers";
 
-const bootstrapScript = createBootstrapStorageScript();
+const bootstrapScript = createBootstrapStorageScript({ contract: { name: "oria-standard", version: 2 } });
 
 export const metadata: Metadata = {
   title: { default: "OriaTheme", template: "%s · OriaTheme" },

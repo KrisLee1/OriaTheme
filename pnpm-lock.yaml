@@ -218,23 +218,23 @@ importers:
         specifier: 0.1.1
         version: 0.1.1
       '@oriatheme/core':
-        specifier: 0.2.0
-        version: 0.2.0
-      '@oriatheme/editor-core':
-        specifier: 0.1.3
-        version: 0.1.3
-      '@oriatheme/presets':
         specifier: 0.3.0
         version: 0.3.0
+      '@oriatheme/editor-core':
+        specifier: 0.2.0
+        version: 0.2.0
+      '@oriatheme/presets':
+        specifier: 0.4.0
+        version: 0.4.0
       '@oriatheme/react':
-        specifier: 0.1.2
-        version: 0.1.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@oriatheme/react-editor':
         specifier: 0.1.3
         version: 0.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@oriatheme/react-editor':
+        specifier: 0.1.4
+        version: 0.1.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@oriatheme/runtime-dom':
-        specifier: 0.1.2
-        version: 0.1.2
+        specifier: 0.2.0
+        version: 0.2.0
       '@radix-ui/react-select':
         specifier: ^2.3.4
         version: 2.3.5(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1147,29 +1147,29 @@ packages:
   '@oriatheme/colors@0.1.1':
     resolution: {integrity: sha512-j1o5MyH03F/jblmMmQB/k3B1oyszFIwQ358/ijnpGePbnno/Oqui/dalXtRE2XFCnGbI+QFDp6KSq+Ql7QTBHg==}
 
-  '@oriatheme/core@0.2.0':
-    resolution: {integrity: sha512-azrlIOYs34ee8Waz6ddr43/w/qug0Kycb286u1XTjXmxFQmmEHs8C0mLCPgmUkcODSCsc+qA6XY4fiInWCMTOg==}
+  '@oriatheme/core@0.3.0':
+    resolution: {integrity: sha512-jCiwUDEf96og88HSVRXN1r2eVI2C/r6DTRoqdShI3/lOPAg675Ve8Oyfmf5JcRqA1C2X6Gg4eud2dTDIZeKzuw==}
 
-  '@oriatheme/editor-core@0.1.3':
-    resolution: {integrity: sha512-hu09s3WvHznftZlp1ve7oDcUOYiJ1duhPohJvCfCAofKZlCCGmBJNhTgSzJN5yU7sKvQJ3HF+xvSdzHRUYuZGw==}
+  '@oriatheme/editor-core@0.2.0':
+    resolution: {integrity: sha512-dGOl56HHxxR35iXkxzwtjS00Rz/uMYzJNDNIf6R7ajweHKdy1Crz2EBTZ+sm8FqWGnwvsY4VeFShiQTsutXDPQ==}
 
-  '@oriatheme/presets@0.3.0':
-    resolution: {integrity: sha512-WhIOVAgBjjhqMoi8BX3VMUnM9sGz7O+Wa7HbGMy7F8HSveaPJ7+ynxJsSd1dt/66RSNlOT109UGb+aaz5R56BQ==}
+  '@oriatheme/presets@0.4.0':
+    resolution: {integrity: sha512-zsjMrLOI92Tkbn056pVVyHD8HcBIIv+n8Zx1NPbZOQvn1Bo9UZQF3jn0R2qa+/tnM40z/HpERa2O9CE3ObIfyQ==}
 
-  '@oriatheme/react-editor@0.1.3':
-    resolution: {integrity: sha512-xOBPLUSxfMMiXh9JMyFGuXy6W02P5rvdcpRvY28VSX3Belst7ZbVemXU346jqCicdiwBXOnJJXPdpZViJXQ3wQ==}
+  '@oriatheme/react-editor@0.1.4':
+    resolution: {integrity: sha512-BmtK0bU1NYOtYofSe9a1qSQaae3AGFHMA+MZwWh533GvOGO5wsWsqKLRhyeR/OEjlnEDPgzvF+Sj6//MebdYoQ==}
     peerDependencies:
       react: ^18.2.0 || ^19.0.0
       react-dom: ^18.2.0 || ^19.0.0
 
-  '@oriatheme/react@0.1.2':
-    resolution: {integrity: sha512-yItyUhfW9aBIXCtltTzRZs3nXHuVhBvzmbEKnpd9hc3MBtWOMVMhtjzcwSTRy45lQjoJCx+GCjLNlUXs4I/Pgw==}
+  '@oriatheme/react@0.1.3':
+    resolution: {integrity: sha512-vkwbOhnU7CAUjl4KQLtvyNnegi6R8iTMHFp25sFa1mzFJJ/OvX2K872ywUY5SkcrXdFuzJu65yFv23rA6g3I5g==}
     peerDependencies:
       react: ^18.2.0 || ^19.0.0
       react-dom: ^18.2.0 || ^19.0.0
 
-  '@oriatheme/runtime-dom@0.1.2':
-    resolution: {integrity: sha512-Iiv+cNN4qIQ+0O9kGqs5pagANPqCAtskdM9BcuvFZBmxJO26TNjWWfTBBGAT63UHDDgeQIOWrcVJ8psCfZ1WcQ==}
+  '@oriatheme/runtime-dom@0.2.0':
+    resolution: {integrity: sha512-tWkhYAfIuiM2Gnwp/uZcGRbBUiHHTDsJvDyqb/QmBapi9d8FFy8cXEXKzYecfAVl7TrmPvLX0Z9D3hasfqmkrw==}
 
   '@parcel/watcher-android-arm64@2.5.1':
     resolution: {integrity: sha512-KF8+j9nNbUN8vzOFDpRMsaKBHZ/mcjEjMToVMJOhTozkDonQFFrRcfdLWn6yWKCmJKmdVxSgHiYvTCef4/qcBA==}
@@ -4221,34 +4221,34 @@ snapshots:
 
   '@oriatheme/colors@0.1.1': {}
 
-  '@oriatheme/core@0.2.0': {}
+  '@oriatheme/core@0.3.0': {}
 
-  '@oriatheme/editor-core@0.1.3':
+  '@oriatheme/editor-core@0.2.0':
     dependencies:
-      '@oriatheme/core': 0.2.0
-      '@oriatheme/runtime-dom': 0.1.2
+      '@oriatheme/core': 0.3.0
+      '@oriatheme/runtime-dom': 0.2.0
 
-  '@oriatheme/presets@0.3.0':
+  '@oriatheme/presets@0.4.0':
     dependencies:
-      '@oriatheme/core': 0.2.0
+      '@oriatheme/core': 0.3.0
 
-  '@oriatheme/react-editor@0.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@oriatheme/react-editor@0.1.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@oriatheme/core': 0.2.0
-      '@oriatheme/editor-core': 0.1.3
-      '@oriatheme/runtime-dom': 0.1.2
+      '@oriatheme/core': 0.3.0
+      '@oriatheme/editor-core': 0.2.0
+      '@oriatheme/runtime-dom': 0.2.0
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@oriatheme/react@0.1.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@oriatheme/react@0.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@oriatheme/runtime-dom': 0.1.2
+      '@oriatheme/runtime-dom': 0.2.0
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@oriatheme/runtime-dom@0.1.2':
+  '@oriatheme/runtime-dom@0.2.0':
     dependencies:
-      '@oriatheme/core': 0.2.0
+      '@oriatheme/core': 0.3.0
 
   '@parcel/watcher-android-arm64@2.5.1':
     optional: true

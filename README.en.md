@@ -2,14 +2,16 @@
 
 [中文](README.md)
 
-OriaTheme is a framework-agnostic client-side theming runtime with a typed Token Contract, light/dark/system modes, persistence, atomic CSS-variable application, and thin React/Vue adapters.
+OriaTheme is a framework-agnostic client-side theming runtime with a typed Token Contract, light/dark/system modes, persistence, atomic CSS-variable application, a static Tailwind CSS v4 bridge, and thin React/Vue adapters.
 
-> Release status: all ten public `@oriatheme/*` packages are published at `0.1.0`, and the public registry is available for CLI source-component installation.
+> Release status: eleven public `@oriatheme/*` packages are published on npm (each package versions independently; check npm for the latest). The current release line switches the default standard Token Contract to `oria-standard@2` — a breaking change, with v1 kept as legacy exports plus a migration helper — and the public registry is available for CLI source-component installation. Upgrading from `0.1.x`? See [migrations and compatibility](docs/guides/en/migrations.md).
 
 ## Packages
 
-- `@oriatheme/core`: environment-independent contracts, validation, resolution, import/export, and diagnostics.
-- `@oriatheme/presets`: an optional set of 41 complete official themes with discoverable catalog metadata.
+- `@oriatheme/core`: environment-independent contracts, validation, resolution, import/export, and diagnostics; resolves `oria-standard@2` by default and keeps v1 legacy exports plus `migrateOriaStandardV1ToV2()`.
+- `@oriatheme/presets`: an optional set of 41 complete official themes (native v2) with discoverable catalog metadata.
+- `@oriatheme/colors`: a theme-independent base color library (26 families, 50–950 eleven-step scales, and five special colors) with JS scales, CSS variables, and Tailwind v4 standard color names.
+- `@oriatheme/tailwind`: a static Tailwind CSS v4 `@theme inline` bridge for `oria-standard@2` runtime variables, with a default-prefix CSS entry and a custom-prefix generator.
 - `@oriatheme/runtime-dom`: client-only runtime, storage, bootstrap, and optional View Transitions.
 - `@oriatheme/react`: React Provider, snapshot hooks, and selectors.
 - `@oriatheme/vue`: Vue plugin, provide API, and composables.
@@ -19,7 +21,7 @@ OriaTheme is a framework-agnostic client-side theming runtime with a typed Token
 
 All runtime libraries are safe to import during SSR module evaluation. The Node CLI is only for installing source components during development. Browser APIs are accessed only after runtime `start()` or framework Provider/Plugin mounting. OriaTheme writes theme variables and `data-oria-*` attributes only; it does not change an application's component structure or layout.
 
-Start with the [quick start](docs/guides/en/quick-start.md), or see the [bilingual guide index](docs/guides/README.md), [packages and public entry points](docs/guides/en/packages.md), [pnpm/npm/Yarn/Bun compatibility](docs/guides/en/package-managers.md), [developer guide](docs/guides/en/development.md), [architecture overview](docs/architecture/overview.md), and [public specifications](docs/specifications/core-api.md).
+Start with the [quick start](docs/guides/en/quick-start.md), or see the [bilingual guide index](docs/guides/README.md), [packages and public entry points](docs/guides/en/packages.md), [pnpm/npm/Yarn/Bun compatibility](docs/guides/en/package-managers.md), [migrations and compatibility](docs/guides/en/migrations.md), [developer guide](docs/guides/en/development.md), [architecture overview](docs/architecture/overview.md), and [public specifications](docs/specifications/core-api.md).
 
 ## Examples
 
@@ -33,7 +35,7 @@ pnpm dev:example:next
 
 ## Use official preset themes
 
-The following are the supported `0.1.0` installation commands. Repository workspace examples remain for repository development and verification only.
+The following commands install the current published versions (each package versions independently; check npm for the latest). Repository workspace examples remain for repository development and verification only.
 
 ```bash
 # Choose the package manager used by your project.
@@ -53,7 +55,7 @@ const runtime = createOriaThemeRuntime({
 });
 ```
 
-You can also import individual named themes such as `oriaOceanTheme`, `oriaForestTheme`, `oriaAuroraTheme`, or `oriaWarmReadingTheme` and compose your own `presets` array. `oriaPresetCatalog` contains only theme references and categories; its order is the stable preview order. Theme descriptions and design rationale remain in documentation rather than the published bundle or persisted theme format. `oriaDefaultTheme` remains available from `@oriatheme/core`.
+You can also import individual named themes such as `oriaOceanTheme`, `oriaForestTheme`, `oriaAuroraTheme`, or `oriaWarmReadingTheme` and compose your own `presets` array. `oriaPresetCatalog` contains only theme references and categories; its order is the stable preview order. Theme descriptions and design rationale remain in documentation rather than the published bundle or persisted theme format. `oriaDefaultTheme` remains available from `@oriatheme/core` and now points to the v2 default theme; applications holding v1 custom themes or referencing v1 CSS variable names should upgrade via the [migration guide](docs/guides/en/migrations.md).
 
 ## License
 
