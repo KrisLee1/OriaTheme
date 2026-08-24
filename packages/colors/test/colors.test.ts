@@ -7,6 +7,8 @@ import { join } from "node:path";
 import { URL } from "node:url";
 import { oriaColorFamilies, oriaColorSteps, oriaColors, toOriaColorVariable } from "../src/index.js";
 
+const tailwindCliTimeout = 15_000;
+
 const oklchChannels = (color: string): readonly [number, number, number] => {
   const match = /^oklch\(([\d.]+)%\s+([\d.]+)\s+([\d.]+)\)$/.exec(color);
   if (!match) throw new Error(`Expected an opaque OKLCH color, received ${color}.`);
@@ -96,5 +98,5 @@ describe("@oriatheme/colors", () => {
     } finally {
       rmSync(outputDirectory, { recursive: true, force: true });
     }
-  });
+  }, tailwindCliTimeout);
 });
