@@ -1,5 +1,25 @@
 # @oriatheme/presets
 
+## 0.5.0
+
+### Minor Changes
+
+- 7ee24b5: Add the Green Lite preset with airy mint-green signals, a pure-white light canvas, texture-free frosted surfaces, fine highlight borders, flat neutral elevation, a subtle canvas dot matrix, and a stable `@oriatheme/presets/green-lite` entry point.
+- 7ee24b5: Add the Line Blaze preset with signal orange-red actions, deep graphite structure, heavier straight technical borders, flat elevation, graphite dot-matrix patterns, and a stable `@oriatheme/presets/line-blaze` entry point.
+- 7ee24b5: Add the Redline preset with warm paper surfaces, graphite structure, a restrained editorial red, white film grain, flat elevation, and a stable `@oriatheme/presets/redline` entry point.
+- 7ee24b5: Adopt complete OKLCH values for the v2 default theme, official presets, migrations, seed generation, and the public base-color library while retaining validation compatibility for existing static HEX, RGB, HSL, and named-color custom themes.
+
+  Add stable per-theme `@oriatheme/presets/<theme-slug>` entry points so applications can ship only their selected official presets without evaluating the root catalog.
+
+  Upgrade the React and Vue source-editor registry item with OKLCH-aware color controls and shared Copy/Download TypeScript actions that produce paste-ready `.oria-theme.ts` files and `ThemeDefinition` constants alongside the existing JSON actions.
+
+### Patch Changes
+
+- 7ee24b5: Refine every official preset's shape and elevation language with restrained radius scales, complete theme-specific shadow hierarchies, and material-only inner highlights. Make Line Art fully opaque, neutralize the default theme's surfaces without changing the legacy v1 default, and improve Glass dark-mode surface separation around its softer blue primary.
+- Updated dependencies [7ee24b5]
+- Updated dependencies [7ee24b5]
+  - @oriatheme/core@0.4.0
+
 ## 0.4.0
 
 ### Minor Changes

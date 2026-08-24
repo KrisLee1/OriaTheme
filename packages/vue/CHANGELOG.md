@@ -1,5 +1,11 @@
 # @oriatheme/vue
 
+## 0.1.4
+
+### Patch Changes
+
+- @oriatheme/runtime-dom@0.2.1
+
 ## 0.1.3
 
 ### Patch Changes

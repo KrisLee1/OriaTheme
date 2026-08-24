@@ -1,5 +1,13 @@
 # @oriatheme/runtime-dom
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [7ee24b5]
+- Updated dependencies [7ee24b5]
+  - @oriatheme/core@0.4.0
+
 ## 0.2.0
 
 ### Minor Changes
