@@ -79,6 +79,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   letter-spacing: var(--oria-tracking-normal);
   text-decoration: none;
 }
+.brand-mark { width: calc(var(--oria-space) * 8); height: calc(var(--oria-space) * 8); flex: 0 0 auto; object-fit: contain; }
 .brand > span:last-child span { color: var(--oria-color-primary); }
 
 .hero {

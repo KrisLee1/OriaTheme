@@ -1,0 +1,60 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="520"
+  height="160"
+  viewBox="0 0 520 160"
+  fill="none"
+  role="img"
+  aria-labelledby="oria-theme-logo-title"
+>
+  <title id="oria-theme-logo-title">OriaTheme</title>
+  <style>
+    .wordmark-primary { fill: #172033; }
+    .wordmark-accent { fill: #5275ED; }
+
+    @media (prefers-color-scheme: dark) {
+      .wordmark-primary { fill: #F7F9FF; }
+      .wordmark-accent { fill: #8FA7FF; }
+    }
+  </style>
+  <defs>
+    <rect id="logo-swatch" x="62" y="36" width="36" height="80" rx="6" />
+    <linearGradient id="logo-ocean" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5CB8E2" />
+      <stop offset="1" stop-color="#3297C5" />
+    </linearGradient>
+    <linearGradient id="logo-aqua" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#93DEE8" />
+      <stop offset="1" stop-color="#5FC7D6" />
+    </linearGradient>
+    <linearGradient id="logo-blush" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9A1AA" />
+      <stop offset="1" stop-color="#EE7F90" />
+    </linearGradient>
+    <linearGradient id="logo-butter" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFDC85" />
+      <stop offset="1" stop-color="#F4C45B" />
+    </linearGradient>
+    <linearGradient id="logo-periwinkle" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7896F8" />
+      <stop offset="1" stop-color="#5275ED" />
+    </linearGradient>
+  </defs>
+
+  <g stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round">
+    <use href="#logo-swatch" fill="url(#logo-ocean)" transform="rotate(42 80 116)" />
+    <use href="#logo-swatch" fill="url(#logo-aqua)" transform="rotate(21 80 116)" />
+    <use href="#logo-swatch" fill="url(#logo-blush)" />
+    <use href="#logo-swatch" fill="url(#logo-butter)" transform="rotate(-21 80 116)" />
+    <use href="#logo-swatch" fill="url(#logo-periwinkle)" transform="rotate(-42 80 116)" />
+  </g>
+
+  <text
+    x="170"
+    y="101"
+    font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="58"
+    font-weight="700"
+    letter-spacing="-2"
+  ><tspan class="wordmark-primary">Oria</tspan><tspan class="wordmark-accent" dx="-5">Theme</tspan></text>
+</svg>

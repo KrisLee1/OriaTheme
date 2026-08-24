@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, Monitor, Moon, SlidersHorizontal, Sun } from "lucide-react";
 import { useRef, useState } from "react";
@@ -66,7 +67,7 @@ export function SiteHeader({ locale }: { readonly locale: Locale }) {
   const changeTheme = (themeId: string, origin: HTMLElement | null): void => requestThemeChange(themeId, origin ?? document.body);
 
   return <header className="topbar site-topbar">
-    <div className="topbar-brand"><Link href={`/${locale}`} className="brand" aria-label="OriaTheme home"><span>Oria<span>Theme</span></span></Link></div>
+    <div className="topbar-brand"><Link href={`/${locale}`} className="brand" aria-label="OriaTheme home"><Image className="brand-mark" src="/icons/color-swatch-fan.svg" alt="" width={32} height={32} priority aria-hidden="true" /><span>Oria<span>Theme</span></span></Link></div>
     <nav className="site-navigation hidden md:flex" aria-label={copy.header.navigation}>{routes.map(([label, href]) => <Link key={href} href={href} className={cn("site-navigation-link", isRouteActive(href) && "is-active")}>{label}</Link>)}</nav>
     <div className="topbar-actions hidden md:flex">
       <LocaleSelect locale={locale} onValueChange={selectLocale} copy={copy} />

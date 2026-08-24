@@ -1,4 +1,6 @@
-# OriaTheme
+<h1 align="center">
+  <img src="apps/website/public/icons/oria-theme-logo.svg" alt="OriaTheme" width="440">
+</h1>
 
 [中文](README.md)
 

@@ -2,8 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import { createPortal } from "react-dom";
 import { oriaColorFamilies, oriaColorSteps, oriaColors } from "@oriatheme/colors";
-import { Check, Grid2X2, List, Search } from "lucide-react";
-import { interpolate, useEditorCopy } from "@/components/editor-page/editor-i18n";
 
 interface BaseColorEntry {
   readonly family: string;
@@ -59,7 +57,6 @@ export function BaseColorPalette({ id, label, value, onSelect }: {
   readonly value: string;
   readonly onSelect: (value: string) => void;
 }): ReactElement {
-  const copy = useEditorCopy().chrome.palette;
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<PalettePosition | null>(null);
@@ -189,22 +186,22 @@ export function BaseColorPalette({ id, label, value, onSelect }: {
     >
       <div data-oria-editor-palette-content>
         <header data-oria-editor-palette-header>
-          <div><h2 id={`${id}-title`}>{copy.title}</h2><p>{interpolate(copy.description, { label })}</p></div>
-          <div data-oria-editor-palette-view data-view={view} role="group" aria-label={copy.display}>
-            <button type="button" aria-label={copy.swatches} title={copy.swatchesTitle} aria-pressed={view === "swatches"} onClick={() => setView("swatches")}>
-              <Grid2X2 aria-hidden="true" />
+          <div><h2 id={`${id}-title`}>Base colors</h2><p>Choose a stable color for {label}.</p></div>
+          <div data-oria-editor-palette-view data-view={view} role="group" aria-label="Color display">
+            <button type="button" aria-label="Show circle swatches" title="Circle swatches" aria-pressed={view === "swatches"} onClick={() => setView("swatches")}>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="6" cy="6" r="2.25" /><circle cx="14" cy="6" r="2.25" /><circle cx="6" cy="14" r="2.25" /><circle cx="14" cy="14" r="2.25" /></svg>
             </button>
-            <button type="button" aria-label={copy.compact} title={copy.compactTitle} aria-pressed={view === "compact"} onClick={() => setView("compact")}>
-              <List aria-hidden="true" />
+            <button type="button" aria-label="Show compact color scales" title="Compact color scales" aria-pressed={view === "compact"} onClick={() => setView("compact")}>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="3" rx="1.5" /><rect x="3" y="8.5" width="14" height="3" rx="1.5" /><rect x="3" y="13" width="14" height="3" rx="1.5" /></svg>
             </button>
           </div>
         </header>
         <label data-oria-editor-palette-search htmlFor={`${id}-search`}>
-          <span className="oria-editor-visually-hidden">{copy.search}</span>
-          <Search aria-hidden="true" />
-          <input ref={searchRef} id={`${id}-search`} type="search" value={query} placeholder={copy.placeholder} autoComplete="off" onChange={event => setQuery(event.target.value)} />
+          <span className="oria-editor-visually-hidden">Search base colors</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
+          <input ref={searchRef} id={`${id}-search`} type="search" value={query} placeholder="Search family, shade, or OKLCH" autoComplete="off" onChange={event => setQuery(event.target.value)} />
         </label>
-        <p data-oria-editor-palette-count aria-live="polite">{resultCount} {resultCount === 1 ? copy.color : copy.colors}</p>
+        <p data-oria-editor-palette-count aria-live="polite">{resultCount} {resultCount === 1 ? "color" : "colors"}</p>
         <div data-oria-editor-palette-groups data-view={view}>
           {groups.map(([family, colors]) => <section key={family} aria-labelledby={view === "swatches" ? `${id}-${family}` : undefined} aria-label={view === "compact" ? titleCase(family) : undefined}>
             {view === "swatches" ? <h3 id={`${id}-${family}`}>{titleCase(family)}</h3> : null}
@@ -212,13 +209,13 @@ export function BaseColorPalette({ id, label, value, onSelect }: {
               {colors.map(color => {
                 const selected = value.toLowerCase() === color.value.toLowerCase();
                 return <button key={color.name} type="button" aria-label={`${titleCase(color.name)}, ${color.value}`} aria-pressed={selected} title={view === "swatches" ? `${color.name} · ${color.value}` : color.value} onClick={() => select(color)}>
-                  <span style={{ backgroundColor: color.value }} aria-hidden="true">{selected ? <Check /> : null}</span>
+                  <span style={{ backgroundColor: color.value }} aria-hidden="true">{selected ? <i>✓</i> : null}</span>
                   {view === "swatches" ? <small>{color.step}</small> : null}
                 </button>;
               })}
             </div>
           </section>)}
-          {resultCount === 0 ? <p data-oria-editor-palette-empty>{interpolate(copy.empty, { query })}</p> : null}
+          {resultCount === 0 ? <p data-oria-editor-palette-empty>No base colors match “{query}”.</p> : null}
         </div>
       </div>
     </div>,
@@ -226,7 +223,7 @@ export function BaseColorPalette({ id, label, value, onSelect }: {
   ) : null;
 
   return <div data-oria-editor-base-palette>
-    <button ref={triggerRef} type="button" aria-haspopup="dialog" aria-expanded={open} aria-controls={`${id}-dialog`} aria-label={interpolate(copy.choose, { label })} title={copy.library} onClick={() => open ? close() : show()}>
+    <button ref={triggerRef} type="button" aria-haspopup="dialog" aria-expanded={open} aria-controls={`${id}-dialog`} aria-label={`Choose ${label} from the base color library`} title="Base color library" onClick={() => open ? close() : show()}>
       <span data-oria-editor-palette-icon aria-hidden="true"><i /><i /><i /><i /><i /></span>
     </button>
     {palette}

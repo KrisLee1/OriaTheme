@@ -1,0 +1,42 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="160"
+  height="160"
+  viewBox="0 0 160 160"
+  fill="none"
+  role="img"
+  aria-labelledby="color-swatch-fan-title"
+>
+  <title id="color-swatch-fan-title">Five equal color swatches opened in a fan</title>
+  <defs>
+    <rect id="swatch" x="62" y="36" width="36" height="80" rx="6" />
+    <linearGradient id="ocean" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5CB8E2" />
+      <stop offset="1" stop-color="#3297C5" />
+    </linearGradient>
+    <linearGradient id="aqua" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#93DEE8" />
+      <stop offset="1" stop-color="#5FC7D6" />
+    </linearGradient>
+    <linearGradient id="blush" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9A1AA" />
+      <stop offset="1" stop-color="#EE7F90" />
+    </linearGradient>
+    <linearGradient id="butter" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFDC85" />
+      <stop offset="1" stop-color="#F4C45B" />
+    </linearGradient>
+    <linearGradient id="periwinkle" x1="62" y1="36" x2="98" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7896F8" />
+      <stop offset="1" stop-color="#5275ED" />
+    </linearGradient>
+  </defs>
+
+  <g stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round">
+    <use href="#swatch" fill="url(#ocean)" transform="rotate(42 80 116)" />
+    <use href="#swatch" fill="url(#aqua)" transform="rotate(21 80 116)" />
+    <use href="#swatch" fill="url(#blush)" />
+    <use href="#swatch" fill="url(#butter)" transform="rotate(-21 80 116)" />
+    <use href="#swatch" fill="url(#periwinkle)" transform="rotate(-42 80 116)" />
+  </g>
+</svg>
