@@ -7,6 +7,8 @@ import { join } from "node:path";
 import { URL } from "node:url";
 import { generateOriaTailwindBridge, oriaTailwindBridgeDefaultPrefix } from "../src/index.js";
 
+const tailwindCliTimeout = 15_000;
+
 describe("@oriatheme/tailwind", () => {
   it("maps the complete v2 vocabulary into the Tailwind theme namespace", () => {
     const css = generateOriaTailwindBridge();
@@ -123,7 +125,7 @@ describe("@oriatheme/tailwind", () => {
     } finally {
       rmSync(outputDirectory, { recursive: true, force: true });
     }
-  });
+  }, tailwindCliTimeout);
 
   it("compiles a custom-prefix bridge with the real Tailwind CLI", () => {
     const outputDirectory = mkdtempSync(join(tmpdir(), "oriatheme-tailwind-prefix-"));
@@ -142,5 +144,5 @@ describe("@oriatheme/tailwind", () => {
     } finally {
       rmSync(outputDirectory, { recursive: true, force: true });
     }
-  });
+  }, tailwindCliTimeout);
 });
