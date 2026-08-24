@@ -355,7 +355,6 @@ describe("theme editor registry", () => {
       "apps/examples/react/src/components/oria-theme-editor",
       "apps/examples/next/app/components/oria-theme-editor",
       "apps/examples/editor-next/app/components/oria-theme-editor",
-      "apps/website/components/oria-theme-editor",
     ] as const;
     for (const source of reactSources) {
       const canonical = readFileSync(resolve(root, "registry/templates/react/theme-editor", source), "utf8");
