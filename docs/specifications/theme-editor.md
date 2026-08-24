@@ -113,7 +113,7 @@ export function createThemeEditorIdentity(
 - `deriveSmartScale(input)` 是确定性纯函数。除 v1 的 typeScale、fontWeight、spacing、controlSize、radius、elevation、blur、duration 外，v2 提供 `v2Space`、`v2Radius` 与 `v2ControlMultipliers`，且只输出 source token；CSS 派生长度由 Core Resolver 生成。
 - `preserveScaleOverrides(derived, current, customized)` 在重新派生主值时保留调用方传入的已标记单项覆写叶子；覆写集合只属于 UI 会话交互状态，不进入 `ThemeDefinition`。
 - 官方 registry UI 将 contract 中的全部字段逐项直接编辑，不显示基础色阶主值、派生预览或单项覆写操作。稳定色库由 `@oriatheme/colors` 提供给取色界面使用，但不是可编辑主题字段。
-- React/Vue registry 的颜色字段在原生颜色选择与颜色值输入之后提供独立基础色卡选择器；触发控件使用浅色中性底与多个独立彩色样卡，不使用深色连续渐变。选择器以该按钮为锚点打开受视口约束的非模态 popover，不得退化为带遮罩的全页/全高面板。popover 必须在圆形色块视图与“每个颜色家族一行、无可见家族/阶梯文字”的紧凑圆角色阶视图间切换；紧凑视图仍保留每个颜色按钮的可访问名称。选择器可按颜色家族、阶梯、组合名称或 HEX 搜索 `@oriatheme/colors`，选择结果必须回到既有字段缓冲与 `setToken()` 管线，不得直接修改 stylesheet 或保存色库副本。
+- React/Vue registry 的颜色字段在原生颜色选择与颜色值输入之后提供独立基础色卡选择器；触发控件使用浅色中性底与多个独立彩色样卡，不使用深色连续渐变。选择器以该按钮为锚点打开受视口约束的非模态 popover，不得退化为带遮罩的全页/全高面板。popover 必须在圆形色块视图与“每个颜色家族一行、无可见家族/阶梯文字”的紧凑圆角色阶视图间切换；紧凑视图仍保留每个颜色按钮的可访问名称。选择器可按颜色家族、阶梯、组合名称或 OKLCH 搜索 `@oriatheme/colors`，选择结果必须回到既有字段缓冲与 `setToken()` 管线，不得直接修改 stylesheet 或保存色库副本。原生颜色 input 必须把 OKLCH 确定性转换为其接受的非透明 sRGB HEX，仅作为控件桥接，不改写草稿值。
 - React/Vue registry 的普通字段使用左侧名称、右侧控件的紧凑两列布局，颜色编辑控件组在右列贴右对齐。`shadow`、`gradient`、`pattern` 与 `cubicBezier` 必须改用“名称独立一行、编辑器下一行全宽”的复杂字段布局；`pattern.background` 与 `pattern.surface` 以类似阴影的有序图层列表呈现：每层独立选择 dot/stripe/grid/noise、颜色、参数，并提供新增、删除、键盘可操作的上移/下移；第一层显示为最上层。noise 另选 Paper/Film/Frosted、Grain size 和 0–1 Intensity；Paper 预览必须呈现与 Core 一致的稀疏纸纤维和细小杂点，Film/Frosted 保持各自颗粒预览。提交仍只走 `session.setToken()` / `removeToken()`。图层颜色控件独占一行；几何纹理的 Radius / Spacing / Angle 与 noise 的 Style / Grain size / Intensity 都固定为下一行三列。颜色值输入上限为 7rem，响应式断点按 editor container 而非 viewport 触发，仅在最窄容器收为单列，防止侧栏重叠。Shadow Layer 展开控件使用指针光标且禁止文本选择，层编辑器按卡片标题、颜色、两列参数与 Inset 操作分区；缓动曲线必须提供随当前控制点更新且可手动重播的真实运动效果预览，并尊重 reduced-motion。
 - React/Vue registry 的颜色字段使用“弹性名称列 + 内容宽度控件列”，控件外层不得占据多余列宽，长名称不得因右侧空白而截断。每个 Tab 的 Accordion 默认全部展开且必须可独立折叠，隐藏内容不参与布局；搜索控件由统一外层承担材质、边框与 focus-within 状态，内部输入透明且无第二层输入边框/阴影。
 - React/Vue registry 的全局搜索与 Light/Dark 控件之间保留稳定间距；基础色库搜索复用同一连续表面和轮廓图标语言。渐变字段使用实时安全预览和结构化控件编辑 `linear`、`radial`、`repeating-linear`、`repeating-radial` 与 `conic`；线性类显示角度，径向类显示中心，conic 同时显示起始角度和中心。Origin 必须提供可直接映射空间位置的九宫格预设，并提供 Custom 模式的 X/Y 百分比滑块与精确输入；输入至少保留 0.1% 精度，切换到 Custom 时从当前预设生成等价坐标，不让预览跳变。每个停止点同时提供原生颜色选择、颜色值输入和复用既有 `BaseColorPalette` 的基础色库入口，不以 JSON textarea 作为默认界面。已设置的可选渐变必须提供 `removeToken()` 驱动的“取消设置”操作并立即回到可重新创建的空状态；其余修改继续经 `setToken()` 的完整校验与原子预览管线。
@@ -142,8 +142,8 @@ export function createThemeEditorIdentity(
 - 有 runtime 时自动实时预览最新有效草稿；预览使用 runtime `previewTheme()`，不改变持久化偏好。非法或不完整的中间输入保留最后一份有效预览，不部分应用。
 - 框架桥接必须把最新有效草稿的预览排入可取消的单帧任务；正式 `activeThemeId` 改变时，必须同步取消尚未执行的旧草稿预览，防止快速主题切换后旧的可选渐变、阴影或其他 token 重新覆盖正式主题。仅 appearance 改变且 host 显式保留 preview 时不取消。
 - 显式保存时才调用 runtime create/update；非法或未完整解析的草稿不得部分应用或持久化。
-- 支持导入、导出、重置当前字段、重置当前模式和放弃全部草稿。
-- React/Vue registry 下载草稿时使用 `<theme-id>.oria-theme.json`；导入文件入口接受 `.oria-theme.json` 和普通 `.json`，并继续把文件内容交给 `replaceFromJson()` 完整校验。扩展名只用于识别和文件选择，不降低 Contract 校验要求。
+- 支持导入、导出、重置当前字段、重置当前模式和放弃全部草稿。Export 菜单必须保留 JSON 复制/下载，并可复制或下载一份以当前 draft 生成、满足 `ThemeDefinition` 的 TypeScript 常量；代码导出不带 JSON `$schema`，把残留 HEX 颜色规范化为 OKLCH，且不修改 draft。
+- React/Vue registry 下载 JSON 草稿时使用 `<theme-id>.oria-theme.json`，下载 TypeScript 时使用 `<theme-id>.oria-theme.ts`；导入文件入口仍只接受 `.oria-theme.json` 和普通 `.json`，并继续把文件内容交给 `replaceFromJson()` 完整校验。扩展名只用于识别和文件选择，不降低 Contract 校验要求。
 - 导入的合法主题在保存时始终创建新的 custom theme，而不是沿用打开编辑器前 custom theme 的更新基线；导入 ID 未占用时保持原 ID，若与当前 preset 或 custom ID 冲突，则生成可用的 editor identity，绝不覆盖既有主题或因 preset 不可写而抛出异常。
 - 注册表提供可直接运行且可修改的默认源码组件，使消费应用可替换布局、原子控件和样式；无需修改 `node_modules`。
 

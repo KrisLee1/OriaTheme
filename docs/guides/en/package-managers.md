@@ -4,7 +4,7 @@
 
 OriaTheme public packages and `@oriatheme/cli` target pnpm, npm, Yarn, and Bun consumer projects. Packages use standard ESM, `exports`, `peerDependencies`, and normal semver. The CLI's `add`/`diff` commands only edit standard `package.json` data and copy source, while `theme tailwind-bridge` only writes the generated CSS to the `--out` file; the CLI never invokes a package manager or creates/updates a lockfile.
 
-> Ten public `@oriatheme/*` packages are published on npm (versions evolve independently; see npm latest). The commands below are the supported consumer-project forms; workspace, local-tarball, and local-registry paths are only for repository development or future-release verification.
+> All eleven public `@oriatheme/*` packages are published on npm (versions evolve independently; see npm latest). The commands below are the supported consumer-project forms; workspace, local-tarball, and local-registry paths are only for repository development or future-release verification.
 
 ## Install public packages
 

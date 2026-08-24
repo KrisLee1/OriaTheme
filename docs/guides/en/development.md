@@ -6,7 +6,7 @@ This guide is for contributors modifying the OriaTheme monorepo. The public impl
 
 ## Prerequisites
 
-- Node.js: the repository needs Node.js for pnpm, TypeScript, Vitest, tsup, Vite, and Next.js. It currently has no `engines`, `.nvmrc`, or `.node-version`, so no supported Node range has been declared.
+- Node.js: the release workflow pins Node.js 24, and local maintainers should use the same major version for parity. The repository has no `engines`, `.nvmrc`, or `.node-version`, so this is not a published-package consumer compatibility promise.
 - pnpm: the root `packageManager` pins `pnpm@10.10.0`.
 - Git: Changesets baseline comparison and a real release require accessible `main` history, which a repository clone provides.
 
@@ -46,7 +46,13 @@ See [package boundaries](../../architecture/package-boundaries.md) for dependenc
 
 ## Normal development loop
 
-Read the affected architecture and specification documents, make the smallest scoped change, and run the affected package checks:
+Read the affected public architecture and specifications. A maintainer workspace must also follow repository-level project rules and the current milestone when those local documents are present. Then choose the lightest safe handling tier:
+
+- Fast: clear, local, reversible work with no architecture, public API, persistence, dependency, or security impact; edit directly and run targeted checks without creating task documents or logs.
+- Review: a feature or multi-area change with a clear outcome and mechanism; summarize impact, validation, and obsolete code, then continue in the same task. Update authoritative documents only when their current facts change.
+- Controlled: module ownership, released contracts or real data, a major platform/dependency, security/destructive behavior, or material ambiguity; write one decision proposal before implementation.
+
+Keep defects, cleanup, and restoration in the original task while the intended outcome is unchanged; do not automatically add another proposal, migration, or internal version. After the smallest scoped change, run the affected package checks:
 
 ```bash
 pnpm --filter @oriatheme/core typecheck
@@ -55,7 +61,7 @@ pnpm --filter @oriatheme/core test
 pnpm --filter @oriatheme/core build
 ```
 
-Replace the filter with the affected package. Cross-package and phase acceptance requires the root gates:
+Replace the filter with the affected package. Cross-package changes, milestone acceptance, and release preparation require the root gates:
 
 ```bash
 pnpm typecheck
@@ -118,7 +124,9 @@ See the [testing strategy](../../engineering/testing.md) for the complete matrix
 
 ## Documentation and change records
 
-Public-repository changes must update the affected specifications or user guides, and public package behavior changes require a Changeset. Maintainers keep project status, phase plans, and detailed execution logs separately; they are not part of the public repository or user changelog.
+Public-repository changes must update affected current specifications or user guides, and public package behavior changes require a Changeset. Fast work creates no project record. Review work updates status only when the milestone/focus, capability, blocker, risk, or verification baseline changes. The project log is limited to milestones, major architecture baselines, significant blockers, maturity transitions, and releases. Git owns ordinary implementation history.
+
+User-facing guides describe accepted, usable current behavior only. Roadmap candidates, Controlled drafts, per-task status, and development history must not appear as public commitments. Reserve ADRs for durable architecture, compatibility, persistence/protocol, major dependency, security, or release decisions.
 
 After documentation changes, check local Markdown links, heading anchors, and unresolved template markers. The repository does not yet provide its own documentation-validator script; external maintainer tooling is not a consumer dependency.
 

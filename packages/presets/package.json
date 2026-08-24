@@ -16,6 +16,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/themes/*.d.ts",
+      "import": "./dist/themes/*.js"
     }
   },
   "files": [
@@ -31,7 +35,7 @@
   },
   "scripts": {
     "prepack": "node ../../scripts/prepare-package-license.mjs",
-    "build": "tsup src/index.ts --format esm --dts --sourcemap --clean --external @oriatheme/core",
+    "build": "tsup src/index.ts src/themes/*.ts --format esm --dts --sourcemap --clean --external @oriatheme/core",
     "lint": "eslint src test",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

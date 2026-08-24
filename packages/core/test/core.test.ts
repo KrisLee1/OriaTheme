@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { analyzeTheme, cloneTheme, colorToken, createThemeFromSeed, defineTokenContract, exportTheme, importTheme, migrateOriaStandardV1ToV2, oriaDefaultTheme, oriaDefaultThemeV1, oriaStandardContract, oriaStandardContractV1, resolveTheme, validateTheme } from "../src/index.js";
+import { analyzeTheme, cloneTheme, colorToken, contrastRatio, createThemeFromSeed, defineTokenContract, exportTheme, importTheme, migrateOriaStandardV1ToV2, oriaDefaultTheme, oriaDefaultThemeV1, oriaStandardContract, oriaStandardContractV1, resolveTheme, validateTheme } from "../src/index.js";
 import type { DotPatternDefinition, GradientDefinition, GridPatternDefinition, NoisePatternDefinition, StripePatternDefinition, ThemeDefinition, TokenPath } from "../src/index.js";
+import { toOklchColor } from "../src/color.js";
+
+const oklchColors = (colors: readonly string[]): readonly string[] => colors.map(color => toOklchColor(color)!);
 
 describe("standard contract and preset", () => {
   it("covers the required design-language categories and resolves in Node", () => {
@@ -14,8 +17,9 @@ describe("standard contract and preset", () => {
     expect(oriaStandardContract.tokens["control.height.md" as TokenPath]?.output).toBe(false);
     expect(Object.keys(oriaStandardContract.tokens).some(path => path.startsWith("palette."))).toBe(false);
     const result = resolveTheme(oriaDefaultTheme, "light");
-    expect(result.variables["--oria-color-bg"]).toBe("#f1f3f4");
-    expect(result.variables["--oria-color-primary"]).toBe("#35bff0");
+    expect(result.variables["--oria-color-bg"]).toBe(toOklchColor("#f5f5f3"));
+    expect(resolveTheme(oriaDefaultTheme, "dark").variables["--oria-color-bg"]).toBe(toOklchColor("#141414"));
+    expect(result.variables["--oria-color-primary"]).toBe(toOklchColor("#35bff0"));
     expect(result.variables["--oria-radius-2xl"]).toBe("1rem");
     expect(result.variables["--oria-radius-4xl"]).toBe("2rem");
     expect(result.variables["--oria-text-9xl"]).toBe("8rem");
@@ -39,6 +43,7 @@ describe("standard contract and preset", () => {
     expect(Object.keys(result.variables).some(variable => variable.startsWith("--oria-palette-"))).toBe(false);
     expect(result.variables["--oria-pattern-surface"]).toBeUndefined();
     expect(result.variables["--oria-pattern-bg"]).toBeUndefined();
+    expect(JSON.stringify(oriaDefaultTheme.modes)).not.toMatch(/#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})\b/i);
   });
 
   it("has no blocking validation errors or AA body-text warnings", () => {
@@ -53,10 +58,10 @@ describe("standard contract and preset", () => {
     const light = resolveTheme(oriaDefaultTheme, "light").variables;
     const dark = resolveTheme(oriaDefaultTheme, "dark").variables;
 
-    expect(feedbackKeys.map(key => light[`--oria-color-${key}`])).toEqual(["#d53740", "#1f9058", "#c15701", "#1982bd"]);
-    expect(feedbackKeys.map(key => dark[`--oria-color-${key}`])).toEqual(["#f46767", "#56b17c", "#fba171", "#52a4db"]);
-    expect(chartKeys.map(key => light[key])).toEqual(["#35bff0", "#1982bd", "#1c8c85", "#1f9058", "#3675e2", "#626bdc", "#d53740", "#c15701"]);
-    expect(chartKeys.map(key => dark[key])).toEqual(["#4cc8f5", "#52a4db", "#4caea6", "#56b17c", "#5f99fe", "#8390f8", "#f46767", "#fba171"]);
+    expect(feedbackKeys.map(key => light[`--oria-color-${key}`])).toEqual(oklchColors(["#d53740", "#1f9058", "#c15701", "#1982bd"]));
+    expect(feedbackKeys.map(key => dark[`--oria-color-${key}`])).toEqual(oklchColors(["#f46767", "#56b17c", "#fba171", "#52a4db"]));
+    expect(chartKeys.map(key => light[key])).toEqual(oklchColors(["#35bff0", "#1982bd", "#1c8c85", "#1f9058", "#3675e2", "#626bdc", "#d53740", "#c15701"]));
+    expect(chartKeys.map(key => dark[key])).toEqual(oklchColors(["#4cc8f5", "#52a4db", "#4caea6", "#56b17c", "#5f99fe", "#8390f8", "#f46767", "#fba171"]));
   });
 
   it("compiles every structured gradient type to browser-valid CSS custom-property values", () => {
@@ -92,7 +97,7 @@ describe("standard contract and preset", () => {
         dark: { ...oriaDefaultTheme.modes.dark, [patternPath]: [pattern] }
       }
     };
-    expect(resolveTheme(theme, "light").variables["--oria-pattern-bg"]).toBe("radial-gradient(circle at center, #cbd2d7 0 0.9px, transparent 0.9px) 0 0 / 1rem 1rem repeat");
+    expect(resolveTheme(theme, "light").variables["--oria-pattern-bg"]).toBe(`radial-gradient(circle at center, ${toOklchColor("#d2d2cf")} 0 0.9px, transparent 0.9px) 0 0 / 1rem 1rem repeat`);
   });
 
   it("compiles ordered angled dot, stripe, and grid pattern layers", () => {
@@ -155,7 +160,8 @@ describe("legacy v1 contract and migration", () => {
     expect(validateTheme(result.theme, oriaStandardContract).ok).toBe(true);
     expect(result.requiresReview).toBe(true);
     const variables = resolveTheme(result.theme, "light", { contract: oriaStandardContract }).variables;
-    expect(variables["--oria-color-bg"]).toBe("#f1f3f4");
+    expect(variables["--oria-color-bg"]).toBe(toOklchColor("#f1f3f4"));
+    expect(JSON.stringify(result.theme.modes)).not.toMatch(/#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})\b/i);
     expect(variables["--oria-text-md"]).toBe("1rem");
     expect(variables["--oria-radius-lg"]).toBeDefined();
   });
@@ -193,6 +199,15 @@ describe("legacy v1 contract and migration", () => {
 describe("contracts and validation", () => {
   const contract = defineTokenContract({ name: "test-contract", version: 1, tokens: { "color.base": colorToken({ required: true, description: "base" }), "color.alias": colorToken({ required: true, description: "alias" }) } });
   const base = (tokens: Record<string, unknown>): ThemeDefinition => ({ schemaVersion: 1, contract: { name: "test-contract", version: 1 }, id: "test-theme", name: "Test", kind: "custom", modes: { light: tokens as Record<TokenPath, never>, dark: tokens as Record<TokenPath, never> } });
+
+  it("accepts bounded OKLCH colors with optional alpha and diagnoses them in sRGB", () => {
+    const opaque = base({ "color.base": "oklch(62% 0.2 250)", "color.alias": "oklch(91% 0.04 250 / 75%)" });
+    expect(validateTheme(opaque, contract).ok).toBe(true);
+    expect(contrastRatio("oklch(100% 0 0)", "oklch(0% 0 0)")).toBeCloseTo(21, 4);
+    for (const invalid of ["oklch(101% 0.2 20)", "oklch(50wat 0.2 20)", "oklch(50% -0.1 20)", "oklch(50% 0.1 nope)", "oklch(50% 0.1 20 / 120%)"]) {
+      expect(validateTheme(base({ "color.base": invalid, "color.alias": "#fff" }), contract).ok, invalid).toBe(false);
+    }
+  });
 
   it("reports missing values as structured issues without a partial result", () => {
     const result = validateTheme(base({ "color.base": "#ffffff" }), contract);
@@ -313,8 +328,8 @@ describe("theme lifecycle", () => {
     const seeded = createThemeFromSeed({ color: "#b91c1c" }, { id: "seeded", name: "Seeded", clock: { now: () => 9 } });
     expect(validateTheme(seeded, oriaStandardContract).ok).toBe(true);
     const resolved = resolveTheme(seeded, "light").variables;
-    expect(resolved["--oria-color-primary"]).toBe("#b91c1c");
-    expect(resolved["--oria-color-border"]).toBe("#ffffffa8");
+    expect(resolved["--oria-color-primary"]).toBe(toOklchColor("#b91c1c"));
+    expect(resolved["--oria-color-border"]).toBe(toOklchColor("#ffffffa8"));
     expect(resolved["--oria-shadow-md"]!.split(",")).toHaveLength(1);
   });
 });

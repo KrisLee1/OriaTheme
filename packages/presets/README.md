@@ -1,6 +1,6 @@
 # @oriatheme/presets
 
-Forty-one complete, curated OriaTheme presets with stable IDs, named exports, and a compact discovery catalog.
+Forty-four complete, curated OriaTheme presets with stable IDs, OKLCH colors, granular public entry points, named exports, and a compact discovery catalog.
 
 ## Install
 
@@ -11,13 +11,15 @@ npm install @oriatheme/presets
 ## Use
 
 ```ts
-import { oriaOceanTheme, oriaPresetThemes } from "@oriatheme/presets";
+import { oriaOceanTheme } from "@oriatheme/presets/ocean";
+import { oriaForestTheme } from "@oriatheme/presets/forest";
 
 console.log(oriaOceanTheme.id); // "oria-ocean"
-console.log(oriaPresetThemes.length); // 41
+
+const appPresets = [oriaOceanTheme, oriaForestTheme];
 ```
 
-Use `oriaPresetThemes` with `@oriatheme/runtime-dom`, or import one named preset to compose a smaller collection. `oriaDefaultTheme` remains available from both this package and `@oriatheme/core`.
+Each theme is available from `@oriatheme/presets/<theme-slug>`, so an application can import only the presets it ships. Use the package root's `oriaPresetThemes` or `oriaPresetCatalog` when the complete directory is required. Existing root named exports remain compatible, and `oriaDefaultTheme` remains available from `@oriatheme/presets/default`, the package root, and `@oriatheme/core`.
 
 ## Documentation
 

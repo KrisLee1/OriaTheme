@@ -1,0 +1,17 @@
+import { roundedSans } from "../preset-designs.js";
+import type { PresetSpec } from "../preset-designs.js";
+
+export const punchcardPreset: PresetSpec = {
+    id: "oria-punchcard", name: "Punchcard", category: "visual-style",
+    tokens: {
+      "font.sans": roundedSans, "font.display": roundedSans, "font.weight.normal": "500", "font.weight.semibold": "700", "font.weight.bold": "900",
+      "text.4xl": "3.75rem", "text.5xl": "4.5rem", "text.6xl": "5.5rem", "text.7xl": "6.75rem", "text.8xl": "9rem", "text.9xl": "12rem", "tracking.tight": "-0.04em", "tracking.wide": "0.075em", "tracking.wider": "0.1em", "tracking.widest": "0.14em",
+      "radius": "0.375rem", "border.width.hairline": "1px", "border.width.default": "2px", "border.width.strong": "2px", "ring.width": "3px", "ring.offset": "3px",
+      "shadow.xs": [{ x: "2px", y: "2px", blur: "0", spread: "0", color: "#2a2520" }], "shadow.sm": [{ x: "4px", y: "4px", blur: "0", spread: "0", color: "#2a2520" }], "shadow.md": [{ x: "6px", y: "6px", blur: "0", spread: "0", color: "#2a2520" }], "shadow.lg": [{ x: "8px", y: "8px", blur: "0", spread: "0", color: "#2a2520" }],
+      "duration.fast": "90ms", "duration.normal": "160ms", "ease.standard": [0.2, 0, 0, 1]
+    },
+    modes: {
+      light: { colors: { background: "#fff2da", foreground: "#27211c", surface: "#fffaf0", raised: "#fffdf8", overlay: "#fffdf8", primary: ["#ffd84d", "#f4c935", "#e6b91e", "#2d2517"], secondary: ["#f4a4bd", "#e98ea8", "#dd7d9a", "#3c1f29"], muted: ["#f0e1c5", "#6e6254"], accent: ["#9ed4f2", "#153d54"], border: ["#2a2520", "#171411"], input: "#fffaf0", ring: "#ff8a2b", selection: ["#ffddb3", "#3a2412"], charts: ["#ffd84d", "#f4a4bd", "#9ed4f2", "#ff6a3d", "#5fbd84", "#7a72db", "#d89020", "#bd5f8b"] }, tokens: { "gradient.bg": { type: "linear", angle: 180, stops: [{ color: "#fff4e1" }, { color: "#fff2da", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#fffdf8" }, { color: "#fff8ed", position: 100 }] }, "gradient.accent": { type: "linear", angle: 100, stops: [{ color: "#ffd84d" }, { color: "#ffbd56", position: 100 }] }, "pattern.surface": [{ type: "dot", color: "#2a25201f", radius: "1.5px", spacing: "1.5rem" }] } },
+      dark: { colors: { background: "#211b17", foreground: "#fff1d9", surface: "#2c251f", raised: "#3a3028", overlay: "#322a23", primary: ["#ffe073", "#ffea9a", "#f8ce4a", "#3a2910"], secondary: ["#a54868", "#c15c7f", "#d06a90", "#fff2f6"], muted: ["#342c25", "#d0c0a6"], accent: ["#265f80", "#e0f5ff"], border: ["#f3ddba", "#fff4dc"], input: "#29221d", ring: "#ffe073", selection: ["#7b4c1f", "#fff9ee"], charts: ["#ffe073", "#e57899", "#75c7ef", "#ff9a62", "#77c99c", "#aaa1f2", "#efbd67", "#eb8cba"] }, tokens: { "gradient.bg": { type: "linear", angle: 180, stops: [{ color: "#2c2118" }, { color: "#211b17", position: 100 }] }, "gradient.surface": { type: "linear", angle: 180, stops: [{ color: "#3a3028" }, { color: "#2c251f", position: 100 }] }, "gradient.accent": { type: "linear", angle: 100, stops: [{ color: "#ffe073" }, { color: "#f59f5a", position: 100 }] }, "pattern.surface": [{ type: "dot", color: "#fff1d91f", radius: "1.5px", spacing: "1.5rem" }], "shadow.xs": [{ x: "2px", y: "2px", blur: "0", spread: "0", color: "#080604" }], "shadow.sm": [{ x: "4px", y: "4px", blur: "0", spread: "0", color: "#080604" }], "shadow.md": [{ x: "6px", y: "6px", blur: "0", spread: "0", color: "#080604" }], "shadow.lg": [{ x: "8px", y: "8px", blur: "0", spread: "0", color: "#080604" }] } }
+    }
+  };

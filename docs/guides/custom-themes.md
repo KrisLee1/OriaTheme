@@ -17,6 +17,17 @@ const runtime = createOriaThemeRuntime({
 
 Preset 仍不可编辑或删除；先复制为 custom，再进行业务侧修改。
 
+若应用只内置选定官方预设，可在包含单主题入口的 Presets 版本中直接组成自己的集合：
+
+```ts
+import { oriaOceanTheme } from "@oriatheme/presets/ocean";
+import { oriaForestTheme } from "@oriatheme/presets/forest";
+
+const appPresets = [oriaOceanTheme, oriaForestTheme];
+```
+
+复制并修改 custom theme：
+
 ```ts
 const copied = runtime.duplicateTheme("oria-default", {
   id: "brand-2026",
@@ -35,3 +46,5 @@ runtime.setTheme(copied.id);
 外部主题导入使用 `runtime.importTheme(json)`。导入内容会强制转为 custom；不能覆盖 preset。应用应展示 `OriaThemeError.code` 或 validation issues，而不要依赖错误文案。导入 v1（`oria-standard@1`）主题的 JSON 需要显式迁移：在 runtime config 注册 `migrations: [migrateOriaStandardV1ToV2]`，或使用 Core `importTheme()` 的 `migrate` 选项以取得 `warnings` / `requiresReview` 复核结果；未注册迁移时 v1 数据会被安全拒绝。详见[迁移指南](migrations.md)。
 
 删除当前 custom 主题时，runtime 自动回退到配置的 default theme。Preset 不可修改或删除；先复制再编辑。
+
+官方 v2 与新建 seed 主题使用完整 OKLCH 颜色。需要把主题色与独立透明度变量组合时，保持 Runtime 变量是完整颜色，并在 CSS 中使用 `oklch(from var(--oria-color-primary) l c h / var(--component-opacity))`；现有 HEX/RGB/HSL 自定义主题仍可导入和保存。

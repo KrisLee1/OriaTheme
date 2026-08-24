@@ -1,6 +1,6 @@
-# 官网文档页面信息架构与实施计划
+# 官网文档页面信息架构与维护规则
 
-本文定义 Phase 9 官网文档的内容边界、稳定 URL、页面职责与实施顺序。它是后续实现 `apps/website` 文档路由时的设计蓝图；仓库内的 specifications、公开 package root exports 和 TypeScript 声明仍是技术事实的权威来源。
+本文定义 Phase 9 官网文档的当前内容边界、稳定 URL、页面职责与维护顺序。`apps/website` 必须保持与此信息架构一致；仓库内的 specifications、公开 package root exports 和 TypeScript 声明仍是技术事实的权威来源。
 
 ## 目标与读者
 
@@ -25,7 +25,7 @@
 | `/[locale]/docs/use/appearance` | 外观模式 | 应用使用者、开发者 | 解释 light、dark、system、resolved mode 与偏好持久化的边界。 |
 | `/[locale]/docs/use/presets` | 官方预设 | 应用使用者 | 按目录分类浏览官方预设、切换预设并复制为可编辑 custom theme。 |
 | `/[locale]/docs/develop/quick-start` | 开发快速开始 | 开发者 | 按框架安装、初始化 runtime、切换主题并让组件消费 CSS variables。 |
-| `/[locale]/docs/develop/packages` | 包选择与安装 | 开发者 | 提供十个公开包的场景矩阵、依赖关系、CSS subpath 与 CLI 的开发时边界。 |
+| `/[locale]/docs/develop/packages` | 包选择与安装 | 开发者 | 提供十一个公开包的场景矩阵、依赖关系、CSS subpath 与 CLI 的开发时边界。 |
 | `/[locale]/docs/develop/styling` | 组件样式 | 开发者 | 使用语义 CSS variables、`@oriatheme/colors` 与 Tailwind v4 桥接。 |
 | `/[locale]/docs/develop/runtime` | Runtime、Bootstrap 与动画 | 开发者 | DOM runtime、Storage、首屏恢复、View Transition 和原子主题应用。 |
 | `/[locale]/docs/develop/react` | React 与 Next.js | 开发者 | Provider、Hook、SSR/Bootstrap 和 client-only 编辑器加载。 |
@@ -93,6 +93,7 @@
 | 浏览器运行时 | `@oriatheme/runtime-dom` | runtime、DOM variables、Storage、Bootstrap、预览与切换。 |
 | 框架适配 | `@oriatheme/react`、`@oriatheme/vue` | Provider/Plugin 与 Hook/Composable；不复制 runtime 状态。 |
 | 主题资产 | `@oriatheme/colors`、`@oriatheme/presets` | 稳定色库、CSS subpath、官方主题目录。 |
+| 构建桥接 | `@oriatheme/tailwind` | `oria-standard@2` 的 Tailwind CSS v4 静态 bridge 与 custom-prefix 生成器。 |
 | 编辑领域与桥接 | `@oriatheme/editor-core`、`@oriatheme/react-editor`、`@oriatheme/vue-editor` | 草稿、字段描述、会话和无可视 UI 的框架桥接。 |
 | 源码组件安装 | `@oriatheme/cli` | registry 安装、dry-run、diff、显式 overwrite 与本地源码所有权。 |
 
@@ -115,13 +116,13 @@
 5. SSR、DOM、Storage、框架或 CLI 边界，以及常见误用。
 6. 关联指南和版本核对信息。
 
-API 条目必须逐项核对该版本 package root 的 `.d.ts` / exports；不从 `src/`、`dist/` 深层路径或 registry template 生成消费代码。初版覆盖所有十个公开包，优先顺序为：`core` → `runtime-dom` → `react` / `vue` → `colors` / `presets` → `editor-core` → `react-editor` / `vue-editor` → `cli`。
+API 条目必须逐项核对该版本 package root 的 `.d.ts` / exports；不从 `src/`、`dist/` 深层路径或 registry template 生成消费代码。当前覆盖所有十一个公开包，顺序为：`core` → `runtime-dom` → `react` / `vue` → `colors` / `presets` → `tailwind` → `editor-core` → `react-editor` / `vue-editor` → `cli`。
 
 ## 内容来源与维护边界
 
 | 网站内容 | 事实来源 |
 | --- | --- |
-| 主题、模式、Token 与验证 | `specifications/theme-model.md`、`token-contract.md`、`core-api.md`。 |
+| 主题、模式、Token 与验证 | `specifications/theme-model.md`、`token-contract-v2.md`、`core-api.md`；`token-contract.md` 只作为 v1 legacy 迁移来源。 |
 | Runtime、Bootstrap、持久化与动画 | `runtime-dom.md`、`persistence-bootstrap.md`、`transitions.md`。 |
 | React / Vue API | `react-adapter.md`、`vue-adapter.md` 与对应 package root declaration。 |
 | 基础色与官方预设 | `@oriatheme/colors` public exports、`preset-catalog.md`。 |
@@ -130,12 +131,12 @@ API 条目必须逐项核对该版本 package root 的 `.d.ts` / exports；不�
 
 网站文档是面向使用者的发布内容，不替代上述规范。公开 API、持久化格式、Token Contract 或分发方式变更时，必须先更新相应规范，再在同一变更中同步网站内容与 API 参考。
 
-## 实施顺序
+## 维护顺序
 
-1. **内容基础与壳层**：建立文档内容模型、`/[locale]/docs` 及稳定 slug 路由、双语导航、桌面/窄屏目录、锚点和元数据。
-2. **应用使用者主路径**：完成编辑器、可编辑样式、基础色、外观模式和预设页面，并从编辑器路由互相链接。
-3. **开发接入主路径**：完成快速开始、包选择、CSS 样式、Runtime、React、Vue、自定义主题和应用预设页面。
-4. **编辑器、质量与 API**：完成 CLI/源码组件、性能/可访问性/排障，以及十个包的 API 参考。
+1. **内容基础与壳层**：先维护文档内容模型、`/[locale]/docs` 及稳定 slug 路由、双语导航、桌面/窄屏目录、锚点和元数据。
+2. **应用使用者主路径**：同步编辑器、可编辑样式、基础色、外观模式和预设页面，并保持编辑器路由互相链接。
+3. **开发接入主路径**：同步快速开始、包选择、CSS 样式、Runtime、React、Vue、自定义主题和应用预设页面。
+4. **编辑器、质量与 API**：同步 CLI/源码组件、性能/可访问性/排障，以及十一个包的 API 参考。
 5. **内容验收**：逐页核对 package root exports、运行示例、双语链接、窄屏导航、键盘访问和静态/SSR 输出；没有证据的版本、兼容性或性能承诺不得写入。
 
 ## 完成标准

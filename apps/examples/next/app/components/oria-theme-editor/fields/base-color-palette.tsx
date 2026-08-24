@@ -199,7 +199,7 @@ export function BaseColorPalette({ id, label, value, onSelect }: {
         <label data-oria-editor-palette-search htmlFor={`${id}-search`}>
           <span className="oria-editor-visually-hidden">Search base colors</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
-          <input ref={searchRef} id={`${id}-search`} type="search" value={query} placeholder="Search family, shade, or hex" autoComplete="off" onChange={event => setQuery(event.target.value)} />
+          <input ref={searchRef} id={`${id}-search`} type="search" value={query} placeholder="Search family, shade, or OKLCH" autoComplete="off" onChange={event => setQuery(event.target.value)} />
         </label>
         <p data-oria-editor-palette-count aria-live="polite">{resultCount} {resultCount === 1 ? "color" : "colors"}</p>
         <div data-oria-editor-palette-groups data-view={view}>

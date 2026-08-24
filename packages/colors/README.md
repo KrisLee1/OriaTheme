@@ -1,6 +1,6 @@
 # @oriatheme/colors
 
-Stable Oria base-color scales with Tailwind-compatible family and shade topology. These colors are independent of the active theme and do not change during theme switching.
+Stable OKLCH Oria base-color scales with Tailwind-compatible family and shade topology. These colors are independent of the active theme and do not change during theme switching.
 
 ## Install
 
@@ -13,11 +13,11 @@ npm install @oriatheme/colors
 ```ts
 import { oriaColors, toOriaColorVariable } from "@oriatheme/colors";
 
-console.log(oriaColors.blue[500]);
+console.log(oriaColors.blue[500]); // "oklch(...)"
 console.log(toOriaColorVariable("blue", 500)); // "--oria-palette-blue-500"
 ```
 
-For CSS, import `@oriatheme/colors/styles.css`. For Tailwind v4-compatible color aliases, import `@oriatheme/colors/tailwind.css` once in the application stylesheet.
+For CSS, import `@oriatheme/colors/styles.css`. For Tailwind v4-compatible color aliases, import `@oriatheme/colors/tailwind.css` once in the application stylesheet. Public values are complete CSS colors, so they can be used directly or composed with an opacity variable through relative-color syntax.
 
 ## Documentation
 

@@ -2,7 +2,7 @@
 
 [English](en/theme-editors.md) · [指南首页](README.md)
 
-> 状态：React/Vue registry 模板、hash manifest、headless bridge 和 CLI 已随 `0.1.0` 发布；`https://theme.oria.org.cn/registry/v1` 已完成 HTTPS 与干净使用方验证。registry item 当前为 `0.2.0`，按 `oria-standard@2` contract 渲染，要求 `@oriatheme/core@^0.3.0`。以下命令可用于公共 registry 安装。
+> 状态：公开 HTTPS registry 当前仍提供 `0.2.0`。仓库已准备 `0.3.0`（OKLCH 色库桥接与 TypeScript 复制/下载），要求下一批兼容包版本；本任务未部署 registry，因此部署前通过 `@latest` 安装仍得到 `0.2.0`。
 
 OriaTheme 的可见编辑器 UI 使用源码组件模式。组件模板位于 `packages/cli/registry/templates/`；React、Vue 与 shared layout 已拆成多文件模板并由 manifest 记录 SHA-256。安装后，Toolbar、Tabs、搜索、token 字段、阶梯、阴影、浮层、预览和 CSS 都位于用户项目的 `components/oria-theme-editor/` 目录，可直接修改和提交到 Git。
 
@@ -84,7 +84,7 @@ defineProps<{ runtime: OriaThemeRuntime }>();
 - 提供 runtime 后，最新完整有效 revision 会自动预览；默认 UI 没有 Preview/Stop Preview 按钮。
 - 非法的中间输入保留最后有效画面，不部分应用主题。
 - 自动预览不写入 preference 或 Storage。Save 才会完整校验并创建/更新 custom theme。
-- Export JSON 导出当前完整草稿；Import JSON 只原子替换内存草稿。
+- Export → Copy TypeScript 或 Download TypeScript 生成可直接放入应用源码、`satisfies ThemeDefinition` 的完整常量，并把旧草稿中的 HEX 颜色写成 OKLCH；下载文件名为 `<theme-id>.oria-theme.ts`。Copy JSON / Download JSON 保持 `.oria-theme.json` 文件工作流。导出不保存或修改草稿；Import JSON 只原子替换内存草稿。
 
 ## 安全
 

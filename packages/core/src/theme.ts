@@ -1,5 +1,6 @@
 import { issue, OriaThemeError } from "./errors.js";
 import type { OriaThemeErrorCode } from "./errors.js";
+import { isColorValue, shiftOklchLightness, staticContrastRatio, toOklchColor } from "./color.js";
 import { isTokenPath } from "./contract.js";
 import { oriaDefaultTheme, oriaStandardContract } from "./standard-v2.js";
 import type { Clock, CloneIdentity, CreateThemeOptions, CssNameStyle, GradientDefinition, GradientPosition, GradientStop, ImportResult, ImportThemeOptions, NoisePatternVariant, PatternLayer, PatternLayers, ResolveOptions, ResolvedMode, ResolvedTheme, ShadowLayer, ThemeDefinition, ThemeMigrationResult, ThemeSeed, ThemeTokenInput, TokenContract, TokenDefinition, TokenPath, TokenReference, TokenType, TokenValue, ValidationIssue, ValidationResult } from "./types.js";
@@ -8,10 +9,6 @@ const ID = /^[a-z][a-z0-9-]{1,63}$/;
 const UNSAFE = /[;{}<>]/;
 const DIMENSION = /^(?:0|[-+]?(?:\d+|\d*\.\d+)(?:px|rem|em|%|vw|vh|vmin|vmax|ch|ex|cm|mm|in|pt|pc))$/;
 const DURATION = /^(?:0|[-+]?(?:\d+|\d*\.\d+)(?:ms|s))$/;
-const HEX = /^#(?:[\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i;
-const RGB = /^rgba?\(\s*(?:\d{1,3}%?\s*,\s*){2}\d{1,3}%?(?:\s*[,/]\s*(?:0|1|0?\.\d+|\d{1,3}%))?\s*\)$/i;
-const HSL = /^hsla?\(\s*[-+]?\d+(?:\.\d+)?(?:deg|rad|turn)?\s*(?:,|\s)\s*\d+(?:\.\d+)?%\s*(?:,|\s)\s*\d+(?:\.\d+)?%(?:\s*[,/]\s*(?:0|1|0?\.\d+|\d{1,3}%))?\s*\)$/i;
-const NAMED = new Set(["transparent", "currentcolor", "black", "white", "red", "green", "blue", "gray", "grey", "yellow", "purple", "orange", "pink", "brown"]);
 const GRADIENT_POSITIONS = new Set(["top left", "top", "top right", "left", "center", "right", "bottom left", "bottom", "bottom right"]);
 const NOISE_VARIANTS = new Set<NoisePatternVariant>(["paper", "film", "frosted"]);
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
@@ -115,8 +112,10 @@ export function cloneTheme(theme: ThemeDefinition, identity: CloneIdentity, cloc
 export function createThemeFromSeed(seed: ThemeSeed, options: CreateThemeOptions): ThemeDefinition {
   if (!validColor(seed.color) || !ID.test(options.id) || options.name.trim().length === 0) throw new OriaThemeError("INVALID_THEME", "Seed color, id, or name is invalid.");
   const cloned = cloneTheme(oriaDefaultTheme, { id: options.id, name: options.name }, options.clock);
-  const primaryForeground = preferredForeground(seed.color);
-  const update = (set: ThemeDefinition["modes"]["light"]): ThemeDefinition["modes"]["light"] => Object.freeze({ ...set, "color.primary": seed.color, "color.primary.hover": shiftHex(seed.color, -0.12), "color.primary.active": shiftHex(seed.color, -0.22), "color.primary.fg": primaryForeground, "color.ring": seed.color } as Record<TokenPath, ThemeTokenInput>);
+  const primary = toOklchColor(seed.color);
+  if (!primary) throw new OriaThemeError("INVALID_THEME", "Seed color must be a static color.");
+  const primaryForeground = preferredForeground(primary);
+  const update = (set: ThemeDefinition["modes"]["light"]): ThemeDefinition["modes"]["light"] => Object.freeze({ ...set, "color.primary": primary, "color.primary.hover": shiftOklchLightness(primary, -0.06)!, "color.primary.active": shiftOklchLightness(primary, -0.11)!, "color.primary.fg": primaryForeground, "color.ring": primary } as Record<TokenPath, ThemeTokenInput>);
   return freezeTheme({ ...cloned, modes: { light: update(cloned.modes.light), dark: update(cloned.modes.dark) } });
 }
 
@@ -186,7 +185,7 @@ function valueError(value: unknown, definition: TokenDefinition): string | undef
   return "Unsupported token type.";
 }
 function safeString(value: string): boolean { return value.length > 0 && value.length < 512 && !UNSAFE.test(value) && !/\b(?:url|var|expression)\s*\(/i.test(value); }
-function validColor(value: string): boolean { return safeString(value) && (HEX.test(value) || RGB.test(value) || HSL.test(value) || NAMED.has(value.toLowerCase())); }
+function validColor(value: string): boolean { return safeString(value) && isColorValue(value); }
 function validShadow(value: unknown): value is ShadowLayer {
   return object(value) && typeof value.x === "string" && DIMENSION.test(value.x) && typeof value.y === "string" && DIMENSION.test(value.y) && typeof value.blur === "string" && DIMENSION.test(value.blur) && typeof value.spread === "string" && DIMENSION.test(value.spread) && typeof value.color === "string" && validColor(value.color) && (value.inset === undefined || typeof value.inset === "boolean");
 }
@@ -287,5 +286,7 @@ function noisePattern(color: string, variant: NoisePatternVariant, tileSize: str
 }
 function uniqueId(seed: string, themes: readonly ThemeDefinition[]): string { const ids = new Set(themes.map(theme => theme.id)); for (let index = 2; ; index += 1) { const suffix = `-${index}`; const id = `${seed.slice(0, 64 - suffix.length)}${suffix}`; if (!ids.has(id)) return id; } }
 function freezeTheme(theme: ThemeDefinition): ThemeDefinition { return Object.freeze({ ...theme, contract: Object.freeze({ ...theme.contract }), modes: Object.freeze({ light: Object.freeze(stableClone(theme.modes.light)), dark: Object.freeze(stableClone(theme.modes.dark)) }), ...(theme.metadata === undefined ? {} : { metadata: Object.freeze({ ...theme.metadata }) }) }); }
-function preferredForeground(color: string): string { const hex = color.slice(1); if (!(hex.length === 3 || hex.length === 6)) return "#ffffff"; const full = hex.length === 3 ? [...hex].map(char => char + char).join("") : hex; const [red, green, blue] = [0, 2, 4].map(index => Number.parseInt(full.slice(index, index + 2), 16)); return (red! * 299 + green! * 587 + blue! * 114) / 1000 > 150 ? "#0f172a" : "#ffffff"; }
-function shiftHex(color: string, amount: number): string { const hex = color.slice(1); if (!(hex.length === 3 || hex.length === 6)) return color; const full = hex.length === 3 ? [...hex].map(char => char + char).join("") : hex; return `#${[0, 2, 4].map(index => Math.max(0, Math.min(255, Math.round(Number.parseInt(full.slice(index, index + 2), 16) * (1 + amount)))).toString(16).padStart(2, "0")).join("")}`; }
+function preferredForeground(color: string): string {
+  const dark = toOklchColor("#0f172a")!; const light = toOklchColor("#ffffff")!;
+  return staticContrastRatio(dark, color) >= staticContrastRatio(light, color) ? dark : light;
+}

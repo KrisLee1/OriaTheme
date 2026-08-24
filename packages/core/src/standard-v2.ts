@@ -1,4 +1,5 @@
 import { defineTokenContract, token } from "./contract.js";
+import { toOklchColor } from "./color.js";
 import { OriaThemeError } from "./errors.js";
 import { oriaDefaultThemeV1, oriaStandardContractV1 } from "./standard.js";
 import { resolveThemeWithContract, validateTheme } from "./theme.js";
@@ -81,9 +82,22 @@ function remapReferences(value: ThemeTokenInput): ThemeTokenInput {
   return value;
 }
 
+function normalizeColorValue(value: ThemeTokenInput, type: TokenDefinition["type"]): ThemeTokenInput {
+  if (value !== null && typeof value === "object" && !Array.isArray(value) && "$ref" in value) return value;
+  if (type === "color" && typeof value === "string") return toOklchColor(value) ?? value;
+  if (type === "shadow" && Array.isArray(value)) return value.map(layer => typeof layer === "object" && layer !== null && "color" in layer && typeof layer.color === "string" ? { ...layer, color: toOklchColor(layer.color) ?? layer.color } : layer) as ThemeTokenInput;
+  if (type === "gradient" && value !== null && typeof value === "object" && !Array.isArray(value) && "stops" in value && Array.isArray(value.stops)) return { ...value, stops: value.stops.map(stop => typeof stop === "object" && stop !== null && "color" in stop && typeof stop.color === "string" ? { ...stop, color: toOklchColor(stop.color) ?? stop.color } : stop) } as ThemeTokenInput;
+  if (type === "pattern" && Array.isArray(value)) return value.map(layer => typeof layer === "object" && layer !== null && "color" in layer && typeof layer.color === "string" ? { ...layer, color: toOklchColor(layer.color) ?? layer.color } : layer) as ThemeTokenInput;
+  return value;
+}
+
 function convertModeTokens(theme: ThemeDefinition, mode: "light" | "dark", warnings: MigrationWarning[], dimension: (path: string) => string | undefined): Readonly<Record<TokenPath, ThemeTokenInput>> {
   const next: Record<string, ThemeTokenInput> = {};
-  for (const [from, to] of Object.entries(directMappings)) { const value = valueFor(theme, mode, from); if (value !== undefined) next[to] = remapReferences(value); }
+  for (const [from, to] of Object.entries(directMappings)) {
+    const value = valueFor(theme, mode, from);
+    const definition = oriaStandardContract.tokens[to as TokenPath];
+    if (value !== undefined && definition) next[to] = normalizeColorValue(remapReferences(value), definition.type);
+  }
   const space = dimension("spacing.1") ?? "0.25rem";
   next.space = space; next.radius = dimension("shape.radius.sm") ?? "0.25rem";
   for (const size of ["sm", "md", "lg"] as const) {
@@ -116,11 +130,29 @@ export function migrateOriaStandardV1ToV2(input: unknown): ThemeMigrationResult 
  */
 const literalDimension = (mode: "light" | "dark") => (path: string): string | undefined => valueFor(oriaDefaultThemeV1, mode, path) as string | undefined;
 const migratedDefault: ThemeDefinition = { schemaVersion: 1, contract: { name: "oria-standard", version: 2 }, id: oriaDefaultThemeV1.id, name: oriaDefaultThemeV1.name, kind: oriaDefaultThemeV1.kind, modes: { light: convertModeTokens(oriaDefaultThemeV1, "light", [], literalDimension("light")), dark: convertModeTokens(oriaDefaultThemeV1, "dark", [], literalDimension("dark")) } };
-const v2DefaultShared = (tokens: Readonly<Record<TokenPath, ThemeTokenInput>>): Readonly<Record<TokenPath, ThemeTokenInput>> => Object.freeze({ ...tokens,
+const defaultNeutralColors = (dark: boolean): Readonly<Record<TokenPath, ThemeTokenInput>> => Object.freeze(Object.fromEntries(Object.entries(dark ? {
+  "color.bg": "#141414", "color.fg": "#f2f2f0", "color.surface": "#1c1c1b", "color.surface.fg": "#f2f2f0", "color.surface.raised": "#272726", "color.surface.raised.fg": "#f6f6f3", "color.overlay": "#222221", "color.overlay.fg": "#f6f6f3",
+  "color.secondary": "#2c2c2b", "color.secondary.fg": "#f6f6f3", "color.secondary.hover": "#383837", "color.secondary.active": "#454543", "color.muted": "#232322", "color.muted.fg": "#b8b8b4", "color.input": "#1b1b1a"
+} : {
+  "color.bg": "#f5f5f3", "color.fg": "#20201f", "color.surface": "#f8f8f6", "color.surface.fg": "#20201f", "color.surface.raised": "#fefefd", "color.surface.raised.fg": "#20201f", "color.overlay": "#ffffff", "color.overlay.fg": "#20201f",
+  "color.secondary": "#fafaf8", "color.secondary.fg": "#242423", "color.secondary.hover": "#f0f0ee", "color.secondary.active": "#e5e5e2", "color.muted": "#ececea", "color.muted.fg": "#666663", "color.border.strong": "#d2d2cf", "color.input": "#fafaf8", "color.scrim": "#20201f66"
+}).map(([path, value]) => [path, toOklchColor(value) ?? value])) as Record<TokenPath, ThemeTokenInput>);
+const lightNeutralShadows: Readonly<Record<TokenPath, ThemeTokenInput>> = Object.freeze({
+  "shadow.2xs": [{ x: "0", y: "1px", blur: "2px", spread: "-1px", color: toOklchColor("#2020200d")! }],
+  "shadow.xs": [{ x: "0", y: "2px", blur: "6px", spread: "-3px", color: toOklchColor("#20202014")! }, { x: "0", y: "-1px", blur: "0", spread: "0", color: toOklchColor("#ffffffd9")!, inset: true }],
+  "shadow.sm": [{ x: "0", y: "6px", blur: "16px", spread: "-8px", color: toOklchColor("#2020201f")! }, { x: "0", y: "-1px", blur: "0", spread: "0", color: toOklchColor("#ffffffe6")!, inset: true }],
+  "shadow.md": [{ x: "0", y: "14px", blur: "34px", spread: "-18px", color: toOklchColor("#2020202e")! }],
+  "shadow.lg": [{ x: "0", y: "20px", blur: "46px", spread: "-22px", color: toOklchColor("#20202038")! }],
+  "shadow.xl": [{ x: "0", y: "26px", blur: "60px", spread: "-26px", color: toOklchColor("#20202042")! }],
+  "shadow.2xl": [{ x: "0", y: "34px", blur: "80px", spread: "-32px", color: toOklchColor("#2020204d")! }],
+  "shadow.inner": [{ x: "0", y: "2px", blur: "5px", spread: "0", color: toOklchColor("#2020201f")!, inset: true }, { x: "0", y: "-1px", blur: "0", spread: "0", color: toOklchColor("#ffffff")!, inset: true }],
+  "shadow.highlight": [{ x: "0", y: "-1px", blur: "0", spread: "0", color: toOklchColor("#ffffff")!, inset: true }, { x: "-1px", y: "0", blur: "0", spread: "0", color: toOklchColor("#ffffffe6")!, inset: true }, { x: "0", y: "1px", blur: "0", spread: "0", color: toOklchColor("#b8b8b84d")!, inset: true }, { x: "1px", y: "0", blur: "0", spread: "0", color: toOklchColor("#b8b8b83d")!, inset: true }]
+} as Record<TokenPath, ThemeTokenInput>);
+const v2DefaultShared = (tokens: Readonly<Record<TokenPath, ThemeTokenInput>>, dark: boolean): Readonly<Record<TokenPath, ThemeTokenInput>> => Object.freeze({ ...tokens, ...defaultNeutralColors(dark), ...(dark ? {} : lightNeutralShadows),
   space: "0.25rem", radius: "0.25rem", "control.height.sm": 9, "control.height.md": 11, "control.height.lg": 13, "control.padding.x.sm": 3, "control.padding.x.md": 4, "control.padding.x.lg": 5,
   "leading.tight": 1.25, "leading.snug": 1.375, "leading.normal": 1.5, "leading.relaxed": 1.625, "leading.loose": 2,
   "tracking.tighter": "-0.05em", "tracking.tight": "-0.025em", "tracking.normal": "0em", "tracking.wide": "0.025em", "tracking.wider": "0.05em", "tracking.widest": "0.1em",
   "blur.xs": "4px", "blur.sm": "8px", "blur.md": "12px", "blur.lg": "16px", "blur.xl": "24px", "blur.2xl": "40px", "blur.3xl": "64px"
 } as Record<TokenPath, ThemeTokenInput>);
 /** The default preset using the published Tailwind-aligned geometry baseline. */
-export const oriaDefaultTheme: ThemeDefinition = Object.freeze({ ...migratedDefault, modes: Object.freeze({ light: v2DefaultShared(migratedDefault.modes.light), dark: v2DefaultShared(migratedDefault.modes.dark) }) });
+export const oriaDefaultTheme: ThemeDefinition = Object.freeze({ ...migratedDefault, modes: Object.freeze({ light: v2DefaultShared(migratedDefault.modes.light, false), dark: v2DefaultShared(migratedDefault.modes.dark, true) }) });

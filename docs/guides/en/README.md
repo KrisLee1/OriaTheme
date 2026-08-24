@@ -4,7 +4,7 @@
 
 This is the public release-documentation entry point for OriaTheme users and contributors. Chinese is the primary maintenance language, and every release guide has a corresponding English document.
 
-> Release status: ten public `@oriatheme/*` packages are published on npm (versions evolve independently; see npm for the latest), and the public HTTPS registry is verified. `@oriatheme/tailwind` is an implemented eleventh public package that ships for the first time with the current v2 release batch. The documented pnpm/npm/Yarn/Bun installation and temporary-runner commands are available to consumer projects.
+> Release status: all eleven public `@oriatheme/*` packages are published on npm (versions evolve independently; see npm for the latest), and the public HTTPS registry is verified. The current default standard is `oria-standard@2`. The documented pnpm/npm/Yarn/Bun installation and temporary-runner commands are available to consumer projects.
 
 ## Start here
 
@@ -14,6 +14,7 @@ This is the public release-documentation entry point for OriaTheme users and con
 | Choose the correct package and public entry point | [Packages and public entry points](packages.md) | [包与公开入口](../packages.md) |
 | Install and run the CLI with pnpm, npm, Yarn, or Bun | [Package-manager compatibility](package-managers.md) | [包管理器兼容性](../package-managers.md) |
 | Develop, test, and build this repository | [Developer guide](development.md) | [开发者指南](../development.md) |
+| Understand the architecture, package boundaries, and runtime flows | [Principles and architecture](architecture.md) | [原理与架构](../architecture.md) |
 | Diagnose installation, first-paint, styling, and CLI problems | [Troubleshooting](troubleshooting.md) | [故障排查](../troubleshooting.md) |
 
 ## Integration topics

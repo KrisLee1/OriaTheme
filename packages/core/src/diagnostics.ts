@@ -1,4 +1,5 @@
 import { issue } from "./errors.js";
+import { staticContrastRatio } from "./color.js";
 import { resolveThemeWithContract, validateTheme } from "./theme.js";
 import type { ThemeDefinition, ThemeDiagnostics, TokenContract, TokenPath, ValidationIssue } from "./types.js";
 
@@ -15,16 +16,9 @@ function contrastPairs(contract: TokenContract): readonly (readonly [string, str
   return pairs.filter(([background, foreground]) => Boolean(contract.tokens[background as TokenPath] && contract.tokens[foreground as TokenPath]));
 }
 
-/** Computes WCAG relative-luminance contrast for static hex colors. */
+/** Computes WCAG relative-luminance contrast for supported opaque static colors. */
 export function contrastRatio(foreground: string, background: string): number {
-  const foregroundRgb = parseHex(foreground); const backgroundRgb = parseHex(background);
-  if (!foregroundRgb || !backgroundRgb) return Number.NaN;
-  const lum = ([red, green, blue]: readonly number[]): number => {
-    const linear = [red, green, blue].map(channel => { const unit = channel! / 255; return unit <= 0.04045 ? unit / 12.92 : ((unit + 0.055) / 1.055) ** 2.4; });
-    return 0.2126 * linear[0]! + 0.7152 * linear[1]! + 0.0722 * linear[2]!;
-  };
-  const [bright, dark] = [lum(foregroundRgb), lum(backgroundRgb)].sort((left, right) => right - left);
-  return (bright! + 0.05) / (dark! + 0.05);
+  return staticContrastRatio(foreground, background);
 }
 
 /** Returns blocking validation errors and non-blocking WCAG contrast warnings for both modes. */
@@ -38,16 +32,9 @@ export function analyzeTheme(theme: ThemeDefinition, contract: TokenContract): T
     catch (error) { errors.push(error instanceof Error && "toIssue" in error ? (error as { toIssue(): ValidationIssue }).toIssue() : issue("INVALID_THEME", "Theme resolution failed.")); continue; }
     for (const [background, foreground] of contrastPairs(contract)) {
       const ratio = contrastRatio(variables[`--oria-${foreground.replace(/\./g, "-")}`]!, variables[`--oria-${background.replace(/\./g, "-")}`]!);
-      if (!Number.isFinite(ratio)) warnings.push({ pair: `${background}/${foreground} (${mode})`, ratio, level: "warning", message: "Contrast could not be calculated from a non-hex color." });
+      if (!Number.isFinite(ratio)) warnings.push({ pair: `${background}/${foreground} (${mode})`, ratio, level: "warning", message: "Contrast could not be calculated from a non-static or translucent color." });
       else if (ratio < 4.5) warnings.push({ pair: `${background}/${foreground} (${mode})`, ratio, level: "warning", message: `Contrast ratio ${ratio.toFixed(2)} is below WCAG AA body text guidance.` });
     }
   }
   return { errors, warnings };
-}
-
-function parseHex(value: string): readonly [number, number, number] | undefined {
-  const source = value.trim().replace(/^#/, "");
-  if (!/^(?:[\da-f]{3}|[\da-f]{6})$/i.test(source)) return undefined;
-  const expanded = source.length === 3 ? [...source].map(char => char + char).join("") : source;
-  return [Number.parseInt(expanded.slice(0, 2), 16), Number.parseInt(expanded.slice(2, 4), 16), Number.parseInt(expanded.slice(4, 6), 16)];
 }

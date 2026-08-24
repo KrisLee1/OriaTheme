@@ -31,7 +31,8 @@ createThemeFromSeed(seed: ThemeSeed, options: CreateThemeOptions): ThemeDefiniti
 - 标准 contract 主题可直接解析；扩展 contract 主题必须通过 `ResolveOptions.contract` 提供其已注册的 contract。
 - `normalizeTheme` 只做确定性规范化，不改变主题视觉语义。
 - `cloneTheme` 输出 `kind: "custom"` 并更新时间。
-- Seed 算法优先使用 OKLCH，同时生成 light/dark；若算法质量未达标，不阻塞完整 token 模式。
+- Seed 接受可静态解析的 CSS color，使用 OKLCH 生成 light/dark，并输出完整 OKLCH 颜色；若算法质量未达标，不阻塞完整 token 模式。
+- Color token 接受受限静态 OKLCH、HEX、RGB、HSL 与已列入 allowlist 的 named color；包含 URL、变量或任意 CSS 表达式的用户字符串不属于该输入契约。
 
 ## 导入与导出
 
@@ -100,4 +101,4 @@ analyzeTheme(theme: ThemeDefinition, contract: TokenContract): ThemeDiagnostics;
 contrastRatio(foreground: string, background: string): number;
 ```
 
-Diagnostics 区分 error 和 warning。Schema/引用错误阻止解析；对比度警告默认不阻止用户保存，但内置 preset 构建时必须无关键对比度警告。
+Diagnostics 区分 error 和 warning。Schema/引用错误阻止解析；对比度警告默认不阻止用户保存，但内置 preset 构建时必须无关键对比度警告。`contrastRatio()` 与对比度诊断可计算不透明的静态 OKLCH、HEX、RGB、HSL 和受支持 named color；`currentColor` 或带 alpha 的颜色没有确定背景合成结果，返回不可计算而不是猜测。

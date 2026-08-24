@@ -2,7 +2,7 @@
 
 [中文](../theme-editors.md) · [Guide index](README.md)
 
-> Status: React/Vue registry templates, hash manifests, headless bridges, and the CLI ship in `0.1.0`. `https://theme.oria.org.cn/registry/v1` has completed HTTPS and clean-consumer verification, so the commands below can install from the public registry. The registry item is currently `0.2.0`, renders the `oria-standard@2` contract, and requires `@oriatheme/core@^0.3.0`.
+> Status: the public HTTPS registry still serves item `0.2.0`. This repository prepares `0.3.0` with the OKLCH color-control bridge and TypeScript copy/download actions, requiring the next compatible package batch. This task does not deploy the registry, so `@latest` continues to install `0.2.0` until that deployment.
 
 OriaTheme distributes its visible editor as source-owned components. The editor component templates live in `packages/cli/registry/templates/`; React, Vue, and shared layout files are split by responsibility and recorded with SHA-256 hashes. After installation, the toolbar, tabs, search, token fields, scales, shadows, overlays, preview, and CSS live in the consumer's `components/oria-theme-editor/` directory and can be edited and committed.
 
@@ -84,7 +84,7 @@ defineProps<{ runtime: OriaThemeRuntime }>();
 - When a runtime is provided, the latest complete valid revision is previewed automatically. The default UI has no Preview/Stop Preview buttons.
 - Invalid intermediate input preserves the last valid view and never partially applies a theme.
 - Automatic preview does not write preference or Storage. Save fully validates and then creates or updates a custom theme.
-- Export serializes the complete current draft; Import atomically replaces only the in-memory draft.
+- Export → Copy TypeScript or Download TypeScript generates a paste-ready complete constant using `satisfies ThemeDefinition` and writes legacy HEX colors as OKLCH; downloads use `<theme-id>.oria-theme.ts`. Copy JSON and Download JSON retain the `.oria-theme.json` workflow. Export neither saves nor mutates the draft; Import atomically replaces only the in-memory draft.
 
 ## Security
 

@@ -24,7 +24,7 @@ rg -i "<component|capability|interaction>" docs/ui
 | `LinearSlider` | `registry/templates/react/theme-editor/fields/linear-slider.tsx` | Pointer Capture、逐帧提交和键盘步进的统一滑块 | 稳定 |
 | `EditorSelect` | React `fields/editor-select.tsx` / Vue `fields/EditorSelect.vue` | 带原生键盘语义的统一下拉框 chrome | 稳定高度、主题化边框、无障碍焦点、指示箭头；供 Gradient 与 Pattern 的 Type、Style 和 Add layer 选择使用 |
 | `ConfirmationDialog` | `registry/templates/react/theme-editor/overlays/confirmation-dialog.tsx` | 重置、dirty 离开和破坏性操作的可访问确认模态 | 稳定 |
-| `ResetMenu` / `ImportDialog` / `ExportMenu` / `IssuesPopover` | `registry/templates/react/theme-editor/overlays/` | 锚定菜单、文件卡片与粘贴式原子导入、`.oria-theme.json` 下载、Save 左侧三态校验反馈与问题导航；浮层消费 Overlay / Overlay foreground + background blur，不得绕过 session/Core | 稳定 |
+| `ResetMenu` / `ImportDialog` / `ExportMenu` / `IssuesPopover` | `registry/templates/react/theme-editor/overlays/` | 锚定菜单、文件卡片与粘贴式原子导入、`.oria-theme.ts` / `.oria-theme.json` 下载、Save 左侧三态校验反馈与问题导航；浮层消费 Overlay / Overlay foreground + background blur，不得绕过 session/Core | 稳定 |
 | `ShadowLayerEditor` / `ShadowPreview` | `registry/templates/react/theme-editor/shadows/` | 多层阴影的结构化编辑与预览 | 稳定 |
 
 ## 共享规则

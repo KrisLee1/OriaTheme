@@ -1,11 +1,13 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cloneTheme, createThemeFromSeed, migrateOriaStandardV1ToV2, oriaDefaultTheme, oriaDefaultThemeV1 } from "@oriatheme/core";
+import { cloneTheme, createThemeFromSeed, migrateOriaStandardV1ToV2, oriaDefaultTheme, oriaDefaultThemeV1, resolveTheme } from "@oriatheme/core";
 import { createOriaThemeRuntime } from "../src/index.js";
 import type { PersistedThemeStateV1, ThemeStorage } from "../src/index.js";
 
 const domDocument = globalThis.document;
 const baseConfig = () => ({ presets: [oriaDefaultTheme], defaultThemeId: "oria-default", target: domDocument, storage: false as const });
+const lightBackground = resolveTheme(oriaDefaultTheme, "light").variables["--oria-color-bg"];
+const darkBackground = resolveTheme(oriaDefaultTheme, "dark").variables["--oria-color-bg"];
 const originalMatchMedia = globalThis.matchMedia;
 const originalViewTransition = (domDocument as Document & { startViewTransition?: unknown }).startViewTransition;
 afterEach(() => { Object.defineProperty(globalThis, "matchMedia", { configurable: true, value: originalMatchMedia }); Object.defineProperty(domDocument, "startViewTransition", { configurable: true, value: originalViewTransition }); domDocument.head.innerHTML = ""; domDocument.documentElement.removeAttribute("data-oria-theme"); domDocument.documentElement.removeAttribute("data-oria-mode"); domDocument.documentElement.removeAttribute("data-oria-transition"); ["--oria-transition-x", "--oria-transition-y", "--oria-transition-radius", "--oria-transition-duration"].forEach(name => domDocument.documentElement.style.removeProperty(name)); globalThis.localStorage.clear(); });
@@ -49,7 +51,7 @@ describe("runtime DOM lifecycle", () => {
     expect(text).toBe(initial); expect(writes).toBe(0);
     runtime.setAppearance("dark"); runtime.setAppearance("light");
     expect(runtime.getSnapshot().resolvedMode).toBe("light");
-    expect(text).toContain("--oria-color-bg:#f1f3f4");
+    expect(text).toContain(`--oria-color-bg:${lightBackground}`);
     expect(writes).toBe(2);
   });
 
@@ -89,7 +91,7 @@ describe("runtime DOM lifecycle", () => {
     expect(transitions[0]?.skipTransition).toHaveBeenCalledTimes(1);
     expect(transitions[1]?.skipTransition).toHaveBeenCalledTimes(1);
     expect(runtime.getSnapshot().resolvedMode).toBe("dark");
-    expect(domDocument.head.querySelector("style[data-oria-theme-runtime]")?.textContent).toContain("--oria-color-bg:#101418");
+    expect(domDocument.head.querySelector("style[data-oria-theme-runtime]")?.textContent).toContain(`--oria-color-bg:${darkBackground}`);
   });
 
   it("reveals the new theme from the requested circular origin and clears transient state", async () => {
@@ -174,7 +176,7 @@ describe("persistence, custom themes, and preview", () => {
   it("persists main state and active snapshot using the default LocalStorage adapter", () => {
     const runtime = createOriaThemeRuntime({ presets: [oriaDefaultTheme], defaultThemeId: "oria-default", target: domDocument, storageKey: "test-oria" }); runtime.start(); runtime.setAppearance("dark");
     expect(JSON.parse(globalThis.localStorage.getItem("test-oria:state:v1") ?? "{}").preference.appearance).toBe("dark");
-    expect(JSON.parse(globalThis.localStorage.getItem("test-oria:active:v1") ?? "{}").darkVariables["--oria-color-bg"]).toBe("#101418");
+    expect(JSON.parse(globalThis.localStorage.getItem("test-oria:active:v1") ?? "{}").darkVariables["--oria-color-bg"]).toBe(darkBackground);
   });
 
   it("accepts external validated state while preserving an active preview", () => {

@@ -14,7 +14,7 @@
 
 仓库可核实的既有预设为 4 款：Default、Ocean、Forest、Aurora。需求文字中的“已经有的 5 款”已确认是笔误；没有缺失主题。Aurora 直接复用既有 `oria-aurora`，不得创建重复 ID 或同名副本。
 
-原 Phase 6 目录为 36 款：既有 4 款 + 新增 33 个方向 - 与既有 Aurora 重合 1 款。2026-07-18 先按新增需求加入 Line Art，再因 System Glass 与 Glass 定位重叠而移除前者；2026-07-21 根据用户提供的参考截图新增 Punchcard、Sketchbook、Soft Clay、Golden Bazaar 与 Theorem，当前目录为 41 款，所有条目均已实现。2026-07-21 Document Canvas 更名为 Manuscript，预览顺序调整为 Default 之后依次是 Manuscript 与 Mono～Memphis 视觉风格组，其余主题保持原相对顺序；同日经 ADR-0016 将稳定 ID 与具名导出同步为 `oria-manuscript` / `oriaManuscriptTheme`，token 数据不变。
+原 Phase 6 目录为 36 款：既有 4 款 + 新增 33 个方向 - 与既有 Aurora 重合 1 款。2026-07-18 先按新增需求加入 Line Art，再因 System Glass 与 Glass 定位重叠而移除前者；2026-07-21 根据用户提供的参考截图新增 Punchcard、Sketchbook、Soft Clay、Golden Bazaar 与 Theorem；2026-08-24 根据新的图片参考新增 Redline、Line Blaze 与 Green Lite，当前目录为 44 款，所有条目均已实现。2026-07-21 Document Canvas 更名为 Manuscript，预览顺序调整为 Default 之后依次是 Manuscript 与 Mono～Memphis 视觉风格组，其余主题保持原相对顺序；同日经 ADR-0016 将稳定 ID 与具名导出同步为 `oria-manuscript` / `oriaManuscriptTheme`，token 数据不变。
 
 ## 2026-07-18 视觉重设计研究基线
 
@@ -34,7 +34,7 @@
 
 | 主题 | 风格特征 | Token 落点 |
 |---|---|---|
-| Default | 冷白轻盈、柔和悬浮、清晰亲和、适合作为现代产品基线 | 冷白灰表面、亮青蓝操作色、大圆角、单层半透明细边高光；图表以主青蓝起始，衔接清晰的 sky/teal/green/blue/indigo/red/orange 数据序列 |
+| Default | 中性灰白、柔和悬浮、清晰亲和、适合作为现代产品基线 | 低色度中性表面、亮青蓝操作色、适度圆角、单层半透明细边高光；图表以主青蓝起始，衔接清晰的 sky/teal/green/blue/indigo/red/orange 数据序列 |
 | Ocean | 浅海清透、深海纵深、水面流动 | 青蓝语义色、冷色光泽、流动大圆角、径向深海暗色渐变 |
 | Forest | 苔藓、蕨绿、树皮、林下暖光 | 苔绿与土色、衬线标题、有机分级圆角、泥土色软阴影 |
 | Aurora | 绿色主光幕，蓝紫与红粉辅光，夜空纵深 | 四段极光渐变、弥散光晕、高饱和暗色材质、轻盈动效 |
@@ -51,7 +51,7 @@
 | Spatial UI | 悬浮厚玻璃、景深、环境光 | 36px blur、深层多层阴影、超大圆角、冷暖空间渐变 |
 | Mono | 严格无彩、比例与内容建立秩序 | 纯灰阶图表、平面层级、中性排版；不复用 Deploy 的开发者密度 |
 | Minimalism | 留白、少装饰、单一焦点、功能优先 | 1.2 密度、无阴影、细边界、含反馈状态在内的柔和黑色与深灰单色系统 |
-| Line Art | 纯黑白轮廓、负空间、纸面平整感、描边优先 | 黑白反转双模式、强轮廓边界、近直角、无阴影、无彩色图表与反馈状态 |
+| Line Art | 纯黑白轮廓、负空间、纸面平整感、描边优先 | 黑白反转双模式、强轮廓边界、近直角、无阴影、全不透明材质、无彩色图表与反馈状态 |
 | Glass | 清透磨砂面板、立体边缘折射、柔和悬浮、冷色焦点 | 30px blur、六向边缘高光与内侧亮带、分级轻投影；图表以 cyan→teal→emerald→lime→amber→orange→pink→violet 的棱镜序列配合透明材质 |
 | Neo Brutalism | 粗黑框、零圆角、硬偏移阴影、饱和原色 | 3px strong border、7px 无模糊阴影、机械 easing、粗重字重 |
 | Punchcard | 暖纸统计板、时间/进度格、亲和的大号数字 | 黄主操作、粉/浅蓝辅助表面、圆润但克制的卡片、统一墨黑硬偏移阴影、宽字距数据标签，以及白色浮起表面的可选规则小圆点；不复用 Neo Brutalism 的零圆角蓝色操作，也不复用 Memphis 的多色阴影和几何装饰 |
@@ -59,6 +59,9 @@
 | Soft Clay | 复古奶油软陶、厚实圆润的白色开关与表单控制、静谧日程面板 | 奶油背景和暖灰文字、低饱和橙色状态点、三层定向高光/阴影、内凹细节与从控件到容器显著放大的圆角；不修改 Neumorphism 的既有蓝灰视觉系统 |
 | Golden Bazaar | 日照橱窗、暖桃环境光、蜜糖黄操作与轻盈商品卡 | 桃杏至金黄的径向背景、奶油白浮起表面、明黄 primary、珊瑚 secondary、靛蓝 accent、超大圆角和暖色柔影；只提取图片的色彩、材质和层级原则，不复制品牌、商品、图标、文案或布局 |
 | Theorem | 数学讲义、遮罩中的象牙白浮层、炭黑衬线与酒红批注 | 暖白纸面配炭黑 `scrim` 形成遮罩后的暖灰背景，背景以安全 Paper noise 颗粒还原纸面纤维；象牙白无圆角纸页、Palatino/Iowan 类衬线、炭黑 primary、酒红 accent、1px 细边；常规卡片无阴影，只有 `lg` 及以上浮层使用硬偏移加极轻扩散投影；只提取图片的色彩、排版、材质和层级原则，不复制人名、方程、文案或页面布局 |
+| Redline | 暖白纸面、铅笔灰框线、单一朱红主卡片与稀疏编辑排版 | 几何无衬线与宽字距、1px 细边、全直角、全平面阴影阶梯、无环境渐变、轻纸张颗粒，以及主卡片红底上的纯白 Film 噪声；其余卡片保持纸白和灰线，只提取图片的色彩、排版、材质和留白原则，不复制艺人名、专辑文字、插画或具体版式 |
+| Line Blaze | 暖白工程画布、深石墨结构与橙红信号、密集遥测排版 | 等宽 display 与完整紧凑字号阶梯、宽字距标签、1px hairline 与 2px 常规/强直线边框、全直角、全平面阴影阶梯、零前景/环境模糊，以及背景/表面两级低透明石墨点阵；只提取图片的色彩、线框、排版和仪表密度原则，不复制机器人、标题、标签、图标或具体布局 |
+| Green Lite | 纯白画布、通透薄荷绿信号、轻薄透明与细亮边 | 系统开发者无衬线与等宽辅助字体、20px 主级 backdrop blur、1px 全阶边框、大圆角、单层顶部高光与极浅中性阴影；点阵只出现在背景画布，主卡片不使用点阵或噪声，绿色只进入 primary、ring、accent 与图表首色，不进入常规阴影或表面渐变；浅色背景及环境渐变均为纯白，冰蓝仅用于卡片和次级表面分层，语义表面保持可计算实色以确保静态对比度，不复制图片中的工作流节点、文案、图标或布局 |
 | Neumorphism | 同色表面、明暗双向软阴影、凸起与凹陷 | 双层正负位移 shadow、inner shadow、大圆角、高对比前景修正 |
 | Memphis | 八十年代明亮撞色、几何、反理性趣味 | 黄蓝粉绿、黑边、彩色硬阴影、块状几何字体与回弹 easing |
 | Soft UI | 低饱和粉彩、舒适、柔和平面 | 蓝灰与薰衣草色、宽松圆角、单向弥散阴影；不使用浮雕双阴影 |
@@ -82,20 +85,26 @@
 
 | 形状方向 | 主题 | 规则 |
 |---|---|---|
-| 直角 | Neo Brutalism、Cyberpunk、Retro Terminal、Manuscript | 六档均为 `0`，保持工业、机械、终端或纸页边界 |
+| 直角 | Neo Brutalism、Cyberpunk、Retro Terminal、Manuscript、Redline、Line Blaze | 六档均为 `0`，保持工业、机械、终端或纸页边界 |
 | 近直角 | Editorial、Command Center、Line Art | 低层级为 `0`，大容器只保留极小圆角 |
 | 小圆角 | Warm Reading、Monochrome Deploy、Precision Flow、Dashboard、Mono、Minimalism、Memphis、Paper、Premium、Retro、Punchcard、Sketchbook | 控件克制，大容器不突然跳成胶囊或大圆角 |
 | 适中圆角 | Elevated Surface、Cottagecore、Nature | 提供日常产品所需的清晰层级，不过度柔化边界 |
-| 大圆角 | Default、Ocean、Forest、Aurora、Bento UI、AI Native、Spatial UI、Glass、Neumorphism、Soft UI、Calm、Organic、Sunset | 卡片和材质层明显圆润，控件仍保持可辨识的层级差 |
+| 大圆角 | Default、Ocean、Forest、Aurora、Bento UI、AI Native、Spatial UI、Glass、Green Lite、Neumorphism、Soft UI、Calm、Organic、Sunset | 卡片和材质层明显圆润，控件仍保持可辨识的层级差 |
 | 夸张圆角 | Y2K、Playful、Kawaii、Soft Clay、Golden Bazaar | 从小控件开始放大曲率，`xl` / `2xl` 用于塑料感、趣味感和可爱感；Soft Clay 以高光、阴影和大体积感表达软陶，不复用 Neumorphism 的蓝灰软影；Golden Bazaar 以超大圆角和柔光橱窗层级表达轻盈零售感。 |
 
 v2 的 full radius 是 CSS 常量（不是主题 token），只用于明确的胶囊、圆点、头像或图表柱等语义元素；普通卡片不得无条件使用 full radius。示例应用的卡片、面板、输入框与按钮必须消费对应 shape token，不能写死圆角值。
 
-质量要求补充：每款主题必须拥有独立的浅色/深色色彩系统和独立视觉签名；`primary`/`secondary` 的 default、hover、active 不得使用同一颜色。除下述 Glass 例外外，语义表面仍须使用可静态计算对比度的实色，透明感由结构化 gradient、backdrop、透明边缘与多层 highlight shadow 表达；无法稳定保证正文对比度的透明背景/前景组合不直接照搬。Glass 自 2026-07-21 起是有意的文档化例外：raised 表面使用带 alpha 的半透明值（light `#f8f8f880`、dark `#101010a0`），dark selection 使用亮青 `#5bd0ff`；`surfaceRaised` 前景对比度因此不再静态可计算（light/dark 各一条警告），dark selection 对比度 1.68 低于 AA 正文建议（一条警告）。这三条警告是维护者确认的取舍，透明材质观感优先；其余 40 款预设继续满足零警告要求。
+### 阴影与材质语言
+
+每款主题必须拥有完整且同源的 `2xs`、`xs`、`sm`、`md`、`lg`、`xl`、`2xl` 阴影阶梯。若某款主题提供投影，则 `lg` 以上必须继续形成可辨识的层级，不得回退到 Default 的异色阴影，也不得让 `xl` / `2xl` 意外为空；Editorial、Minimalism、Line Art 等平面主题可以显式将整条阶梯设为空，Theorem 可以按定位只从 `lg` 开始提供浮层阴影。
+
+`shadow.inner` 与 `shadow.highlight` 是材质语义，不是所有主题的默认装饰。Glass、Neumorphism、Soft Clay、Paper 等确实依靠内凹、折射或纸面压痕表达材质的主题可以显式使用 `shadow.inner`；Green Lite 只使用单层顶部 `shadow.highlight` 表达薄玻璃边缘，不制造内凹厚度。其余主题默认留空。常规 elevation 中的 inset 层同样只用于 Spatial UI、Y2K、Golden Bazaar 等需要边缘高光或厚度的风格。Line Art 的 `disabled`、`muted` 与 `overlay` opacity 均为 `1`，其状态差异只通过轮廓、灰阶和语义结构表达。
+
+质量要求补充：每款主题必须拥有独立的浅色/深色色彩系统和独立视觉签名；`primary`/`secondary` 的 default、hover、active 不得使用同一颜色。除下述 Glass 例外外，语义表面仍须使用可静态计算对比度的实色，透明感由结构化 gradient、backdrop、透明边缘与多层 highlight shadow 表达；无法稳定保证正文对比度的透明背景/前景组合不直接照搬。Glass 自 2026-07-21 起是有意的文档化例外：raised 表面使用带 alpha 的半透明值（light `oklch(97.91293% 0 0 / 0.50196)`、dark `oklch(17.30423% 0 0 / 0.62745)`），`surfaceRaised` 前景对比度因此不再静态可计算（light/dark 各一条警告）。这两条警告是维护者确认的取舍，透明材质观感优先；其余 43 款预设继续满足零警告要求。
 
 除单色主题外，所有预设使用相同且清晰的反馈语义：`danger` 是纯红、`success` 是中等明度绿、`warning` 是橙色、`info` 是明亮 sky blue；不得以紫红、深红、棕色或过深蓝色替代这些含义。浅色模式使用适合实色状态表面的 500 阶，深色模式使用更明亮的 300/400 阶；对应 foreground 仍必须在实色表面达到 WCAG AA。Mono、Monochrome Deploy、Minimalism 与 Line Art 按定位保留有明确明度顺序的灰阶反馈色，但界面不得只以颜色传达状态。
 
-彩色主题的 `chart.1` 保留各自的主色以维持主题身份；`chart.2`–`chart.8` 必须按 primary 色相匹配相邻且易区分的数据色谱：冷蓝主题使用 cyan / teal / sky / blue / indigo，绿色主题使用 emerald / teal / sky / olive，紫系主题使用 indigo / violet / purple / fuchsia，暖橙主题使用 orange / amber / yellow / rose，玫红主题使用 rose / pink / fuchsia / violet。每条色谱都补足对比色，确保多序列数据可读。Feedback 继续独立使用红、绿、橙、sky blue 的明确语义，不能被图表风格色替代。Aurora、Glass、Cyberpunk 等特殊风格仍由主色、表面、渐变、材质、排版与形状表达个性，不得因图表或反馈色偏离明确的数据与状态语义。预设包物化最终 HEX，不在运行时依赖或导入整套基础色库。
+彩色主题的 `chart.1` 保留各自的主色以维持主题身份；`chart.2`–`chart.8` 必须按 primary 色相匹配相邻且易区分的数据色谱：冷蓝主题使用 cyan / teal / sky / blue / indigo，绿色主题使用 emerald / teal / sky / olive，紫系主题使用 indigo / violet / purple / fuchsia，暖橙主题使用 orange / amber / yellow / rose，玫红主题使用 rose / pink / fuchsia / violet。每条色谱都补足对比色，确保多序列数据可读。Feedback 继续独立使用红、绿、橙、sky blue 的明确语义，不能被图表风格色替代。Aurora、Glass、Cyberpunk 等特殊风格仍由主色、表面、渐变、材质、排版与形状表达个性，不得因图表或反馈色偏离明确的数据与状态语义。预设包物化最终 OKLCH，不在运行时依赖或导入整套基础色库。
 
 稳定基础色库由 `@oriatheme/colors` 独立维护，不属于任何预设 ThemeDefinition。每款主题只负责自己的双模式语义颜色；主色和其余视觉 token 保持独立签名，但不得复制完整基础色库到主题或 runtime 输出。
 
@@ -132,6 +141,9 @@ Sketchbook         → oria-sketchbook
 Soft Clay          → oria-soft-clay
 Golden Bazaar      → oria-golden-bazaar
 Theorem            → oria-theorem
+Redline            → oria-redline
+Line Blaze         → oria-line-blaze
+Green Lite         → oria-green-lite
 Neumorphism        → oria-neumorphism
 Memphis            → oria-memphis
 Soft UI            → oria-soft-ui
@@ -155,7 +167,7 @@ Sunset             → oria-sunset
 
 | 主题 | 状态 | 描述 / 灵感 |
 |---|---|---|
-| Default | 已实现 | 参考冷白圆润 UI 重设计：亮青蓝主操作、轻盈悬浮表面、单层半透明细边高光和低对比阴影；Feedback 与 Chart 使用冷色连续序列及克制的 rose/amber 状态强调。 |
+| Default | 已实现 | 以中性灰白双模式为现代产品基线：亮青蓝主操作、轻盈悬浮表面、单层半透明细边高光和低对比中性阴影；Feedback 与 Chart 使用冷色连续序列及克制的 rose/amber 状态强调。 |
 | Ocean | 已实现 | 清爽蓝色、明亮水面与深海层次，传达可靠、开放和专注。 |
 | Forest | 已实现 | 自然绿色、低干扰表面与沉稳层次，适合健康、户外和可持续场景。 |
 | Aurora | 已实现，纳入视觉风格类 | 多色光晕、渐变背景、梦幻与科技感。后续增强必须兼容现有 `oria-aurora` ID。 |
@@ -191,14 +203,17 @@ Sunset             → oria-sunset
 |---|---|---|
 | Mono | 已实现 | 黑白灰、单色阶、克制、专业，强调内容本身。 |
 | Minimalism | 已实现 | 大面积留白、少量装饰、柔和黑色与深灰层级、功能优先。 |
-| Line Art | 已实现 | 纯黑白、高反差细线轮廓、近直角和大面积负空间，强调描边而非体积。 |
-| Glass | 已实现 | 冷色玻璃焦点、半透明浮起表面与表面渐变、多向边缘折射、内侧亮带和柔和悬浮层级；Feedback 与 Chart 使用同源棱镜色序。浅色保持正文可读；dark 为中性近黑玻璃，半透明 raised 表面与亮青 selection 的对比度警告属于文档化取舍。 |
+| Line Art | 已实现 | 纯黑白、高反差细线轮廓、近直角、大面积负空间和全不透明状态，强调描边而非体积。 |
+| Glass | 已实现 | 冷色玻璃焦点、半透明浮起表面与表面渐变、多向边缘折射、内侧亮带和柔和悬浮层级；Feedback 与 Chart 使用同源棱镜色序。light 使用更明亮、低色度的通透蓝，并以逐级加深的 hover/active 保持交互层级；dark 以 `oklch(87.4159% 0.066631 241.1147)` 为主色，并用冷灰 muted 层与中性近黑 surface 拉开层级；半透明 raised 表面的对比度警告属于文档化取舍。 |
 | Neo Brutalism | 已实现 | 粗边框、强对比色、硬阴影，直接醒目。 |
 | Punchcard | 已实现 | 暖纸统计板、黄/粉/浅蓝数据卡、适中圆角、统一墨黑硬偏移阴影、紧凑标签和白色表面上的规则小圆点；点阵通过可选 `pattern.surface` 的 dot 图层输出，不复制品牌、文案、素材或界面布局。 |
 | Sketchbook | 已实现 | 暖白点阵纸、深墨线、手写字体栈与薄荷/柠檬/粉/蓝便利贴色系；`pattern.background` 的稀疏 dot 点阵与 `pattern.surface` 的 1px grid 墨线还原点阵纸与方格纸材质，不复制图片中的人物、文案、图标或具体布局。 |
 | Soft Clay | 已实现 | 复古奶油底、灰褐文本、低饱和橙色强调、近白凸起面、夸张圆角和三层定向高光/阴影，形成厚实的软陶控制面板；参考图只提取可观察的材质与 token 原则，不复制界面、文案或布局。 |
 | Golden Bazaar | 已实现 | 暖桃至蜜糖黄的环境渐层、奶油白卡片、明黄 primary、珊瑚 secondary、靛蓝 accent、超大圆角和暖色柔影，呈现阳光零售橱窗的轻盈层级；参考图只提取可观察的视觉原则，不复制品牌、商品、图标、文案或页面布局。 |
 | Theorem | 已实现 | 暖白讲义画布以炭黑 `scrim` 形成遮罩后的暖灰背景，`pattern.background` 的安全 Paper noise 图层还原纸面纤维；象牙白无圆角浮层、炭黑衬线排版、酒红批注强调、1px 细边与仅供 `lg` 及以上浮层使用的硬偏移投影；常规卡片无阴影。参考图只提取可观察的色彩、排版、材质和层级原则，不复制人名、方程、文案或页面布局。 |
+| Redline | 已实现 | 图片参考中的暖白纸面、铅笔灰与朱红被转译为低色度纸张表面、石墨 secondary 和编辑红 primary；主卡片使用纯朱红底与纯白 `film` 噪声（100px tile、0.2 intensity），其余卡片保持纸白、灰线和全直角。几何无衬线、宽字距、1px 框线、零阴影、等色起止渐变与低透明环境装饰共同维持极简扁平气质。参考图中的艺人名、专辑文字、插画与具体版式不进入主题。 |
+| Line Blaze | 已实现 | 图片参考中的暖白控制台、深石墨结构线与信号橙红被转译为高对比双模式仪表主题：light 使用暖白画布、深石墨 secondary/default/strong border 与橙红 primary，dark 使用深石墨画布、暖白文字和提亮橙红。等宽 display、完整紧凑字号阶梯、宽字距标签、1px hairline 与 2px 常规/强直线边框、零圆角、零阴影、零前景/环境模糊，以及 1.5rem 背景点阵与 1rem 表面点阵共同表达实时遥测密度；参考图中的机器人、标题、标签、图标和具体布局不进入主题。 |
+| Green Lite | 已实现 | 两张图片参考被统一为双模式科技主题：light 使用纯白画布与带冰蓝分层的高透白玻璃，dark 使用近黑画布与无染色黑玻璃；明亮淡雅的薄荷绿只用于 primary、ring、accent 和图表首色。两套模式都以 20px 主级 backdrop blur、1px 亮边、大圆角、单层顶部高光和极浅中性阴影表达扁平、轻薄、通透；点阵只留在背景画布，主卡片不使用点阵、Frosted noise、绿色表面渐变或绿色光晕。语义表面保持实色以满足静态对比度分析，参考图中的工作流节点、标题、标签、图标和具体布局不进入主题。 |
 | Neumorphism | 已实现 | 低对比度、柔和内外阴影与浮雕般控件质感。 |
 | Memphis | 已实现 | 几何图形、鲜艳配色、活泼装饰与八九十年代气质。 |
 | Soft UI | 已实现 | 柔和圆角、低对比度、浅色背景，舒适温和。 |

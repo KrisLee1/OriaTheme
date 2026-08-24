@@ -40,7 +40,9 @@ describe("theme editor registry", () => {
     expect(targets.some(target => target.toLowerCase().includes("toolbar"))).toBe(true);
     expect(targets.some(target => target.includes("fields/") && target.toLowerCase().includes("shadow"))).toBe(true);
     if (framework === "react") {
-      expect(item.dependencies).toContain("@oriatheme/colors@^0.1.0");
+      expect(item.dependencies).toContain("@oriatheme/colors@^0.2.0");
+      expect(item.dependencies).toContain("@oriatheme/core@^0.4.0");
+      expect(targets).toContain("export-theme-code.ts");
       expect(targets).toContain("fields/base-color-palette.tsx");
       expect(targets).toContain("fields/color-utils.ts");
       expect(targets).toContain("fields/linear-slider.tsx");
@@ -50,7 +52,7 @@ describe("theme editor registry", () => {
       expect(targets).toContain("hooks/use-details-dismiss.ts");
       const picker = readFileSync(resolve(root, "registry/templates/react/theme-editor/fields/base-color-palette.tsx"), "utf8");
       expect(picker).toContain("oriaColorFamilies");
-      expect(picker).toContain("Search family, shade, or hex");
+      expect(picker).toContain("Search family, shade, or OKLCH");
       expect(picker).toContain("createPortal");
       expect(picker).toContain("getBoundingClientRect");
       expect(picker).toContain("data-oria-editor-palette-popover");
@@ -93,8 +95,14 @@ describe("theme editor registry", () => {
       expect(importDialog).toContain('document.body.style.overflow = "hidden"');
       expect(importDialog).toContain("focus({ preventScroll: true })");
       expect(importDialog).toContain("onClose={() => setOpen(false)}");
-      expect(exportMenu).toContain('`${id}.oria-theme.json`');
       expect(exportMenu).not.toContain(".oria.theme.json");
+      expect(exportMenu).toContain("Copy TypeScript");
+      expect(exportMenu).toContain("Download TypeScript");
+      expect(exportMenu).toContain("Copy JSON");
+      expect(exportMenu).toContain("Download JSON");
+      expect(exportMenu).toContain("exportThemeCode");
+      expect(exportMenu).toContain(".oria-theme.${format === \"typescript\" ? \"ts\" : \"json\"}");
+      expect(exportMenu).toContain("text/typescript;charset=utf-8");
       expect(issuesPopover).toContain('"ready" | "warning" | "error"');
       expect(issuesPopover).toContain("data-oria-editor-health={health}");
       expect(reset).toContain("useDetailsDismiss(menu)");
@@ -161,6 +169,7 @@ describe("theme editor registry", () => {
       expect(colorField).toContain("--oria-editor-color-preview");
       expect(colorUtils).toContain("[\\da-f]{8}");
       expect(colorUtils).toContain("export function nativeColor");
+      expect(colorUtils).toContain("parseOklch");
       expect(reactExample).toContain('onSave={result => { if (result.ok) setTheme(result.theme.id); }}');
       expect(nextExample).toContain('onSave={result => { if (result.ok) setTheme(result.theme.id); }}');
       expect(reactExample).toContain("data-active={snapshot.preference.appearance}");
@@ -243,7 +252,10 @@ describe("theme editor registry", () => {
       const vueGradient = readFileSync(resolve(root, "registry/templates/vue/theme-editor/fields/GradientField.vue"), "utf8");
       const vuePattern = readFileSync(resolve(root, "registry/templates/vue/theme-editor/fields/PatternField.vue"), "utf8");
       const vuePalette = readFileSync(resolve(root, "registry/templates/vue/theme-editor/fields/BaseColorPalette.vue"), "utf8");
-      expect(item.dependencies).toContain("@oriatheme/colors@^0.1.0");
+      const vueExportMenu = readFileSync(resolve(root, "registry/templates/vue/theme-editor/overlays/ExportMenu.vue"), "utf8");
+      expect(item.dependencies).toContain("@oriatheme/colors@^0.2.0");
+      expect(item.dependencies).toContain("@oriatheme/core@^0.4.0");
+      expect(targets).toContain("export-theme-code.ts");
       expect(targets).toContain("ThemesWorkspace.vue");
       expect(targets).toContain("fields/BaseColorPalette.vue");
       expect(targets).toContain("fields/LinearSlider.vue");
@@ -266,7 +278,11 @@ describe("theme editor registry", () => {
       expect(vueStyles).toContain("[data-oria-editor-select] > select");
       expect(vuePattern).toContain("session.removeToken");
       expect(vuePalette).toContain("oriaColorFamilies");
+      expect(vuePalette).toContain("Search family, shade, or OKLCH");
       expect(vuePalette).toContain('<Teleport to="body">');
+      expect(vueExportMenu).toContain("Download TypeScript");
+      expect(vueExportMenu).toContain("text/typescript;charset=utf-8");
+      expect(vueExportMenu).toContain('format === "typescript" ? "ts" : "json"');
       expect(vueStyles).toContain("--oria-editor-weight-semibold: var(--oria-font-weight-semibold)");
       expect(vueStyles).toContain("--oria-editor-overlay: color-mix(in srgb, var(--oria-color-overlay) calc(var(--oria-opacity-overlay) * 100%), transparent)");
       expect(vueStyles.match(/background: var\(--oria-editor-overlay\)/g)?.length ?? 0).toBeGreaterThanOrEqual(3);
@@ -277,6 +293,19 @@ describe("theme editor registry", () => {
       expect(vueStyles).not.toMatch(/font-size:\s*[0-9.]|line-height:\s*[0-9.]|letter-spacing:\s*-?[0-9.]/);
       expect(vueStyles).toContain("[data-oria-editor-duration-preview]");
     }
+  });
+
+  it("exports paste-ready TypeScript and keeps OKLCH native color controls usable", () => {
+    const script = 'import { exportThemeCode } from "../../registry/templates/shared/theme-editor/export-theme-code.ts"; import { nativeColor, safeColor } from "../../registry/templates/react/theme-editor/fields/color-utils.ts"; const code=exportThemeCode({id:"my-brand",name:"My Brand",kind:"custom",contract:{name:"oria-standard",version:2},metadata:{source:"#123456"},modes:{light:{"color.primary":"#ff000080","font.sans":["#234567"]},dark:{"color.primary":"oklch(62% .2 30)"}}}); console.log(JSON.stringify({code,white:nativeColor("oklch(100% 0 0)"),valid:safeColor("oklch(62% .2 30 / 50%)"),invalid:safeColor("oklch(50wat .2 30)")}));';
+    const result = JSON.parse(execFileSync(process.execPath, ["--experimental-strip-types", "--input-type=module", "-e", script], { cwd: resolve(root, "packages/editor-core"), encoding: "utf8" })) as { readonly code: string; readonly white: string; readonly valid: boolean; readonly invalid: boolean };
+    expect(result.code).toContain('import type { ThemeDefinition } from "@oriatheme/core";');
+    expect(result.code).toContain("export const myBrandTheme =");
+    expect(result.code).toContain("oklch(62.79554% 0.257683 29.2339 / 0.50196)");
+    expect(result.code).toContain("satisfies ThemeDefinition;");
+    expect(result.code).not.toContain("#ff000080");
+    expect(result.code).toContain('"source": "#123456"');
+    expect(result.code).toContain('"#234567"');
+    expect(result).toMatchObject({ white: "#ffffff", valid: true, invalid: false });
   });
 
   it("keeps React and Vue registry chrome styles synchronized", () => {
@@ -314,6 +343,39 @@ describe("theme editor registry", () => {
     expect(nextGradient).toBe(registryGradient);
     expect(reactSelect).toBe(registrySelect);
     expect(nextSelect).toBe(registrySelect);
+  });
+
+  it("keeps installed OKLCH and code-export sources synchronized with the registry", () => {
+    const reactSources = [
+      "fields/base-color-palette.tsx",
+      "fields/color-utils.ts",
+      "overlays/export-menu.tsx",
+    ] as const;
+    const reactTargets = [
+      "apps/examples/react/src/components/oria-theme-editor",
+      "apps/examples/next/app/components/oria-theme-editor",
+      "apps/examples/editor-next/app/components/oria-theme-editor",
+      "apps/website/components/oria-theme-editor",
+    ] as const;
+    for (const source of reactSources) {
+      const canonical = readFileSync(resolve(root, "registry/templates/react/theme-editor", source), "utf8");
+      for (const target of reactTargets) expect(readFileSync(resolve(root, target, source), "utf8")).toBe(canonical);
+    }
+
+    const vueSources = ["fields/BaseColorPalette.vue", "fields/color-utils.ts", "overlays/ExportMenu.vue"] as const;
+    for (const source of vueSources) {
+      expect(readFileSync(resolve(root, "apps/examples/editor-vue/src/components/oria-theme-editor", source), "utf8")).toBe(
+        readFileSync(resolve(root, "registry/templates/vue/theme-editor", source), "utf8"),
+      );
+    }
+
+    const formatter = readFileSync(resolve(root, "registry/templates/shared/theme-editor/export-theme-code.ts"), "utf8");
+    expect(readFileSync(resolve(root, "registry/templates/vue/theme-editor/export-theme-code.ts"), "utf8")).toContain(
+      'from "../../shared/theme-editor/export-theme-code"',
+    );
+    for (const target of [...reactTargets, "apps/examples/editor-vue/src/components/oria-theme-editor"]) {
+      expect(readFileSync(resolve(root, target, "export-theme-code.ts"), "utf8")).toBe(formatter);
+    }
   });
 
   it("keeps the example token gallery comprehensive and theme-driven", () => {

@@ -7,7 +7,19 @@ import { join } from "node:path";
 import { URL } from "node:url";
 import { oriaColorFamilies, oriaColorSteps, oriaColors, toOriaColorVariable } from "../src/index.js";
 
-const rgbChannels = (hex: string): readonly number[] => [1, 3, 5].map(index => Number.parseInt(hex.slice(index, index + 2), 16));
+const oklchChannels = (color: string): readonly [number, number, number] => {
+  const match = /^oklch\(([\d.]+)%\s+([\d.]+)\s+([\d.]+)\)$/.exec(color);
+  if (!match) throw new Error(`Expected an opaque OKLCH color, received ${color}.`);
+  return [Number(match[1]), Number(match[2]), Number(match[3])];
+};
+
+const oklchToHex = (color: string): string => {
+  const [lightness, chroma, hue] = oklchChannels(color);
+  const angle = hue * Math.PI / 180; const a = chroma * Math.cos(angle); const b = chroma * Math.sin(angle); const l = lightness / 100;
+  const ll = (l + 0.3963377774 * a + 0.2158037573 * b) ** 3; const mm = (l - 0.1055613458 * a - 0.0638541728 * b) ** 3; const ss = (l - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  const gamma = (value: number): number => value <= 0.0031308 ? 12.92 * value : 1.055 * value ** (1 / 2.4) - 0.055;
+  return `#${[4.0767416621 * ll - 3.3077115913 * mm + 0.2309699292 * ss, -1.2684380046 * ll + 2.6097574011 * mm - 0.3413193965 * ss, -0.0041960863 * ll - 0.7034186147 * mm + 1.707614701 * ss].map(value => Math.round(Math.min(1, Math.max(0, gamma(value))) * 255).toString(16).padStart(2, "0")).join("")}`;
+};
 
 describe("@oriatheme/colors", () => {
   it("provides the complete Tailwind-compatible color topology with independent values", () => {
@@ -16,9 +28,14 @@ describe("@oriatheme/colors", () => {
     expect(Object.keys(oriaColors)).toHaveLength(31);
     for (const family of oriaColorFamilies) {
       expect(Object.keys(oriaColors[family])).toHaveLength(11);
-      for (const step of oriaColorSteps) expect(oriaColors[family][step]).toMatch(/^#[0-9a-f]{6}$/);
+      for (const step of oriaColorSteps) expect(oriaColors[family][step]).toMatch(/^oklch\([\d.]+% [\d.]+ [\d.]+\)$/);
     }
-    expect(oriaColors.blue[500]).not.toBe("#3b82f6");
+    expect(oriaColors.blue[500]).not.toBe("oklch(62.3% 0.214 259.815)");
+    expect(oriaColors.black).toBe("oklch(0% 0 0)");
+    expect(oriaColors.white).toBe("oklch(100% 0 0)");
+    expect(oklchToHex(oriaColors.red[500])).toBe("#d53740");
+    expect(oklchToHex(oriaColors.blue[500])).toBe("#3675e2");
+    expect(oklchToHex(oriaColors.mauve[950])).toBe("#2f292f");
     expect(oriaColorFamilies.slice(-4)).toEqual(["mauve", "olive", "mist", "taupe"]);
   });
 
@@ -38,11 +55,11 @@ describe("@oriatheme/colors", () => {
   it("keeps chromatic 900 and 950 shades visibly colored", () => {
     const chromaticFamilies = oriaColorFamilies.slice(0, 17);
     for (const family of chromaticFamilies) {
-      const shade900 = rgbChannels(oriaColors[family][900]);
-      const shade950 = rgbChannels(oriaColors[family][950]);
-      expect(Math.max(...shade900), `${family}-900 is too close to black`).toBeGreaterThanOrEqual(64);
-      expect(Math.max(...shade950), `${family}-950 is too close to black`).toBeGreaterThanOrEqual(48);
-      expect(Math.max(...shade950) - Math.min(...shade950), `${family}-950 lost its hue`).toBeGreaterThanOrEqual(24);
+      const shade900 = oklchChannels(oriaColors[family][900]);
+      const shade950 = oklchChannels(oriaColors[family][950]);
+      expect(shade900[0], `${family}-900 lightness drifted`).toBeCloseTo(35, 0);
+      expect(shade950[0], `${family}-950 lightness drifted`).toBeCloseTo(29, 0);
+      expect(shade950[1], `${family}-950 lost its hue`).toBeGreaterThan(0.035);
     }
   });
 

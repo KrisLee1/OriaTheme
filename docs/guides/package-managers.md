@@ -4,7 +4,7 @@
 
 OriaTheme 的公开包和 `@oriatheme/cli` 面向 pnpm、npm、Yarn 与 Bun 使用方项目。公开包使用标准 ESM、`exports`、`peerDependencies` 和普通 semver；CLI 的 `add`/`diff` 只修改标准 `package.json` 并复制源码，`theme tailwind-bridge` 只把生成的 CSS 写入 `--out` 指定文件；CLI 不调用包管理器，也不创建或改写 lockfile。
 
-> 十个公开 `@oriatheme/*` 包已发布到 npm（各包版本独立演进，以 npm latest 为准），下面是使用方项目的正式命令。workspace、本地 tarball 和本地 registry 路径只用于仓库开发或后续版本发布验证。
+> 十一个公开 `@oriatheme/*` 包均已发布到 npm（各包版本独立演进，以 npm latest 为准），下面是使用方项目的正式命令。workspace、本地 tarball 和本地 registry 路径只用于仓库开发或后续版本发布验证。
 
 ## 安装公开包
 

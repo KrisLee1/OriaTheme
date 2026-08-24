@@ -2,20 +2,20 @@
   "schemaVersion": 1,
   "name": "theme-editor",
   "framework": "vue",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "compatiblePackages": {
-    "@oriatheme/core": "^0.3.0",
-    "@oriatheme/colors": "^0.1.0",
-    "@oriatheme/editor-core": "^0.2.0",
-    "@oriatheme/vue-editor": "^0.1.4",
-    "@oriatheme/runtime-dom": "^0.2.0"
+    "@oriatheme/core": "^0.4.0",
+    "@oriatheme/colors": "^0.2.0",
+    "@oriatheme/editor-core": "^0.2.1",
+    "@oriatheme/vue-editor": "^0.1.5",
+    "@oriatheme/runtime-dom": "^0.2.1"
   },
   "dependencies": [
-    "@oriatheme/core@^0.3.0",
-    "@oriatheme/colors@^0.1.0",
-    "@oriatheme/editor-core@^0.2.0",
-    "@oriatheme/vue-editor@^0.1.4",
-    "@oriatheme/runtime-dom@^0.2.0",
+    "@oriatheme/core@^0.4.0",
+    "@oriatheme/colors@^0.2.0",
+    "@oriatheme/editor-core@^0.2.1",
+    "@oriatheme/vue-editor@^0.1.5",
+    "@oriatheme/runtime-dom@^0.2.1",
     "vue@^3.5.0"
   ],
   "files": [
@@ -85,9 +85,14 @@
       "target": "overlays/ImportDialog.vue"
     },
     {
-      "sha256": "33db3df87879748ab0d1ed568fc01851b917a7d293fcd289d602755ce8ffa5b4",
+      "sha256": "84d102d111e4bd7337d13d2a72fb841742d92e61048ff0cce5b577fd85d34a81",
       "source": "templates/vue/theme-editor/overlays/ExportMenu.vue",
       "target": "overlays/ExportMenu.vue"
+    },
+    {
+      "sha256": "115eb0cb81c1cc09db67a72cac296908c869fa464f8645b43cdaab1442eb781c",
+      "source": "templates/shared/theme-editor/export-theme-code.ts",
+      "target": "export-theme-code.ts"
     },
     {
       "sha256": "77db42eb3d0b1e409771358bdd6cbdb3ee5fb801e6a5a63b20f4b887be22de33",
@@ -200,7 +205,7 @@
       "target": "composables/useDetailsDismiss.ts"
     },
     {
-      "sha256": "a62d8eb10182ff64b8c6ba7650d5875d161b439d33ff1b6d924f4497f072d9aa",
+      "sha256": "820eab178cb601aed58e5588418a6d9565d938ecd543e6667df251db0f6b368d",
       "source": "templates/vue/theme-editor/fields/color-utils.ts",
       "target": "fields/color-utils.ts"
     },
@@ -215,7 +220,7 @@
       "target": "fields/LinearSlider.vue"
     },
     {
-      "sha256": "976532d7ff6de4388081947d6603e57000a96830209cba49cced1e375e1b7f01",
+      "sha256": "7db07f1c87957486e8c63906305d44115bb1d2e33dcaa39181a4fcc76bba9670",
       "source": "templates/vue/theme-editor/fields/BaseColorPalette.vue",
       "target": "fields/BaseColorPalette.vue"
     },

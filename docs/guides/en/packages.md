@@ -4,16 +4,16 @@
 
 OriaTheme is an ESM-only multi-package project. Its source repository uses pnpm workspaces, while published packages target pnpm, npm, Yarn, and Bun consumers. Applications should import only the package roots and explicit CSS subpaths listed below. `src/`, `dist/`, and workspace-internal paths are not public APIs. See [package-manager compatibility](package-managers.md) for commands.
 
-> Ten public packages are published on npm (versions evolve independently; see npm latest). `@oriatheme/tailwind` is an implemented eleventh public package that ships for the first time with the current v2 release batch. Use workspace or local-tarball paths only for repository development and future-release verification.
+> All eleven public packages are published on npm (versions evolve independently; see npm latest), and the current default standard is `oria-standard@2`. Use workspace or local-tarball paths only for repository development and future-release verification.
 
 | Package | Install it when | Public capability |
 | --- | --- | --- |
 | `@oriatheme/core` | Defining, validating, resolving, importing, or exporting themes; generating trusted default CSS on a server | Pure TypeScript contract, theme model, diagnostics, and `oriaDefaultTheme`; no DOM, Storage, React, or Vue access |
-| `@oriatheme/presets` | Using the 41 official themes | `oriaPresetThemes`, `oriaPresetCatalog`, and named theme exports; depends on Core |
+| `@oriatheme/presets` | Using one or more official themes | Per-theme subpaths, `oriaPresetThemes`, `oriaPresetCatalog`, and root named exports; depends on Core |
 | `@oriatheme/runtime-dom` | Applying, persisting, and switching themes in a browser | `createOriaThemeRuntime()`, Bootstrap, external store, and View Transition; browser APIs are accessed only after `start()` |
 | `@oriatheme/react` | Integrating React 18.2 or 19 | `OriaThemeProvider`, `useOriaTheme()`, and `useThemeSnapshot()`; React and React DOM are peers |
 | `@oriatheme/vue` | Integrating Vue 3.5 | `createOriaTheme()`, `provideOriaTheme()`, and `useOriaTheme()`; Vue is a peer |
-| `@oriatheme/colors` | Using stable, non-theme color scales or Tailwind v4 color names | JavaScript scales, `@oriatheme/colors/styles.css`, and `@oriatheme/colors/tailwind.css` |
+| `@oriatheme/colors` | Using stable, non-theme OKLCH color scales or Tailwind v4 color names | JavaScript scales, `@oriatheme/colors/styles.css`, and `@oriatheme/colors/tailwind.css` |
 | `@oriatheme/tailwind` | Consuming runtime theme variables in a Tailwind CSS v4 project | Static `@theme inline` bridge (`@oriatheme/tailwind/oria.css`) and `generateOriaTailwindBridge({ prefix })`; Tailwind is a build/test-only dependency |
 | `@oriatheme/editor-core` | Building a theme-editing experience | Draft, field, diagnostics, and commit state machine with no DOM, Storage, or framework dependency |
 | `@oriatheme/react-editor` | Providing the headless session bridge for the React source editor | Provider/hooks and automatic-preview coordination; no visible editor UI or default CSS |
@@ -43,6 +43,19 @@ import { createOriaThemeRuntime } from "@oriatheme/runtime-dom";
 const runtime = createOriaThemeRuntime({
   presets: oriaPresetThemes,
   defaultThemeId: "oria-default",
+});
+```
+
+Use public per-theme entry points when the application ships only a selected set. These entries require a Presets release containing this Changeset; with an older npm version, keep using named exports from the package root:
+
+```ts
+import { oriaOceanTheme } from "@oriatheme/presets/ocean";
+import { oriaForestTheme } from "@oriatheme/presets/forest";
+import { createOriaThemeRuntime } from "@oriatheme/runtime-dom";
+
+const runtime = createOriaThemeRuntime({
+  presets: [oriaOceanTheme, oriaForestTheme],
+  defaultThemeId: "oria-ocean",
 });
 ```
 

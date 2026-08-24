@@ -24,6 +24,8 @@ if (validation.ok) {
 
 `createThemeFromSeed()`, `cloneTheme()`, `importTheme()`, `exportTheme()`, `analyzeTheme()`, and the Token Contract helpers are also exported from the package root.
 
+The default `oria-standard@2` theme and seed-generated colors use complete `oklch(...)` CSS values. Validation remains compatible with existing static HEX, RGB, HSL, and supported named-color inputs.
+
 ## Documentation
 
 - [Theme model](https://github.com/KrisLee1/OriaTheme/blob/main/docs/specifications/theme-model.md)

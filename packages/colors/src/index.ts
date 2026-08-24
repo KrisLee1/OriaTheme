@@ -10,10 +10,11 @@ export const oriaColorSteps = Object.freeze([50, 100, 200, 300, 400, 500, 600, 7
 
 export type OriaColorFamily = typeof oriaColorFamilies[number];
 export type OriaColorStep = typeof oriaColorSteps[number];
-export type OriaColorScale = Readonly<Record<OriaColorStep, string>>;
+export type OriaOklchColor = `oklch(${string})`;
+export type OriaColorScale = Readonly<Record<OriaColorStep, OriaOklchColor>>;
 export type OriaColors = Readonly<Record<OriaColorFamily, OriaColorScale>> & Readonly<{
-  black: "#000000";
-  white: "#ffffff";
+  black: "oklch(0% 0 0)";
+  white: "oklch(100% 0 0)";
   inherit: "inherit";
   transparent: "transparent";
   current: "currentColor";
@@ -58,14 +59,19 @@ function toLinearRgb({ l, c, h }: Oklch): readonly [number, number, number] {
   ];
 }
 
-function gamutMappedHex(color: Oklch): string {
+const numberString = (value: number, precision: number): string => String(Number(value.toFixed(precision)));
+
+function gamutMappedOklch(color: Oklch): OriaOklchColor {
   let chroma = color.c;
   let rgb = toLinearRgb(color);
   for (let attempt = 0; attempt < 32 && rgb.some(channel => channel < 0 || channel > 1); attempt += 1) {
     chroma *= 0.92;
     rgb = toLinearRgb({ ...color, c: chroma });
   }
-  return `#${rgb.map(channel => Math.round(Math.min(1, Math.max(0, gamma(channel))) * 255).toString(16).padStart(2, "0")).join("")}`;
+  const previousHex = `#${rgb.map(channel => Math.round(Math.min(1, Math.max(0, gamma(channel))) * 255).toString(16).padStart(2, "0")).join("")}`;
+  const quantized = toOklch(previousHex);
+  const hue = ((quantized.h * 180 / Math.PI) % 360 + 360) % 360;
+  return `oklch(${numberString(quantized.l * 100, 5)}% ${numberString(quantized.c, 6)} ${numberString(quantized.c < 0.000004 ? 0 : hue, 4)})`;
 }
 
 function scale(seed: string): OriaColorScale {
@@ -73,8 +79,8 @@ function scale(seed: string): OriaColorScale {
   const neutralChroma = source.c < 0.05 ? Math.min(source.c, 0.025) : source.c;
   return Object.freeze(Object.fromEntries(oriaColorSteps.map((step, index) => [
     step,
-    gamutMappedHex({ l: targetLightness[index]!, c: neutralChroma * chromaFactors[index]!, h: source.h })
-  ])) as Record<OriaColorStep, string>);
+    gamutMappedOklch({ l: targetLightness[index]!, c: neutralChroma * chromaFactors[index]!, h: source.h })
+  ])) as Record<OriaColorStep, OriaOklchColor>);
 }
 
 const scales = Object.fromEntries(oriaColorFamilies.map(family => [family, scale(seeds[family])])) as Record<OriaColorFamily, OriaColorScale>;
@@ -85,8 +91,8 @@ const scales = Object.fromEntries(oriaColorFamilies.map(family => [family, scale
  */
 export const oriaColors: OriaColors = Object.freeze({
   ...scales,
-  black: "#000000",
-  white: "#ffffff",
+  black: "oklch(0% 0 0)",
+  white: "oklch(100% 0 0)",
   inherit: "inherit",
   transparent: "transparent",
   current: "currentColor"

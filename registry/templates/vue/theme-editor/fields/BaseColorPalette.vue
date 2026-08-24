@@ -101,7 +101,7 @@ const select = (color: BaseColorEntry): void => { emit("select", color.value); c
               <button type="button" aria-label="Show compact color scales" title="Compact color scales" :aria-pressed="view === 'compact'" @click="view = 'compact'"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="3" rx="1.5" /><rect x="3" y="8.5" width="14" height="3" rx="1.5" /><rect x="3" y="13" width="14" height="3" rx="1.5" /></svg></button>
             </div>
           </header>
-          <label data-oria-editor-palette-search :for="`${id}-search`"><span class="oria-editor-visually-hidden">Search base colors</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg><input ref="search" :id="`${id}-search`" v-model="query" type="search" placeholder="Search family, shade, or hex" autocomplete="off" /></label>
+          <label data-oria-editor-palette-search :for="`${id}-search`"><span class="oria-editor-visually-hidden">Search base colors</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg><input ref="search" :id="`${id}-search`" v-model="query" type="search" placeholder="Search family, shade, or OKLCH" autocomplete="off" /></label>
           <p data-oria-editor-palette-count aria-live="polite">{{ resultCount }} {{ resultCount === 1 ? "color" : "colors" }}</p>
           <div data-oria-editor-palette-groups :data-view="view">
             <section v-for="[family, colors] in groups" :key="family" :aria-labelledby="view === 'swatches' ? `${id}-${family}` : undefined" :aria-label="view === 'compact' ? titleCase(family) : undefined">

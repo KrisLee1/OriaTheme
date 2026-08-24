@@ -4,7 +4,7 @@
 
 这里是面向 OriaTheme 使用者和贡献者的公开发布文档入口。中文是主要维护语言；每篇发布指南都提供对应英文版本。
 
-> 发布状态：十个公开 `@oriatheme/*` 包已发布到 npm（各包版本独立演进，最新版本以 npm 为准），公开 HTTPS registry 已完成验证；`@oriatheme/tailwind` 是已实现的第十一个公开包，随当前 v2 发布批次首次发布。文档中的 pnpm/npm/Yarn/Bun 安装与临时执行命令可用于使用方项目。
+> 发布状态：十一个公开 `@oriatheme/*` 包均已发布到 npm（各包版本独立演进，最新版本以 npm 为准），公开 HTTPS registry 已完成验证；当前默认标准为 `oria-standard@2`。文档中的 pnpm/npm/Yarn/Bun 安装与临时执行命令可用于使用方项目。
 
 ## 从这里开始
 
@@ -14,6 +14,7 @@
 | 选择正确的包和公开入口 | [包与公开入口](packages.md) | [Packages and public entry points](en/packages.md) |
 | 使用 pnpm、npm、Yarn 或 Bun 安装和运行 CLI | [包管理器兼容性](package-managers.md) | [Package-manager compatibility](en/package-managers.md) |
 | 在本仓库开发、测试和构建 | [开发者指南](development.md) | [Developer guide](en/development.md) |
+| 理解架构、包边界与运行时工作流程 | [原理与架构](architecture.md) | [Principles and architecture](en/architecture.md) |
 | 定位安装、首屏、样式和 CLI 问题 | [故障排查](troubleshooting.md) | [Troubleshooting](en/troubleshooting.md) |
 
 ## 集成专题

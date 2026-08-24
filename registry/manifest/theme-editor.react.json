@@ -2,20 +2,20 @@
   "schemaVersion": 1,
   "name": "theme-editor",
   "framework": "react",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "compatiblePackages": {
-    "@oriatheme/colors": "^0.1.0",
-    "@oriatheme/core": "^0.3.0",
-    "@oriatheme/editor-core": "^0.2.0",
-    "@oriatheme/react-editor": "^0.1.4",
-    "@oriatheme/runtime-dom": "^0.2.0"
+    "@oriatheme/colors": "^0.2.0",
+    "@oriatheme/core": "^0.4.0",
+    "@oriatheme/editor-core": "^0.2.1",
+    "@oriatheme/react-editor": "^0.1.5",
+    "@oriatheme/runtime-dom": "^0.2.1"
   },
   "dependencies": [
-    "@oriatheme/colors@^0.1.0",
-    "@oriatheme/core@^0.3.0",
-    "@oriatheme/editor-core@^0.2.0",
-    "@oriatheme/react-editor@^0.1.4",
-    "@oriatheme/runtime-dom@^0.2.0",
+    "@oriatheme/colors@^0.2.0",
+    "@oriatheme/core@^0.4.0",
+    "@oriatheme/editor-core@^0.2.1",
+    "@oriatheme/react-editor@^0.1.5",
+    "@oriatheme/runtime-dom@^0.2.1",
     "react@^18.2.0 || ^19.0.0",
     "react-dom@^18.2.0 || ^19.0.0"
   ],
@@ -71,9 +71,14 @@
       "target": "overlays/issues-popover.tsx"
     },
     {
-      "sha256": "fd57a262ada8a0944e6741bf84ad074b86fa63aaac747b5e04dcf1bdea896537",
+      "sha256": "91183d97fafdefef5577190b92ca0278aedbfbb1052190f7e2070a2828a54c4d",
       "source": "templates/react/theme-editor/overlays/export-menu.tsx",
       "target": "overlays/export-menu.tsx"
+    },
+    {
+      "sha256": "115eb0cb81c1cc09db67a72cac296908c869fa464f8645b43cdaab1442eb781c",
+      "source": "templates/shared/theme-editor/export-theme-code.ts",
+      "target": "export-theme-code.ts"
     },
     {
       "sha256": "6ba941339aff0f541c9d1074b1721eff7a60e26fc6aea47c16543d766f61a0ca",
@@ -211,7 +216,7 @@
       "target": "fields/slider-ranges.ts"
     },
     {
-      "sha256": "7e066a47b70db6b4aed6a7b66ab9e040cb60f8393b9a0c7a00eb43e1cc96cc45",
+      "sha256": "0b401ceafc6c94dc0a70a29904c706ff02272ad1f774720de8e32e65b57504e8",
       "source": "templates/react/theme-editor/fields/base-color-palette.tsx",
       "target": "fields/base-color-palette.tsx"
     },
@@ -221,7 +226,7 @@
       "target": "fields/color-field.tsx"
     },
     {
-      "sha256": "a62d8eb10182ff64b8c6ba7650d5875d161b439d33ff1b6d924f4497f072d9aa",
+      "sha256": "820eab178cb601aed58e5588418a6d9565d938ecd543e6667df251db0f6b368d",
       "source": "templates/react/theme-editor/fields/color-utils.ts",
       "target": "fields/color-utils.ts"
     },

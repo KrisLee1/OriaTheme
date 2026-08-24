@@ -5,7 +5,6 @@
 ```text
 OriaTheme/
 ├── apps/
-│   ├── docs/
 │   ├── examples/
 │   │   ├── next/
 │   │   ├── react/
@@ -27,7 +26,7 @@ OriaTheme/
 └── docs/
 ```
 
-目标首发公开包：
+公开包（均已发布，版本独立演进）：
 
 - `@oriatheme/core`
 - `@oriatheme/colors`
@@ -59,17 +58,17 @@ cli          ──reads/copies──> registry manifests + source templates
 registry UI  ──imports──> editor bridge + public runtime/core exports
 ```
 
-- Colors：稳定的完整基础色库、普通 CSS variables 与 Tailwind v4 颜色命名桥接；不依赖 Core、Runtime 或框架。
+- Colors：稳定的完整 OKLCH 基础色库、普通 CSS variables 与 Tailwind v4 颜色命名桥接；不依赖 Core、Runtime 或框架。
 - Tailwind：`oria-standard@2` 变量的静态 `@theme inline` bridge 与 custom-prefix 生成器；不依赖 Core、Runtime 或框架，Tailwind 仅用于其 build/test。
 - Core：类型、contract、schema、纯解析、颜色与对比度算法、错误模型。
-- Presets：可选安装的完整官方主题集合；只依赖 Core，不访问 DOM 或 runtime。
+- Presets：可选安装的完整官方主题集合；root 聚合完整目录，每主题公开 subpath 提供单主题模块边界；只依赖 Core，不访问 DOM 或 runtime。
 - Runtime DOM：外部 store、DOM stylesheet、Storage、系统模式、bootstrap、transition。
 - React：Provider、Hooks、selector；React 为 peer dependency。
 - Vue：Plugin、provide/inject、composables；Vue 为 peer dependency。
 - Editor Core：无框架草稿模型、字段描述、编辑命令与 runtime 提交协调；复用 Core/Runtime 公开 API，不直接访问 DOM 或 Storage。
 - React Editor / Vue Editor：无完整可视 UI 的框架桥接，负责 session 注入、订阅、所有权和自动预览协调；不复制 editor-core/runtime 状态机。
 - CLI：校验 registry manifest、路径和 hash，将多文件可见 UI 复制到用户源码；不执行 registry scripts。
-- Registry UI：官方 React/Vue 可见组件模板；用户安装后自行持有和修改，但仍经公开 editor/core/runtime API 执行领域命令。
+- Registry UI：官方 React/Vue 可见组件模板；共享确定性 formatter 生成可直接粘贴的主题 TypeScript；用户安装后自行持有和修改，但仍经公开 editor/core/runtime API 执行领域命令。
 - Website：私有 Next.js 消费应用，页面导入由 registry 安装到官网源码的本地组件；这些组件只从公开 package exports 导入领域/runtime 能力。
 
 ## 禁止依赖

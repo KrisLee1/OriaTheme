@@ -134,6 +134,7 @@ components/oria-theme-editor/
 ├── theme-list-item.tsx
 ├── editor-preview.tsx
 ├── editor-layout.ts               # 用户可修改的 Tab/Accordion/搜索展示配置
+├── export-theme-code.ts           # React/Vue 共用的确定性 TypeScript formatter
 ├── token-accordion.tsx
 ├── token-field.tsx                 # 只做 type -> field component 路由
 ├── fields/
@@ -179,10 +180,10 @@ Vue registry item 必须提供与 React 相同的职责边界，使用 `ThemeEdi
 - `themes-workspace` 只通过 runtime snapshot 与公开主题生命周期 API 组合 My themes / Presets；主题条目和折叠面板保持独立组件。custom 的改名/应用/编辑/复制/删除与 preset 的应用/复制不得复制 runtime 持久化状态机。
 - Toolbar、Tabs、Search、Mode Switch、Accordion、Preview、每种 token field、Scale、Shadow Layer 和每个 overlay 都是可独立替换的组件。
 - React/Vue Toolbar 将主题名称/预览状态/关闭与重置/导入/导出/问题状态/保存分为两层；草稿工具和提交操作分别分组，全部操作目标保持 44px 高。窄容器通过 container query 把次级操作收敛为仍有可访问名称的图标，不由宿主页面 CSS 覆盖组件内部尺寸或换行规则。
-- React/Vue `ImportDialog` 使用文件卡片、44px `Choose file` 控件、已选文件名反馈和独立粘贴区；文件入口接受 `.oria-theme.json` / `.json`，打开后聚焦文件选择并锁定文档根与 body 的背景滚动，任意关闭路径和卸载时恢复原值，模态内部保持可滚动。`ExportMenu` 下载文件名必须以 `.oria-theme.json` 结尾。两者继续只调用 editor session，不自行解析或放宽 JSON。
+- React/Vue `ImportDialog` 使用文件卡片、44px `Choose file` 控件、已选文件名反馈和独立粘贴区；文件入口接受 `.oria-theme.json` / `.json`，打开后聚焦文件选择并锁定文档根与 body 的背景滚动，任意关闭路径和卸载时恢复原值，模态内部保持可滚动。`ExportMenu` 提供 Copy TypeScript、Download TypeScript、Copy JSON 与 Download JSON；下载文件名分别以 `.oria-theme.ts` 与 `.oria-theme.json` 结尾。TypeScript 由 shared `export-theme-code.ts` 从完整 draft 确定性生成、使用合法 camelCase 常量名并规范化残留 HEX 为 OKLCH；JSON 继续来自 editor session。导出不得执行输入、修改草稿或放宽校验。
 - React/Vue `IssuesPopover` 固定在 Save 左侧；`ready`、`warning`、`error` 分别消费 success、warning、destructive 主题色，同时使用不同图标、可见数量文案和可访问名称。warning 不得伪装为阻断错误，存在 validation issue 时 error 优先。
 - React/Vue Reset / Export / Issues 的锚定菜单共享外部点击与 Escape dismiss 行为；事件监听必须随组件卸载清理，菜单内部交互不得触发关闭。
-- React/Vue Reset / Export / Issues 菜单、Import / confirmation dialog 与 `BaseColorPalette` 浮层统一以 `color.overlay` 为背景、`color.overlay.fg` 为内容色，并同时声明标准/WebKit backdrop blur；Overlay 背景 alpha 必须消费 `opacity.overlay`，模糊强度必须消费 `backdrop.blur.{sm,md,lg,xl}` 与 `backdrop.saturate`，字体层级必须消费九级 `font.weight.*`，不在模板中写死透明度、中间字重或模糊像素。背景 alpha 必须通过派生背景色实现，不得给整个弹层设置 opacity 并降低前景可读性。浮层通过 Portal/Teleport 渲染到 `document.body` 时，浮层根节点必须重新映射它消费的 editor 主题别名，不能假设继承编辑器根节点的局部变量。菜单打开时取消祖先 toolbar 的 backdrop filter，避免嵌套 backdrop root 使视觉模糊失效。颜色、渐变 stop 与阴影色样在棋盘底上呈现实际 alpha，原生 color input 使用去除 alpha 后的 RGB，不能让 4/8 位 HEX 错误显示为黑色。`prefers-reduced-transparency` 继续优先使用实色降级。
+- React/Vue Reset / Export / Issues 菜单、Import / confirmation dialog 与 `BaseColorPalette` 浮层统一以 `color.overlay` 为背景、`color.overlay.fg` 为内容色，并同时声明标准/WebKit backdrop blur；Overlay 背景 alpha 必须消费 `opacity.overlay`，模糊强度必须消费 `backdrop.blur.{sm,md,lg,xl}` 与 `backdrop.saturate`，字体层级必须消费九级 `font.weight.*`，不在模板中写死透明度、中间字重或模糊像素。背景 alpha 必须通过派生背景色实现，不得给整个弹层设置 opacity 并降低前景可读性。浮层通过 Portal/Teleport 渲染到 `document.body` 时，浮层根节点必须重新映射它消费的 editor 主题别名，不能假设继承编辑器根节点的局部变量。菜单打开时取消祖先 toolbar 的 backdrop filter，避免嵌套 backdrop root 使视觉模糊失效。颜色、渐变 stop 与阴影色样在棋盘底上呈现实际 alpha；原生 color input 对 4/8 位 HEX 去除 alpha，对 OKLCH 转换为非透明 sRGB HEX，不能错误显示为黑色，且不能用桥接值覆盖草稿。`prefers-reduced-transparency` 继续优先使用实色降级。
 - React/Vue `confirmation-dialog` 是重置、dirty 关闭和 host 正式主题切换共用的模态确认表面；必须使用可访问标题/说明、Cancel 与明确动作标签，支持 Escape 和焦点约束，不调用 `window.confirm()`。`editor-shell` 只在 dirty session 上注册 `beforeunload`，并通过 dirty change / discard request 让 host 的主题列表复用同一保护逻辑。
 - 字段组件通过 props/emits 接收值、问题和提交回调，不直接创建 runtime 或 session。
 - React/Vue 字段统一使用“左侧名称、右侧控件”的紧凑卡片行，卡片之间保留明确间距；颜色样本、色值输入和基础色卡按钮使用约 32–34px 的视觉尺寸。滑块由独立 LinearSlider 组件统一轨道、拇指、Pointer Capture、逐帧提交和键盘语义，并由 slider ranges 提供固定的语义范围；不得让宿主页面通用 input/card 样式覆盖这些内部尺寸，也不得随当前值动态改变范围。

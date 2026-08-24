@@ -37,7 +37,7 @@ yarn add @oriatheme/presets @oriatheme/runtime-dom
 bun add @oriatheme/presets @oriatheme/runtime-dom
 ```
 
-`@oriatheme/presets` 提供 41 款完整主题；默认主题 `oriaDefaultTheme` 也可从 `@oriatheme/core` 单独导入。完整包选择见[包与公开入口](packages.md)。
+`@oriatheme/presets` 提供 43 款完整主题；默认主题 `oriaDefaultTheme` 也可从 `@oriatheme/core` 单独导入。完整包选择见[包与公开入口](packages.md)。
 
 ## 2. 在框架挂载前恢复主题
 
@@ -180,7 +180,7 @@ Runtime 在目标根节点原子写入 `--oria-*` variables，并维护 `data-or
 
 | 想立刻完成的事 | 对应指南 |
 | --- | --- |
-| 使用 41 款官方预设主题，或确认所需 package | [包与公开入口：常见组合](packages.md#常见组合) |
+| 使用 43 款官方预设主题，或确认所需 package | [包与公开入口：常见组合](packages.md#常见组合) |
 | 让现有组件使用颜色、圆角、阴影等主题 variables | [组件样式](component-styling.md) |
 | 将可见 React/Vue 主题编辑器 UI 安装到项目源码 | [主题编辑器](theme-editors.md) |
 | 新建、预览、保存、导入或导出自定义主题 | [自定义主题](custom-themes.md) |

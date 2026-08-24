@@ -23,3 +23,4 @@
 - [ADR-0017：Contract v2 的简洁 Token 命名与 Tailwind Bridge](ADR-0017-contract-v2-token-naming-and-tailwind-bridge.md)
 - [ADR-0018：将 Contract v2 实现拆分至 Phase 10](ADR-0018-contract-v2-in-phase-10.md)
 - [ADR-0019：以 Contract v2 为默认且唯一的标准设计](ADR-0019-default-to-contract-v2.md)
+- [ADR-0020：完整 OKLCH 颜色与单主题预设入口](ADR-0020-oklch-colors-and-granular-presets.md)

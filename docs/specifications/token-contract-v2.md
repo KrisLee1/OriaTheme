@@ -27,6 +27,26 @@ Core 只允许经 Contract 声明的安全维度派生：固定倍数 scale，�
 
 mode-local：`color.*`、`shadow.*`、`gradient.*`、`pattern.*`。其余 v2 source token shared。Editor Core 必须只展示 source tokens，并将派生变量归入只读预览而非字段。
 
+## 颜色表示与透明度
+
+- `oriaDefaultTheme`、`@oriatheme/presets` 的全部 v2 主题和 `@oriatheme/colors` 对外物化完整的 `oklch(L% C H[/ A])` CSS color；shadow、gradient stop 与 pattern layer 中的嵌套颜色遵循同一规则。
+- Runtime CSS variables 仍保存完整颜色，例如 `--oria-color-primary: oklch(62% 0.2 255)`，因此既有 `color: var(--oria-color-primary)` 不变。不得把标准变量改为裸 `L C H` 通道。
+- 自定义主题继续接受受限静态 OKLCH，以及既有 HEX、RGB、HSL 和 named color。Core 不强制重写合法的现有 v2 自定义主题；`oria-standard@1` legacy 数据保留原表示，显式 v1→v2 migration 的结果规范化为 OKLCH。
+- 需要用独立变量覆盖 alpha 时，可以使用 relative color syntax；需要兼容降级时使用 `color-mix`，不要给整个组件设置 `opacity`：
+
+  ```css
+  .badge {
+    --badge-opacity: 0.72;
+    background: oklch(from var(--oria-color-primary) l c h / var(--badge-opacity));
+  }
+
+  @supports not (color: oklch(from red l c h)) {
+    .badge {
+      background: color-mix(in oklch, var(--oria-color-primary) calc(var(--badge-opacity) * 100%), transparent);
+    }
+  }
+  ```
+
 ## Migration
 
 `migrateOriaStandardV1ToV2(input)` 返回完整的 `ThemeMigrationResult`，其中包含 v2 theme、warnings 和 `requiresReview`。它映射语义 token，并从 v1 spacing/radius/control 数据推导 v2 source；任何不能精确落到 v2 geometry 规则的情况必须发出 warning、标记复核。

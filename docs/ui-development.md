@@ -32,10 +32,10 @@
 
 | 层 | 位置 | 规则 |
 |---|---|---|
-| 编辑器布局配置 | `registry/templates/shared/theme-editor/editor-layout.ts`、React/Vue 框架桥接文件 | shared 统一维护 Themes 与五个 token 分类；框架文件只桥接共享配置，不含领域规则 |
+| 编辑器共享源码 | `registry/templates/shared/theme-editor/editor-layout.ts`、`export-theme-code.ts`、React/Vue 框架桥接文件 | shared 统一维护 Themes 与五个 token 分类及确定性 TypeScript 导出；框架文件只桥接共享能力，不含领域规则 |
 | React registry 组件 | `registry/templates/react/theme-editor/` | 官方 React 可见 UI 唯一模板真相 |
 | Vue registry 组件 | `registry/templates/vue/theme-editor/` | 官方 Vue 可见 UI 模板真相，与 React 维护能力一致性 |
-| 示例消费入口 | `apps/examples/react/src/components/oria-theme-editor/`、`apps/examples/next/app/components/oria-theme-editor/`、`apps/examples/vue/src/components/oria-theme-editor/theme-editor.ts` | React/Next 验证已安装副本；Vue 示例直接导出 registry SFC 以持续编译模板源码；均不成为新的模板真相 |
+| 示例消费入口 | `apps/examples/react/src/components/oria-theme-editor/`、`apps/examples/next/app/components/oria-theme-editor/`、`apps/examples/editor-next/app/components/oria-theme-editor/`、`apps/examples/editor-vue/src/components/oria-theme-editor/`、`apps/examples/vue/src/components/oria-theme-editor/theme-editor.ts` | React/Next 与独立 editor 示例验证已安装副本；Vue 集成示例直接导出 registry SFC 以持续编译模板源码；均不成为新的模板真相 |
 | Headless 桥接 | `packages/react-editor/`、`packages/vue-editor/` | Provider/hooks 或 provide/composables 与自动预览；无完整可见 UI |
 | 领域与 runtime | `packages/editor-core/`、`packages/runtime-dom/` | 草稿、校验、预览、主题列表与持久化的唯一实现 |
 | Host 页面 | `apps/examples/*`、`apps/website` | 只组合 runtime、主题工作台和本地 `ThemeEditor`，不实现 token 字段；官方示例将已打开编辑器作为右侧固定圆角悬浮面板，桌面端预留面板完整宽度与边距以避免遮挡页面，窄屏不挤压内容；面板以可中断的 opacity / transform 过渡开闭，Tab 横向与内容纵向滚动条复用主题选择器的细圆角滑块。官网编辑器路由直接组合 `components/editor-page/` 的 Stage、Workspace 与 Panel，Stage 在进入路由时打开面板；feature 内再按展示区块拆分，页面级翻译上下文读取 `public/locales/*/common.json`，顶栏始终由共享 `SiteHeader` 承载，编辑器工作台不得再渲染第二个 topbar |

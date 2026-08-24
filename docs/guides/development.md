@@ -6,7 +6,7 @@
 
 ## 前置条件
 
-- Node.js：仓库需要 Node.js 运行 pnpm、TypeScript、Vitest、tsup、Vite 和 Next.js，但当前没有 `engines`、`.nvmrc` 或 `.node-version`，因此尚未声明正式 Node 版本范围。
+- Node.js：发布工作流固定使用 Node.js 24；本地维护建议使用同一主版本。仓库没有 `engines`、`.nvmrc` 或 `.node-version`，因此这不是公开包的消费兼容范围承诺。
 - pnpm：根 `packageManager` 固定为 `pnpm@10.10.0`。
 - Git：Changesets 基线比较和正式发布需要可访问的 `main` 历史；克隆仓库后即具备该基线。
 
@@ -46,7 +46,13 @@ pnpm install --frozen-lockfile
 
 ## 日常开发循环
 
-先阅读受影响的架构和规范文档，然后修改最小范围并运行对应 package 检查：
+先读取受影响的公开架构与规范；维护者工作区如存在仓库根项目规则和当前里程碑，还必须按其路由读取。然后选择最轻的安全处理级别：
+
+- Fast：清晰、局部、可回滚，且不影响架构、公开 API、持久化、依赖或安全；直接修改并运行定向检查，不创建任务文档或日志。
+- Review：结果与机制已明确的功能或跨区域变化；简述影响、验证和待删除旧实现后在同一任务继续，只有当前事实变化时才更新权威文档。
+- Controlled：模块所有权、已发布契约/真实数据、主要平台/依赖、安全/破坏性行为或实质歧义；先形成单一决策提案，再按决定实现。
+
+目标不变的缺陷、清理和恢复留在原任务中，不自动新建提案、迁移或内部版本。完成最小范围修改后，运行对应 package 检查：
 
 ```bash
 pnpm --filter @oriatheme/core typecheck
@@ -55,7 +61,7 @@ pnpm --filter @oriatheme/core test
 pnpm --filter @oriatheme/core build
 ```
 
-把 filter 改为受影响的 package。跨包或 Phase 验收必须执行根级门禁：
+把 filter 改为受影响的 package。跨包变化、里程碑验收和发布准备需要执行根级门禁：
 
 ```bash
 pnpm typecheck
@@ -118,7 +124,9 @@ node packages/cli/dist/index.js add theme-editor --framework react --dry-run
 
 ## 文档与变更记录
 
-公开仓库的变更应更新受影响的规范或用户指南，并在公开包行为变化时添加 Changeset。项目维护者另行维护的状态、Phase 计划和详细执行日志不属于公开仓库或用户 Changelog。
+公开仓库的变更应更新受影响的当前规范或用户指南，并在公开包行为变化时添加 Changeset。Fast 不创建项目记录；Review 只在里程碑/焦点、能力、阻塞、风险或验证基线变化时更新状态；项目日志只记录里程碑、重大架构基线、显著阻塞、成熟度和发布事件。普通实现历史由 Git 保存。
+
+面向用户的指南只描述已接受且可用的当前行为。路线图候选、Controlled 草案、逐任务状态和开发历史不得写成公开承诺。持久架构、兼容性、协议/持久化、主要依赖、安全或发布决策才使用 ADR。
 
 文档修改后必须检查 Markdown 本地链接、标题锚点和残留模板标记。当前仓库尚未提供自己的文档校验 script；维护者使用的外部校验工具不能写成使用方项目依赖。
 

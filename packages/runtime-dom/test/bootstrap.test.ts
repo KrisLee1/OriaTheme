@@ -14,20 +14,21 @@ const snapshot = {
   lightVariables: resolveTheme(oriaDefaultTheme, "light", { contract: oriaStandardContract }).variables,
   darkVariables: resolveTheme(oriaDefaultTheme, "dark", { contract: oriaStandardContract }).variables
 };
+const darkBackground = snapshot.darkVariables["--oria-color-bg"];
 afterEach(() => { domDocument.head.innerHTML = ""; domDocument.documentElement.removeAttribute("data-oria-theme"); domDocument.documentElement.removeAttribute("data-oria-mode"); globalThis.localStorage.clear(); });
 
 describe("bootstrap", () => {
   it("applies a validated active snapshot without loading a preset collection", () => {
     bootstrapTheme({ snapshot, target: domDocument, contract: oriaDefaultTheme.contract });
     const style = domDocument.head.querySelector("style[data-oria-theme-bootstrap]");
-    expect(style?.textContent).toContain("--oria-color-bg:#101418");
+    expect(style?.textContent).toContain(`--oria-color-bg:${darkBackground}`);
     expect(domDocument.documentElement.dataset.oriaMode).toBe("dark");
     const script = createBootstrapScript({ snapshot });
     expect(script).not.toContain("oriaStandardContract");
     expect(script).not.toContain("createOriaThemeRuntime");
     domDocument.head.innerHTML = "";
     Function(script)();
-    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain("--oria-color-bg:#101418");
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain(`--oria-color-bg:${darkBackground}`);
   });
 
   it("silently retains static fallback when active snapshot validation fails", () => {
@@ -69,7 +70,7 @@ describe("bootstrap", () => {
     expect(script).not.toContain("oriaPresetThemes");
     expect(script).not.toContain("createOriaThemeRuntime");
     Function(script)();
-    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain("--oria-color-bg:#101418");
+    expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")?.textContent).toContain(`--oria-color-bg:${darkBackground}`);
     expect(domDocument.documentElement.dataset.oriaTheme).toBe("oria-default");
   });
 
@@ -84,7 +85,7 @@ describe("bootstrap", () => {
     const runtime = createOriaThemeRuntime({ presets: [oriaDefaultTheme], defaultThemeId: "oria-default", defaultAppearance: "dark", target: domDocument, storage: false });
     runtime.start();
     const runtimeCss = domDocument.head.querySelector("style[data-oria-theme-runtime]")?.textContent;
-    expect(runtimeCss).toContain("--oria-color-bg:#101418");
+    expect(runtimeCss).toContain(`--oria-color-bg:${darkBackground}`);
     expect(domDocument.head.querySelector("style[data-oria-theme-bootstrap]")).toBeNull();
     runtime.destroy();
   });
