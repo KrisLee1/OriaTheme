@@ -35,7 +35,29 @@ jobs:
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm lint
-      - run: pnpm test
+      - name: Run package tests
+        shell: bash
+        run: |
+          packages=(
+            @oriatheme/colors
+            @oriatheme/core
+            @oriatheme/tailwind
+            @oriatheme/cli
+            @oriatheme/presets
+            @oriatheme/runtime-dom
+            @oriatheme/editor-core
+            @oriatheme/react
+            @oriatheme/vue
+            @oriatheme/react-editor
+            @oriatheme/vue-editor
+            @oriatheme/example-next
+          )
+          for package in "${packages[@]}"; do
+            if ! pnpm --filter "$package" test; then
+              echo "::error title=Workspace package test failed::$package"
+              exit 1
+            fi
+          done
 
       - id: detect
         name: Detect a release PR or a versioned release commit
@@ -89,5 +111,27 @@ jobs:
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm lint
-      - run: pnpm test
+      - name: Run package tests
+        shell: bash
+        run: |
+          packages=(
+            @oriatheme/colors
+            @oriatheme/core
+            @oriatheme/tailwind
+            @oriatheme/cli
+            @oriatheme/presets
+            @oriatheme/runtime-dom
+            @oriatheme/editor-core
+            @oriatheme/react
+            @oriatheme/vue
+            @oriatheme/react-editor
+            @oriatheme/vue-editor
+            @oriatheme/example-next
+          )
+          for package in "${packages[@]}"; do
+            if ! pnpm --filter "$package" test; then
+              echo "::error title=Workspace package test failed::$package"
+              exit 1
+            fi
+          done
       - run: pnpm exec changeset publish
