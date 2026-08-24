@@ -1,5 +1,15 @@
 # @oriatheme/react-editor
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [7ee24b5]
+- Updated dependencies [7ee24b5]
+  - @oriatheme/core@0.4.0
+  - @oriatheme/editor-core@0.2.1
+  - @oriatheme/runtime-dom@0.2.1
+
 ## 0.1.4
 
 ### Patch Changes

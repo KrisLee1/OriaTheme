@@ -1,5 +1,19 @@
 # @oriatheme/core
 
+## 0.4.0
+
+### Minor Changes
+
+- 7ee24b5: Adopt complete OKLCH values for the v2 default theme, official presets, migrations, seed generation, and the public base-color library while retaining validation compatibility for existing static HEX, RGB, HSL, and named-color custom themes.
+
+  Add stable per-theme `@oriatheme/presets/<theme-slug>` entry points so applications can ship only their selected official presets without evaluating the root catalog.
+
+  Upgrade the React and Vue source-editor registry item with OKLCH-aware color controls and shared Copy/Download TypeScript actions that produce paste-ready `.oria-theme.ts` files and `ThemeDefinition` constants alongside the existing JSON actions.
+
+### Patch Changes
+
+- 7ee24b5: Refine every official preset's shape and elevation language with restrained radius scales, complete theme-specific shadow hierarchies, and material-only inner highlights. Make Line Art fully opaque, neutralize the default theme's surfaces without changing the legacy v1 default, and improve Glass dark-mode surface separation around its softer blue primary.
+
 ## 0.3.0
 
 ### Minor Changes
