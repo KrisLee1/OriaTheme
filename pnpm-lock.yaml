@@ -224,8 +224,8 @@ importers:
         specifier: 0.2.1
         version: 0.2.1
       '@oriatheme/presets':
-        specifier: 0.5.0
-        version: 0.5.0
+        specifier: 0.5.1
+        version: 0.5.1
       '@oriatheme/react':
         specifier: 0.1.4
         version: 0.1.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1153,8 +1153,8 @@ packages:
   '@oriatheme/editor-core@0.2.1':
     resolution: {integrity: sha512-nRFK//PhbjO+52KbFq0bblX3402X0LVMQ7dPKQsTjAoirFu8MkfqjJ55Hm8FenBAon9nzb2JaEHeuldTGRHSHg==}
 
-  '@oriatheme/presets@0.5.0':
-    resolution: {integrity: sha512-Fy2al3YWvencboN9sg3akwgXNeZs3UpMJUcGSh0OyLXjEMjSdnUcLGhLAJ4xy7WQ+xZXBRMNnUsKr2EHciGpuA==}
+  '@oriatheme/presets@0.5.1':
+    resolution: {integrity: sha512-5oiHxHDonKU0PugsCB8y51M1nzlyUYPMe8xmLjR49MoCXcqd51JC7+o4v4uB/YXnMTMYPJOGn1jvK/4MPO9LAg==}
 
   '@oriatheme/react-editor@0.1.5':
     resolution: {integrity: sha512-VLQ2OJVMhCvRS8ymZREOp4a/M5tNdyc6T/gL5+WkFpbYq4X6TOdlU3Ls0WLHfyU2G3QkKzuXJW645XpZN3B6Dg==}
@@ -4229,7 +4229,7 @@ snapshots:
       '@oriatheme/core': 0.4.0
       '@oriatheme/runtime-dom': 0.2.1
 
-  '@oriatheme/presets@0.5.0':
+  '@oriatheme/presets@0.5.1':
     dependencies:
       '@oriatheme/core': 0.4.0
 
