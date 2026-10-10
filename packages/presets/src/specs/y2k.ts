@@ -5,7 +5,7 @@ export const y2kPreset: PresetSpec = {
     id: "oria-y2k", name: "Y2K", category: "visual-style",
     tokens: {
       "font.sans": geometricSans, "font.display": geometricSans, "tracking.wide": "0.04em",
-      "radius": "0.75rem", ...backdropBlurScale(20), "backdrop.saturate": 1.6,
+      "radius": "0.5rem", ...backdropBlurScale(20), "backdrop.saturate": 1.6,
       "shadow.highlight": [{ x: "0", y: "2px", blur: "2px", spread: "0", color: "#ffffffd9", inset: true }],
       "shadow.md": [{ x: "0", y: "16px", blur: "36px", spread: "-18px", color: "#5968a64d" }, { x: "0", y: "2px", blur: "2px", spread: "0", color: "#ffffffd9", inset: true }],
       "duration.normal": "260ms", "ease.emphasized": [0.34, 1.56, 0.64, 1]

@@ -1,5 +1,11 @@
 # @oriatheme/presets
 
+## 0.5.1
+
+### Patch Changes
+
+- Reduce the radius scales of Soft Clay, Golden Bazaar, Green Lite, Neumorphism, Spatial UI, Y2K, Playful, and Kawaii by 30–33% in both light and dark modes for more restrained controls and cards. Preset IDs, exports, token contracts, and persisted data formats remain compatible; existing custom themes keep their saved radius values and require no migration.
+
 ## 0.5.0
 
 ### Minor Changes

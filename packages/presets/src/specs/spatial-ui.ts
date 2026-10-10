@@ -5,7 +5,7 @@ export const spatialUiPreset: PresetSpec = {
     id: "oria-spatial-ui", name: "Spatial UI", category: "design-language",
     tokens: {
       "font.sans": systemSans, "font.display": systemSans,
-      "radius": "0.625rem", ...backdropBlurScale(36), "backdrop.saturate": 1.35, "opacity.overlay": 0.82,
+      "radius": "0.4375rem", ...backdropBlurScale(36), "backdrop.saturate": 1.35, "opacity.overlay": 0.82,
       "shadow.sm": [{ x: "0", y: "8px", blur: "24px", spread: "-12px", color: "#14213d52" }, { x: "0", y: "1px", blur: "0", spread: "0", color: "#ffffff73", inset: true }],
       "shadow.md": [{ x: "0", y: "28px", blur: "64px", spread: "-28px", color: "#0c153880" }, { x: "0", y: "1px", blur: "0", spread: "0", color: "#ffffff80", inset: true }],
       "duration.normal": "280ms", "duration.slow": "460ms", "ease.emphasized": [0.16, 1, 0.3, 1]

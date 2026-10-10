@@ -4,7 +4,7 @@ import type { PresetSpec } from "../preset-designs.js";
 export const softClayPreset: PresetSpec = {
     id: "oria-soft-clay", name: "Soft Clay", category: "visual-style",
     tokens: {
-      "font.sans": roundedSans, "font.display": roundedSans, "font.weight.normal": "500", "font.weight.semibold": "700", "radius": "0.75rem", "border.width.hairline": "1px", "border.width.default": "1px", "border.width.strong": "1px", "ring.width": "3px", "ring.offset": "4px",
+      "font.sans": roundedSans, "font.display": roundedSans, "font.weight.normal": "500", "font.weight.semibold": "700", "radius": "0.5rem", "border.width.hairline": "1px", "border.width.default": "1px", "border.width.strong": "1px", "ring.width": "3px", "ring.offset": "4px",
       "shadow.sm": [{ x: "0", y: "6px", blur: "12px", spread: "-7px", color: "#a99c9140" }, { x: "5px", y: "5px", blur: "12px", spread: "0", color: "#c9beb452" }, { x: "-6px", y: "-6px", blur: "12px", spread: "0", color: "#ffffffed" }],
       "shadow.md": [{ x: "0", y: "14px", blur: "28px", spread: "-13px", color: "#a99c9145" }, { x: "10px", y: "10px", blur: "22px", spread: "0", color: "#c9beb459" }, { x: "-12px", y: "-12px", blur: "22px", spread: "0", color: "#ffffff" }],
       "shadow.lg": [{ x: "0", y: "24px", blur: "48px", spread: "-20px", color: "#a99c9147" }, { x: "20px", y: "20px", blur: "38px", spread: "0", color: "#c9beb452" }, { x: "-22px", y: "-22px", blur: "38px", spread: "0", color: "#ffffff" }],

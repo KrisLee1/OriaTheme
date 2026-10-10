@@ -5,7 +5,7 @@ export const neumorphismPreset: PresetSpec = {
     id: "oria-neumorphism", name: "Neumorphism", category: "visual-style",
     tokens: {
       "font.sans": humanistSans, "font.display": humanistSans,
-      "radius": "0.625rem", "border.width.strong": "1px",
+      "radius": "0.4375rem", "border.width.strong": "1px",
       "shadow.sm": [{ x: "5px", y: "5px", blur: "12px", spread: "0", color: "#9caab759" }, { x: "-5px", y: "-5px", blur: "12px", spread: "0", color: "#ffffffd9" }],
       "shadow.md": [{ x: "10px", y: "10px", blur: "24px", spread: "0", color: "#9caab766" }, { x: "-10px", y: "-10px", blur: "24px", spread: "0", color: "#ffffffeb" }],
       "shadow.inner": [{ x: "4px", y: "4px", blur: "10px", spread: "0", color: "#9caab759", inset: true }, { x: "-4px", y: "-4px", blur: "10px", spread: "0", color: "#ffffffd9", inset: true }],

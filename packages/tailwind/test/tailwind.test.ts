@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { URL } from "node:url";
@@ -132,9 +133,10 @@ describe("@oriatheme/tailwind", () => {
     const bridgePath = join(outputDirectory, "acme.css");
     const inputPath = join(outputDirectory, "input.css");
     const output = join(outputDirectory, "tailwind.css");
+    const tailwindStylesheet = createRequire(import.meta.url).resolve("tailwindcss/index.css").replaceAll("\\", "/");
     try {
       writeFileSync(bridgePath, generateOriaTailwindBridge({ prefix: "acme" }));
-      writeFileSync(inputPath, `@import "tailwindcss";\n@import "./acme.css";\n@source inline("bg-background rounded-lg backdrop-oria-sm");\n`);
+      writeFileSync(inputPath, `@import ${JSON.stringify(tailwindStylesheet)};\n@import "./acme.css";\n@source inline("bg-background rounded-lg backdrop-oria-sm");\n`);
       execFileSync("pnpm", ["exec", "tailwindcss", "-i", inputPath, "-o", output, "--minify"], { stdio: "pipe" });
       const css = readFileSync(output, "utf8");
       expect(css).toContain(".bg-background");

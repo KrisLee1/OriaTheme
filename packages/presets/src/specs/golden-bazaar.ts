@@ -4,7 +4,7 @@ import type { PresetSpec } from "../preset-designs.js";
 export const goldenBazaarPreset: PresetSpec = {
     id: "oria-golden-bazaar", name: "Golden Bazaar", category: "visual-style",
     tokens: {
-      "font.sans": roundedSans, "font.display": geometricSans, "font.weight.semibold": "700", "font.weight.bold": "800", "tracking.tight": "-0.025em", "radius": "0.75rem", "border.width.hairline": "1px", "border.width.default": "1px", "border.width.strong": "1px", "ring.width": "3px", "ring.offset": "4px",
+      "font.sans": roundedSans, "font.display": geometricSans, "font.weight.semibold": "700", "font.weight.bold": "800", "tracking.tight": "-0.025em", "radius": "0.5rem", "border.width.hairline": "1px", "border.width.default": "1px", "border.width.strong": "1px", "ring.width": "3px", "ring.offset": "4px",
       "shadow.sm": [{ x: "0", y: "5px", blur: "16px", spread: "-9px", color: "#bb63342e" }, { x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffffb8", inset: true }],
       "shadow.md": [{ x: "0", y: "16px", blur: "34px", spread: "-18px", color: "#bb633447" }, { x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffffd9", inset: true }],
       "shadow.lg": [{ x: "0", y: "28px", blur: "58px", spread: "-28px", color: "#bb63345c" }, { x: "0", y: "1px", blur: "0", spread: "1px", color: "#ffffffe6", inset: true }],

@@ -17,7 +17,7 @@ export const greenLitePreset: PresetSpec = {
     "tracking.tight": "-0.015em",
     "tracking.normal": "0.005em",
     "tracking.wide": "0.045em",
-    "radius": "0.625rem",
+    "radius": "0.4375rem",
     "border.width.hairline": "1px",
     "border.width.default": "1px",
     "border.width.strong": "1px",

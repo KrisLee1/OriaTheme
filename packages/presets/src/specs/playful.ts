@@ -5,7 +5,7 @@ export const playfulPreset: PresetSpec = {
     id: "oria-playful", name: "Playful", category: "mood-context",
     tokens: {
       "font.sans": roundedSans, "font.display": roundedSans, "font.weight.semibold": "700", "font.weight.bold": "800",
-      "radius": "0.625rem", "shadow.sm": [{ x: "0", y: "4px", blur: "0", spread: "0", color: "#493c8f38" }], "shadow.md": [{ x: "0", y: "8px", blur: "0", spread: "0", color: "#493c8f4d" }],
+      "radius": "0.4375rem", "shadow.sm": [{ x: "0", y: "4px", blur: "0", spread: "0", color: "#493c8f38" }], "shadow.md": [{ x: "0", y: "8px", blur: "0", spread: "0", color: "#493c8f4d" }],
       "duration.normal": "240ms", "ease.emphasized": [0.34, 1.56, 0.64, 1]
     },
     modes: {

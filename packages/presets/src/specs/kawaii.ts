@@ -5,7 +5,7 @@ export const kawaiiPreset: PresetSpec = {
     id: "oria-kawaii", name: "Kawaii", category: "mood-context",
     tokens: {
       "font.sans": roundedSans, "font.display": roundedSans, "font.weight.semibold": "700", "font.weight.bold": "800",
-      "radius": "0.75rem", "shadow.sm": [{ x: "0", y: "7px", blur: "18px", spread: "-10px", color: "#b66f9b3d" }], "shadow.md": [{ x: "0", y: "18px", blur: "40px", spread: "-22px", color: "#9e75b852" }],
+      "radius": "0.5rem", "shadow.sm": [{ x: "0", y: "7px", blur: "18px", spread: "-10px", color: "#b66f9b3d" }], "shadow.md": [{ x: "0", y: "18px", blur: "40px", spread: "-22px", color: "#9e75b852" }],
       "duration.normal": "260ms", "ease.emphasized": [0.34, 1.56, 0.64, 1]
     },
     modes: {

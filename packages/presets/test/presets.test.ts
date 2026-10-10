@@ -246,7 +246,7 @@ describe("Oria preset collection", () => {
     expect(variables("oria-soft-clay")["--oria-color-bg"]).toBe(hexToOklch("#f3f0eb"));
     expect(variables("oria-soft-clay")["--oria-color-primary"]).toBe(hexToOklch("#e9781c"));
     expect(variables("oria-soft-clay")["--oria-font-sans"]).toContain("ui-rounded");
-    expect(variables("oria-soft-clay")["--oria-radius-lg"]).toBe("1.5rem");
+    expect(variables("oria-soft-clay")["--oria-radius-lg"]).toBe("1rem");
     expect(variables("oria-soft-clay")["--oria-shadow-lg"]!.split(",")).toHaveLength(3);
     expect(variables("oria-soft-clay")["--oria-gradient-surface"]).toContain(hexToOklch("#ffffff"));
     expect(variables("oria-soft-clay", "dark")["--oria-color-bg"]).toBe(hexToOklch("#28221d"));
@@ -255,7 +255,7 @@ describe("Oria preset collection", () => {
     expect(variables("oria-golden-bazaar")["--oria-color-primary"]).toBe(hexToOklch("#f4b522"));
     expect(variables("oria-golden-bazaar")["--oria-color-secondary"]).toBe(hexToOklch("#f06d36"));
     expect(variables("oria-golden-bazaar")["--oria-color-accent"]).toBe(hexToOklch("#413896"));
-    expect(variables("oria-golden-bazaar")["--oria-radius-lg"]).toBe("1.5rem");
+    expect(variables("oria-golden-bazaar")["--oria-radius-lg"]).toBe("1rem");
     expect(variables("oria-golden-bazaar")["--oria-gradient-bg"]).toContain("radial-gradient");
     expect(variables("oria-golden-bazaar")["--oria-shadow-lg"]!.split(",")).toHaveLength(2);
     expect(variables("oria-golden-bazaar", "dark")["--oria-color-bg"]).toBe(hexToOklch("#2b1c16"));
@@ -307,7 +307,7 @@ describe("Oria preset collection", () => {
     expect(variables("oria-green-lite")["--oria-gradient-bg"]!.split(hexToOklch("#ffffff"))).toHaveLength(4);
     expect(variables("oria-green-lite")["--oria-color-primary"]).toBe(hexToOklch("#4fd97d"));
     expect(variables("oria-green-lite")["--oria-border-width-default"]).toBe("1px");
-    expect(variables("oria-green-lite")["--oria-radius-lg"]).toBe("1.25rem");
+    expect(variables("oria-green-lite")["--oria-radius-lg"]).toBe("0.875rem");
     expect(variables("oria-green-lite")["--oria-backdrop-blur-lg"]).toBe("20px");
     expect(variables("oria-green-lite")["--oria-gradient-surface"]).toContain(hexToOklch("#ffffffc2"));
     expect(variables("oria-green-lite")["--oria-pattern-bg"]).toContain("radial-gradient");
@@ -371,7 +371,9 @@ describe("Oria preset collection", () => {
       const base = Number.parseFloat(variables["--oria-radius-sm"] ?? "NaN");
       const values = radii(theme.id);
       expect(values.every(Number.isFinite), `${theme.id} radius values`).toBe(true);
-      expect(values, `${theme.id} radius scale`).toEqual(factors.map(factor => Number((base * factor).toFixed(4))));
+      for (const [index, factor] of factors.entries()) {
+        expect(values[index], `${theme.id} radius ${radiusKeys[index]}`).toBeCloseTo(base * factor, 6);
+      }
       expect(values, `${theme.id} radius monotonic`).toEqual([...values].sort((a, b) => a - b));
     }
 
@@ -379,8 +381,28 @@ describe("Oria preset collection", () => {
     for (const theme of oriaPresetThemes) expect(radii(theme.id)[5], `${theme.id} 2xl radius`).toBeLessThanOrEqual(3);
     expect(radii("oria-punchcard")).toEqual([0.1875, 0.375, 0.5625, 0.75, 1.125, 1.5, 2.25, 3]);
     expect(radii("oria-glass")).toEqual([0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4]);
-    expect(radii("oria-y2k")).toEqual([0.375, 0.75, 1.125, 1.5, 2.25, 3, 4.5, 6]);
-    expect(radii("oria-kawaii")).toEqual([0.375, 0.75, 1.125, 1.5, 2.25, 3, 4.5, 6]);
+    expect(radii("oria-y2k")).toEqual([0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4]);
+    expect(radii("oria-kawaii")).toEqual([0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4]);
+  });
+
+  it.each([
+    ["oria-soft-clay", "0.5rem", "1rem", "1.5rem", "2rem"],
+    ["oria-golden-bazaar", "0.5rem", "1rem", "1.5rem", "2rem"],
+    ["oria-green-lite", "0.4375rem", "0.875rem", "1.3125rem", "1.75rem"],
+    ["oria-neumorphism", "0.4375rem", "0.875rem", "1.3125rem", "1.75rem"],
+    ["oria-spatial-ui", "0.4375rem", "0.875rem", "1.3125rem", "1.75rem"],
+    ["oria-y2k", "0.5rem", "1rem", "1.5rem", "2rem"],
+    ["oria-playful", "0.4375rem", "0.875rem", "1.3125rem", "1.75rem"],
+    ["oria-kawaii", "0.5rem", "1rem", "1.5rem", "2rem"]
+  ])("keeps %s controls and cards moderately rounded in both modes", (id, source, lg, xl, twoXl) => {
+    const theme = oriaPresetThemes.find(theme => theme.id === id)!;
+    for (const mode of ["light", "dark"] as const) {
+      expect((theme.modes[mode] as Record<string, unknown>).radius, `${id} ${mode} source`).toBe(source);
+      const variables = resolveV2(theme, mode);
+      expect(variables["--oria-radius-lg"], `${id} ${mode} control`).toBe(lg);
+      expect(variables["--oria-radius-xl"], `${id} ${mode} panel`).toBe(xl);
+      expect(variables["--oria-radius-2xl"], `${id} ${mode} card`).toBe(twoXl);
+    }
   });
 
   it("keeps every control multiplier an integer between 1 and 24", () => {
